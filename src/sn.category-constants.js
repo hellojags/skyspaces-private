@@ -11,6 +11,7 @@ import PermDeviceInformationOutlinedIcon from "@material-ui/icons/PermDeviceInfo
 import BusinessCenterOutlinedIcon from "@material-ui/icons/BusinessCenterOutlined";
 import SnImages from "./components/categories/images/sn.images";
 import SnVideo from "./components/categories/video/sn.video";
+import SnAudio from "./components/categories/audio/sn.audio";
 
 export const CATEGORY_OBJ = {
   all: {
@@ -61,6 +62,20 @@ export const CATEGORY_OBJ = {
     fileTypeList: ["audio/aac", "audio/mpeg"],
     getLogo: () => <FontAwesomeIcon icon="headphones"></FontAwesomeIcon>,
     heading: "Audio",
+    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete) => (
+      <SnAudio
+        filteredApps={filteredApps}
+        page={page}
+        skyspace={skyspace}
+        itemsPerPage={itemsPerPage}
+        openSkyApp={openSkyApp}
+        onDelete={funcOnDelete}
+        onSelection={onSelection}
+        isSelect={isSelect}
+        arrSelectedAps={arrSelectedAps}
+        hash={hash}
+      />
+    )
   },
   documents: {
     fileTypeList: ["application/x-abiword", "application/x-freearc", "application/vnd.amazon.ebook", "application/msword",

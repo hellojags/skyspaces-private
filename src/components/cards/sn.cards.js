@@ -38,6 +38,7 @@ import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
 import UploadProgress from "../upload/UploadProgress/UploadProgress";
 import { getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
+import AudioPlayer from "../categories/audio/sn.audio-player";
 
 const useStyles = (theme) => ({
   small: {
@@ -454,6 +455,12 @@ class SnCards extends React.Component {
   render() {
     const { goToApp, skyappId, fetchAllSkylinks } = this.state;
     const page = this.state.filterCriteria.page;
+    const filterList = this.state.filterCriteria.tagFilterList;
+    let filterCriteria = "";
+    if (filterList != null && filterList.length > 0) {
+      filterCriteria = filterList[0];
+    }
+
     let cardCount = 0;
     const categoryWiseCount = this.getCategoryWiseCount();
 
@@ -676,11 +683,13 @@ class SnCards extends React.Component {
               )}
               {this.renderCards(filteredApps, page, cardCount, skyspace)}
               <Grid item xs={12}>
-                <SnPagination
-                  page={page}
-                  totalCount={filteredApps.length}
-                  onChange={this.udpdatePage}
-                />
+                {filterCriteria === 'audio' ?
+                  <AudioPlayer /> :
+                  <SnPagination
+                    page={page}
+                    totalCount={filteredApps.length}
+                    onChange={this.udpdatePage}
+                  />}
               </Grid>
             </Grid>
           </div>
