@@ -242,7 +242,22 @@ export const deleteDummyFile = (session) => {
         })
         .catch(err => {
         })
-}
+};
+
+export const bsAddBulkSkyspace = async (session, skyspaceList) => {
+    const promises = [];
+    skyspaceList.map((space)=> {
+        const skyspaceObj = createSkySpaceObject();
+        skyspaceObj.skyspace = space;
+        const SKYSPACE_FILEPATH = SKYSPACE_PATH + space + ".json";
+        promises.push(putFile(session, SKYSPACE_FILEPATH, skyspaceObj));
+    });
+    await Promise.all(promises);
+    let skyspaceIdxObj = await getFile(session, SKYSPACE_IDX_FILEPATH);
+    skyspaceIdxObj = skyspaceIdxObj || createSkySpaceIdxObject();
+    skyspaceIdxObj.skyspaceList = [...new Set([...skyspaceIdxObj.skyspaceList, ...skyspaceList])];
+    await putFile(session, SKYSPACE_IDX_FILEPATH, skyspaceIdxObj);
+};
 
 export const bsAddDeleteSkySpace = async (session, skyspaceName, isDelete) => {
     try {
