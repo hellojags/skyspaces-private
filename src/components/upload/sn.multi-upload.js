@@ -21,8 +21,8 @@ import { encryptContent } from '../../blockstack/utils';
 import Grid from "@material-ui/core/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  bsAddSkylink, bsAddToHistory, bsAddSkylinkFromSkyspaceList,
-  getSkySpace, bsPutSkyspaceInShared, bsGetSharedSkyspaceIdxFromSender, bsAddSkylinkOnly, bsAddSkhubListToSkylinkIdx
+  bsAddSkylink, bsAddToHistory, bsAddSkylinkFromSkyspaceList, bsAddDeleteSkySpace,
+  getSkySpace, bsPutSkyspaceInShared, bsGetSharedSkyspaceIdxFromSender, bsAddSkylinkOnly, bsAddSkhubListToSkylinkIdx, bsAddBulkSkyspace
 } from "../../blockstack/blockstack-api";
 import {
   createEmptyErrObj,
@@ -37,6 +37,7 @@ import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-co
 import UploadProgress from "./UploadProgress/UploadProgress";
 import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
 import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+import { fetchSkyspaceList } from "../../reducers/actions/sn.skyspace-list.action";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -197,6 +198,7 @@ export default function SnMultiUpload(props) {
   const importPublicAppsToSpaces = async (skyspaceList) => {
     setShowPublicToAccModal(false);
     dispatch(setLoaderDisplay(true));
+    const spacesToCreate = skyspaceList.filter(x => !stSnSkyspaceList.includes(x));
     const publicObj = await getPublicApps(query.get(PUBLIC_TO_ACC_QUERY_PARAM));
     const promises = [];
     const skhubIdList = [];
@@ -204,6 +206,7 @@ export default function SnMultiUpload(props) {
       app.skhubId = null;
       promises.push(bsAddSkylinkOnly(stUserSession, app, stPerson).then((skhubid) => skhubIdList.push(skhubid)));
     });
+    spacesToCreate && spacesToCreate.length > 0 && promises.push(bsAddBulkSkyspace(stUserSession, spacesToCreate));
     await Promise.all(promises);
     promises.length = 0;
 
@@ -220,6 +223,7 @@ export default function SnMultiUpload(props) {
 
     dispatch(setLoaderDisplay(false));
 
+    dispatch(fetchSkyspaceList());
     dispatch(fetchSkyspaceAppCount());
   }
 
@@ -306,7 +310,7 @@ export default function SnMultiUpload(props) {
       {/* <UploadProgress /> */}
       <SnAddToSkyspaceModal
         userSession={stUserSession}
-        title={"Import into Skyspace"}
+        title={"Import Into Existing Space Or Add To New Space"}
         open={showPublicToAccModal}
         disableBackdropClick={true}
         disableEscapeKeyDown={true}
