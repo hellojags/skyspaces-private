@@ -207,7 +207,7 @@ class SnSkySpaceMenu extends React.Component {
                       color="secondary"
                       onClick={(evt) => this.onDelete(evt, skyspace)}
                     />
-                    {false && this.props.snSkyspaceAppCount && this.props.snSkyspaceAppCount[skyspace]!==0 && (
+                    {this.props.snSkyspaceAppCount && this.props.snSkyspaceAppCount[skyspace]!==0 && (
                     <ShareOutlinedIcon 
                       style={{ color: APP_BG_COLOR }}
                       onClick={(evt) => this.launchShareModal(evt, skyspace)}
