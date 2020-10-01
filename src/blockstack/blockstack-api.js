@@ -18,6 +18,7 @@ import {
     SHARED_PATH_PREFIX,
     GAIA_HUB_URL
 } from './constants'
+import { lookupProfile } from "blockstack";
 import {
     getFile,
     putFile,
@@ -704,16 +705,26 @@ export const bsSavePublicKey = async (session) => {
 }
 
 export const bsGetSharedWithObj = async (session) => {
-    return getFile(session, SHARED_WITH_FILE_PATH);
+    try {
+        return getFile(session, SHARED_WITH_FILE_PATH);
+    } catch(e){}
 }
 
-export const bsShareSkyspace = async (session, skyspaceName, recipientId) => {
-    console.log(session, skyspaceName, recipientId);
-    const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
+export const bsShareSkyspace = async (session, skyspaceName, blockstackId) => {
+    const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
+    // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
+    const key = profile?.appsMeta?.[document.location.origin]?.publicKey;
+    const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
+    const recipientId = recipientIdStr?.replace("/", "");
+    if ( key==null || recipientId==null ) {
+        console.log("User not setup for skyspace");
+        throw "User not setup for skyspace";
+    }
     const sharedWithObj = (await bsGetSharedWithObj(session)) || {};
     sharedWithObj[recipientId] = sharedWithObj[recipientId] ?? {};
     sharedWithObj[recipientId]["spaces"] = sharedWithObj[recipientId]["spaces"] ?? [];
     sharedWithObj[recipientId]["skylinks"] = sharedWithObj[recipientId]["skylinks"] ?? [];
+    return;
     if (sharedWithObj[recipientId]["spaces"].indexOf(skyspaceName) === -1) {
         const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
         sharedWithObj[recipientId]["spaces"].push(skyspaceName);
