@@ -73,6 +73,7 @@ export class SnRouter extends React.Component {
                 </div>
               </div>
             </div>
+            <div id='audio-player-wrapper' className="audio-player-wrapper" />
           </main>
         </div>
       </Router>

@@ -1,8 +1,16 @@
 .audio-player-wrapper {
-  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
   bottom: 0;
-  right: 0;
-  width: calc(100% - 295px);
+  width: 100%;
+}
+
+.audio-player-wrapper .cool-player-list-wrapper{
+  height: unset;
+}
+
+.audio-player-wrapper .cool-player-inner{
+  color: transparent;
 }
 
 .audio_card.active {
