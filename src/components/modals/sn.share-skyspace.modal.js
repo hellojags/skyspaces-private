@@ -40,7 +40,7 @@ export default function SnShareSkyspaceModal(props) {
 
     const shareWithRecipient = async () => {
         try {
-            await bsShareSkyspace(props.userSession, props.skyspaceName, recipientId);
+            await bsShareSkyspace(props.userSession, [props.skyspaceName], recipientId);
         } catch (err) {
             console.log("share space error", err);
             setShowAlert(true);

@@ -714,11 +714,14 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
 }
 
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId) => {
+    // blockstackId='block_antares_va.id.blockstack';
     const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
     // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
     const key = profile?.appsMeta?.[document.location.origin]?.publicKey;
+    console.log("bsShareSkyspace -> key", key)
     const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
     const recipientId = recipientIdStr?.replace("/", "");
+    console.log("bsShareSkyspace -> recipientId", recipientId)
     if (key == null || recipientId == null) {
         console.log("User not setup for skyspace");
         throw "User not setup for skyspace";
@@ -742,7 +745,7 @@ export const bsShareSkyspace = async (session, skyspaceList, blockstackId) => {
         const SHARED_SKYSPACE_FILEPATH = recipientPathPrefix + SKYSPACE_PATH + skyspaceName + '.json';
         promises.push(getSkySpace(session, skyspaceName)
             .then(skyspaceObj => {
-                skhubIdList.push(skyspaceObj.skhubIdList);
+                skhubIdList.push(...skyspaceObj.skhubIdList);
                 return encryptContent(session, JSON.stringify(skyspaceObj), { publicKey: key })
             })
             .then(encSkyspaceObj => putFileForShared(session, SHARED_SKYSPACE_FILEPATH, encSkyspaceObj)));
@@ -759,11 +762,11 @@ export const bsShareSkyspace = async (session, skyspaceList, blockstackId) => {
 
     promises.length = 0;
     [...new Set([...skhubIdList])].map((skhubId) => {
-        const SHARED_SKYLINK_PATH = recipientPathPrefix + SKYLINK_PATH + + skhubId + ".json";
+        const SHARED_SKYLINK_PATH = recipientPathPrefix + SKYLINK_PATH + skhubId + ".json";
         promises.push(getSkylink(session, skhubId)
             .then((skylink) => encryptContent(session, JSON.stringify(skylink), { publicKey: key }))
             .then((encSkylink) => putFileForShared(session, SHARED_SKYLINK_PATH, encSkylink)));
-    })
+    });
     await Promise.all(promises);
 
     await bsSaveSharedWithObj(session, sharedWithObj);
