@@ -713,7 +713,7 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
 
-export const bsShareSkyspace = async (session, skyspaceList, blockstackId) => {
+export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
     // blockstackId='block_antares_va.id.blockstack';
     const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
     // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
@@ -726,8 +726,11 @@ export const bsShareSkyspace = async (session, skyspaceList, blockstackId) => {
         console.log("User not setup for skyspace");
         throw "User not setup for skyspace";
     }
-    const sharedWithObj = (await bsGetSharedWithObj(session)) || {};
+    if (sharedWithObj==null) {
+        sharedWithObj = (await bsGetSharedWithObj(session)) || {};
+    }
     sharedWithObj[recipientId] = sharedWithObj[recipientId] ?? {};
+    sharedWithObj[recipientId]["userid"] = blockstackId;
     sharedWithObj[recipientId]["spaces"] = sharedWithObj[recipientId]["spaces"] ?? [];
     sharedWithObj[recipientId]["skylinks"] = sharedWithObj[recipientId]["skylinks"] ?? [];
     const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
@@ -770,6 +773,4 @@ export const bsShareSkyspace = async (session, skyspaceList, blockstackId) => {
     await Promise.all(promises);
 
     await bsSaveSharedWithObj(session, sharedWithObj);
-
-
 }

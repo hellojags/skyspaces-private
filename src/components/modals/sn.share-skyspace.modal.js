@@ -9,10 +9,12 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DoneIcon from "@material-ui/icons/Done";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { Button, makeStyles, Popover, Snackbar, Typography } from "@material-ui/core";
-import { bsShareSkyspace } from "../../blockstack/blockstack-api";
+import { Button, Chip, makeStyles, Popover, Snackbar, Typography } from "@material-ui/core";
+import { bsSaveSharedWithObj, bsShareSkyspace } from "../../blockstack/blockstack-api";
 import Slide from "@material-ui/core/Slide";
 import { red } from "@material-ui/core/colors";
+import { useDispatch } from "react-redux";
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -30,22 +32,37 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SnShareSkyspaceModal(props) {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    
     const [recipientId, setRecipientId] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [deletedIdList, setDeletedIdList] = useState([]);
 
     useEffect(() => {
         setRecipientId("");
+        setDeletedIdList([]);
     }, [props.open]);
 
     const shareWithRecipient = async () => {
         try {
-            await bsShareSkyspace(props.userSession, [props.skyspaceName], recipientId);
+            dispatch(setLoaderDisplay(true));
+            deletedIdList.forEach(id=> delete props.sharedWithObj[id]);
+            if (Object.keys(props.sharedWithObj).length===0 || recipientId==null || recipientId.trim()==="") {
+                await bsSaveSharedWithObj(props.userSession, props.sharedWithObj);
+            } else {
+                await bsShareSkyspace(props.userSession, [props.skyspaceName], recipientId, props.sharedWithObj);
+            }
+            dispatch(setLoaderDisplay(false));
+            props.onNo();
         } catch (err) {
+            dispatch(setLoaderDisplay(false));
             console.log("share space error", err);
             setShowAlert(true);
         }
     }
+
+    const handleDelete = (key) => setDeletedIdList([...deletedIdList, key]);
 
     return (
         <>
@@ -65,6 +82,13 @@ export default function SnShareSkyspaceModal(props) {
                     <Grid container spacing={1} direction="row">
                         <Grid item xs={12}>
                             <>
+                            { props.sharedWithObj && Object.keys(props.sharedWithObj)
+                            .filter(key=>deletedIdList.indexOf(key)===-1)
+                            .map((key, idx) => 
+                                <Chip key={idx} label={props.sharedWithObj[key].userid} 
+                                onDelete={()=>handleDelete(key)} 
+                                color="primary" variant="outlined" />
+                            ) }
                                 <TextField
                                     id="recipientId"
                                     name="recipientId"
@@ -112,7 +136,7 @@ export default function SnShareSkyspaceModal(props) {
                     <Button
                         onClick={evt => shareWithRecipient()}
                         autoFocus
-                        disabled={recipientId == null || recipientId.trim() === ""}
+                        disabled={(recipientId == null || recipientId.trim() === "") && deletedIdList.length===0}
                         variant="contained"
                         color="primary"
                         className="btn-bg-color"

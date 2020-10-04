@@ -12,7 +12,7 @@ import {
   bsAddDeleteSkySpace,
   getSkyspaceApps,
   putDummyFile,
-  deleteDummyFile,
+  deleteDummyFile, bsGetSharedWithObj
 } from "../../blockstack/blockstack-api";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
@@ -38,6 +38,7 @@ class SnSkySpaceMenu extends React.Component {
     super(props);
     this.state = {
       showAddSkyspace: false,
+      sharedWithObj: null,
       showConfModal: false,
       showShareSkyspaceModal: false,
       confModalDescription: null,
@@ -139,13 +140,17 @@ class SnSkySpaceMenu extends React.Component {
     });
   }
 
-  launchShareModal = (evt, skyspaceName) => {
+  launchShareModal = async (evt, skyspaceName) => {
     evt.preventDefault();
     evt.stopPropagation();
+    this.props.setLoaderDisplay(true);
+    const sharedWithObj = await bsGetSharedWithObj(this.props.userSession);
+    this.props.setLoaderDisplay(false);
     this.setState({
       showShareSkyspaceModal: true,
-      skyspaceToShare: skyspaceName
-    })
+      skyspaceToShare: skyspaceName,
+      sharedWithObj: sharedWithObj
+    });
   }
 
   render() {
@@ -249,6 +254,7 @@ class SnSkySpaceMenu extends React.Component {
           onNo={() => this.setState({ showShareSkyspaceModal: false })}
           title={`Share Skyspace: ${this.state.skyspaceToShare}`}
           content={this.state.confModalDescription}
+          sharedWithObj={this.state.sharedWithObj}
         />
       </>
     );
