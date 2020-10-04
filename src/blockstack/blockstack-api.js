@@ -713,6 +713,18 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
 
+export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, sharedWithObj) => {
+    const sharedSkylinkIdxObj = createSkylinkIdxObject();
+    const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
+    const profile = await lookupProfile(sharedWithObj[recipientId].userid, "https://core.blockstack.org/v1/names");
+    sharedSkylinkIdxObj.skhubIdList = skylinkList;
+    const encSharedSkylinkIdxObj = await encryptContent(session, JSON.stringify(sharedSkylinkIdxObj), {
+        publicKey: profile?.appsMeta?.[document.location.origin]?.publicKey
+    });
+    const SHARED_SKYLINK_IDX_FILEPATH = recipientPathPrefix + SKYLINK_IDX_FILEPATH;
+    await putFileForShared(session, SHARED_SKYLINK_IDX_FILEPATH, encSharedSkylinkIdxObj);
+}
+
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
     // blockstackId='block_antares_va.id.blockstack';
     const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
@@ -726,7 +738,7 @@ export const bsShareSkyspace = async (session, skyspaceList, blockstackId, share
         console.log("User not setup for skyspace");
         throw "User not setup for skyspace";
     }
-    if (sharedWithObj==null) {
+    if (sharedWithObj == null) {
         sharedWithObj = (await bsGetSharedWithObj(session)) || {};
     }
     sharedWithObj[recipientId] = sharedWithObj[recipientId] ?? {};

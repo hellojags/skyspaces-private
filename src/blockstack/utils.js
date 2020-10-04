@@ -39,7 +39,12 @@ export function putFile(session, FILE_PATH, content, param) {
   if (content.hasOwnProperty("lastUpdateTS")) {
     content.lastUpdateTS = new Date();
   }
-  return session.putFile(FILE_PATH, JSON.stringify(content), options);
+  return session.putFile(FILE_PATH, JSON.stringify(content), options)
+    .catch(err => {
+      if (err?.code !== "precondition_failed_error") {
+        throw err;
+      }
+    });
 }
 
 export function putFileForShared(session, FILE_PATH, encryptedContent) {
@@ -48,7 +53,7 @@ export function putFileForShared(session, FILE_PATH, encryptedContent) {
       if (err?.code !== "precondition_failed_error") {
         throw err;
       }
-    });;
+    });
 }
 
 // Replace file content with new "content"
