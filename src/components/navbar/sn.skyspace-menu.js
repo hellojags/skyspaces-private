@@ -130,13 +130,13 @@ class SnSkySpaceMenu extends React.Component {
     deleteDummyFile(this.props.userSession);
   };
 
-  onDelete = (evt, skyspaceToDel) =>{
+  onDelete = (evt, skyspaceToDel) => {
     evt.preventDefault();
     evt.stopPropagation();
     this.setState({
       showConfModal: true,
       skyspaceToDel,
-      confModalDescription: "This action will permanently remove your "+skyspaceToDel+" skyspace. Do you want to continue?"
+      confModalDescription: "This action will permanently remove your " + skyspaceToDel + " skyspace. Do you want to continue?"
     });
   }
 
@@ -145,6 +145,7 @@ class SnSkySpaceMenu extends React.Component {
     evt.stopPropagation();
     this.props.setLoaderDisplay(true);
     const sharedWithObj = await bsGetSharedWithObj(this.props.userSession);
+    console.log("SnSkySpaceMenu -> launchShareModal -> sharedWithObj", sharedWithObj)
     this.props.setLoaderDisplay(false);
     this.setState({
       showShareSkyspaceModal: true,
@@ -162,16 +163,16 @@ class SnSkySpaceMenu extends React.Component {
           </ListItemIcon>
           <ListItemText style={{ color: APP_BG_COLOR }} primary="Spaces" />
           <Tooltip title="Refresh Space List" arrow>
-          <RefreshOutlinedIcon
-            style={{ color: APP_BG_COLOR }}
-            onClick={this.refreshSkyspace}
-          />
+            <RefreshOutlinedIcon
+              style={{ color: APP_BG_COLOR }}
+              onClick={this.refreshSkyspace}
+            />
           </Tooltip>
           <Tooltip title="Add New Space" arrow>
-          <AddCircleOutlineIcon
-            style={{ color: APP_BG_COLOR }}
-            onClick={this.addSkyspace}
-          />
+            <AddCircleOutlineIcon
+              style={{ color: APP_BG_COLOR }}
+              onClick={this.addSkyspace}
+            />
           </Tooltip>
         </ListItem>
         {/* <ListItem onClick={this.addDummySkyspace} className="d-none">
@@ -189,12 +190,12 @@ class SnSkySpaceMenu extends React.Component {
                   className="nav-link"
                   onClick={() =>
                     this.props.isMobile && this.props.toggleMobileMenuDisplay()
-                  } 
+                  }
                   to={"/skyspace/" + skyspace}
                 >
                   <ListItem
                     button
-                    /* onClick={(evt) => this.getSkyspace(evt, skyspace)} */
+                  /* onClick={(evt) => this.getSkyspace(evt, skyspace)} */
                   >
                     <BookmarkIcon style={{ color: APP_BG_COLOR }} />
                     <ListItemText
@@ -202,7 +203,7 @@ class SnSkySpaceMenu extends React.Component {
                       style={{ color: APP_BG_COLOR }}
                     />
                     <span className="app-color">
-                        ({this.props.snSkyspaceAppCount && this.props.snSkyspaceAppCount[skyspace]})
+                      ({this.props.snSkyspaceAppCount && this.props.snSkyspaceAppCount[skyspace]})
                     </span>
                     <EditOutlinedIcon
                       style={{ color: APP_BG_COLOR }}
@@ -212,12 +213,12 @@ class SnSkySpaceMenu extends React.Component {
                       color="secondary"
                       onClick={(evt) => this.onDelete(evt, skyspace)}
                     />
-                    {this.props.snSkyspaceAppCount && this.props.snSkyspaceAppCount[skyspace]!==0 && (
-                    <ShareOutlinedIcon 
-                      style={{ color: APP_BG_COLOR }}
-                      onClick={(evt) => this.launchShareModal(evt, skyspace)}
+                    {this.props.snSkyspaceAppCount && this.props.snSkyspaceAppCount[skyspace] !== 0 && (
+                      <ShareOutlinedIcon
+                        style={{ color: APP_BG_COLOR }}
+                        onClick={(evt) => this.launchShareModal(evt, skyspace)}
                       />
-                      )}
+                    )}
                   </ListItem>
                 </NavLink>
                 <Divider className="skyspace-menu-divider" component="div" />

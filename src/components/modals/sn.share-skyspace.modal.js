@@ -58,7 +58,10 @@ export default function SnShareSkyspaceModal(props) {
                 skylinkListById[id] = [];
                 props.sharedWithObj[id].spaces.forEach(skyspaceName => {
                     promises.push(getSkySpace(stUserSession, skyspaceName)
-                        .then(skyspaceObj => skylinkListById[id] = [...skylinkListById[id], ...skyspaceObj.skhubIdList]));
+                        .then(skyspaceObj => {
+                            skylinkListById[id] = [...skylinkListById[id], ...skyspaceObj.skhubIdList];
+                        }
+                        ));
                 })
             }
         });
@@ -66,9 +69,11 @@ export default function SnShareSkyspaceModal(props) {
         promises.length = 0;
 
         deletedIdList.forEach(id => {
-            const skylinkList = [...new Set([...skylinkListById[id]])];
-            props.sharedWithObj[id].skylinks = skylinkList;
-            promises.push(bsSetSharedSkylinkIdx(stUserSession, id, skylinkList, props.sharedWithObj));
+            if (skylinkListById[id]) {
+                const skylinkList = [...new Set([...skylinkListById[id]])];
+                props.sharedWithObj[id].skylinks = props.sharedWithObj[id].skylinks.filter(skhubId => skylinkList.indexOf(skhubId) > -1);
+                promises.push(bsSetSharedSkylinkIdx(stUserSession, id, props.sharedWithObj[id].skylinks, props.sharedWithObj));
+            }
         });
         promises.push(bsSaveSharedWithObj(props.userSession, props.sharedWithObj));
         await Promise.all(promises);
