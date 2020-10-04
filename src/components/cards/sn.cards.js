@@ -37,7 +37,7 @@ import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
 import UploadProgress from "../upload/UploadProgress/UploadProgress";
-import { getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
+import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
 import AudioPlayer from "../categories/audio/sn.audio-player";
 
 const useStyles = (theme) => ({
@@ -416,6 +416,7 @@ class SnCards extends React.Component {
       bsAddToHistory(this.props.userSession, historyObj);
       this.setState({
         showInfoModal: true,
+        onInfoModalClose: () => this.setState({ showInfoModal: false }),
         infoModalContent: `${this.props.snUserSetting.setting.portal}${PUBLIC_SHARE_APP_HASH}/#/${PUBLIC_SHARE_ROUTE}?sialink=${uploadedContent.skylink}`
       })
       this.props.setLoaderDisplay(false);
@@ -450,6 +451,33 @@ class SnCards extends React.Component {
     this.props.setLoaderDisplay(false);
     // }
     document.location.href = SKYSPACE_DEFAULT_PATH + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
+  }
+
+  savePublicSpace = async () => {
+    this.props.setLoaderDisplay(true);
+    const publicHashData = await getPublicApps(this.state.hash);
+    const skappListToSave = getAllPublicApps(publicHashData.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps);
+    publicHashData.history[publicHashData.history.length - 1].skylink = this.state.hash;
+    publicHashData.history.push({
+      creationDate: new Date()
+    });
+    publicHashData.data = skappListToSave;
+    const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
+    const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
+    const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
+    this.props.setLoaderDisplay(false);
+    const newUrl = document.location.href.replace(
+      this.state.hash,
+      uploadedContent.skylink
+    );
+    this.setState({
+      showInfoModal: true,
+      infoModalContent: newUrl,
+      onInfoModalClose: () => {
+        this.setState({ showInfoModal: false });
+        document.location.href = newUrl;
+      }
+    });
   }
 
   render() {
@@ -598,6 +626,14 @@ class SnCards extends React.Component {
                   </div>
                   <Button
                     variant="contained"
+                    onClick={this.savePublicSpace}
+                    color="primary"
+                    className="btn-bg-color float-right"
+                  >
+                    Save
+                </Button>
+                  <Button
+                    variant="contained"
                     onClick={this.deleteFromPublic}
                     color="primary"
                     className="btn-bg-color float-right"
@@ -696,7 +732,7 @@ class SnCards extends React.Component {
         </div>
         <SnInfoModal
           open={this.state.showInfoModal}
-          onClose={() => this.setState({ showInfoModal: false })}
+          onClose={this.state.onInfoModalClose}
           title="Public Share Link"
           type="public-share"
           content={this.state.infoModalContent}
