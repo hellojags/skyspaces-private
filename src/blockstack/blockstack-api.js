@@ -713,6 +713,11 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
 
+export const importSpaceFromUser = async (session, senderId, opt) => {
+    const senderProfile = await lookupProfile(senderId, "https://core.blockstack.org/v1/names");
+    console.log(senderProfile);
+}
+
 export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, sharedWithObj) => {
     const sharedSkylinkIdxObj = createSkylinkIdxObject();
     const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
