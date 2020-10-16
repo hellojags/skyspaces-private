@@ -484,9 +484,8 @@ export const bsGetSharedSkyspaceIdxFromSender = async (session, senderStorageId,
     const myPublicKey = getPublicKeyFromPrivate(session.loadUserData().appPrivateKey);
     const encryptedContent = await fetch(`${GAIA_HUB_URL}/${senderStorageId}/skhub/shared/${myPublicKey}/${SKYSPACE_PATH}${skyspaceName}.json`)
         .then(res => res.json());
-    console.log(encryptedContent);
     const decryptedContent = await decryptContent(session, JSON.stringify(encryptedContent));
-    console.log(decryptedContent);
+    console.log("bsGetSharedSkyspaceIdxFromSender -> decryptedContent", decryptedContent)
 }
 
 // Add SkhubId to SkySpaces
@@ -715,7 +714,17 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
 
 export const importSpaceFromUser = async (session, senderId, opt) => {
     const senderProfile = await lookupProfile(senderId, "https://core.blockstack.org/v1/names");
-    console.log(senderProfile);
+    const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
+    const senderStorage = bsGetProfileInfo(senderProfile).storage;
+    const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
+    await bsGetShrdSkyspaceIdxFromSender(session, senderStorage, loggedInUserStorageId);
+}
+
+export const bsGetShrdSkyspaceIdxFromSender = async ( session, senderStorage, loggedInUserStorageId ) => {
+    const SHARED_SKYSPACE_IDX_FILEPATH = loggedInUserStorageId + '/' + SKYSPACE_IDX_FILEPATH;
+    const encSharedSkyspaceIdx = await fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYSPACE_IDX_FILEPATH}`).then(res=>res.json());
+    const sharedSkyspaceIdx = await decryptContent(session, JSON.stringify(encSharedSkyspaceIdx));
+    console.log("bsGetShrdSkyspaceIdxFromSender -> sharedSkyspaceIdx", sharedSkyspaceIdx)
 }
 
 export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, sharedWithObj) => {
@@ -730,15 +739,23 @@ export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, s
     await putFileForShared(session, SHARED_SKYLINK_IDX_FILEPATH, encSharedSkylinkIdxObj);
 }
 
+export const bsGetProfileInfo = (profile) => {
+    const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
+    const recipientId = recipientIdStr?.replace("/", "");
+    return {
+        key: profile?.appsMeta?.[document.location.origin]?.publicKey,
+        storage: profile?.appsMeta?.[document.location.origin]?.storage,
+        storageId: recipientId
+    };
+}
+
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
     // blockstackId='block_antares_va.id.blockstack';
     const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
     // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
     const key = profile?.appsMeta?.[document.location.origin]?.publicKey;
-    console.log("bsShareSkyspace -> key", key)
     const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
     const recipientId = recipientIdStr?.replace("/", "");
-    console.log("bsShareSkyspace -> recipientId", recipientId)
     if (key == null || recipientId == null) {
         console.log("User not setup for skyspace");
         throw "User not setup for skyspace";
