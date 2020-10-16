@@ -1,12 +1,11 @@
 import crypto from 'crypto'
 
-export function generateSkyhubId(inputStr)
-{
-  return crypto.createHash('sha256').update(inputStr+(new Date())).digest('base64').replace("/", "+");
+export function generateSkyhubId(inputStr) {
+  return crypto.createHash('sha256').update(inputStr + (new Date())).digest('base64').replace("/", "+");
 }
 export async function listFiles(session) {
   const pathList = [];
-  await session.listFiles((res)=>{
+  await session.listFiles((res) => {
     pathList.push(res);
     return true;
   })
@@ -18,17 +17,16 @@ export async function encryptContent(session, content, options) {
 export async function decryptContent(session, content, options) {
   return await session.decryptContent(content, options)
 }
-export function getFile(session, FILE_PATH, param)
-{
-    const options = {decrypt: param?.decrypt ?? true};
-    return session.getFile(FILE_PATH, options)
+export function getFile(session, FILE_PATH, param) {
+  const options = { decrypt: param?.decrypt ?? true };
+  return session.getFile(FILE_PATH, options)
     .then((content) => {
       if (content) {
-          return JSON.parse(content)
+        return JSON.parse(content)
       }
     })
-    .catch(err =>{
-      if (err.code==="does_not_exist"){
+    .catch(err => {
+      if (err.code === "does_not_exist") {
         return null;
       } else {
         return err;
@@ -36,23 +34,32 @@ export function getFile(session, FILE_PATH, param)
     })
 }
 // Replace file content with new "content"
-export function putFile(session, FILE_PATH,content, param) {
-    const options = {encrypt: param?.encrypt ?? true};
-    if (content.hasOwnProperty("lastUpdateTS")){
-      content.lastUpdateTS = new Date();
-    }
-    return session.putFile(FILE_PATH, JSON.stringify(content), options);
+export function putFile(session, FILE_PATH, content, param) {
+  const options = { encrypt: param?.encrypt ?? true };
+  if (content.hasOwnProperty("lastUpdateTS")) {
+    content.lastUpdateTS = new Date();
+  }
+  return session.putFile(FILE_PATH, JSON.stringify(content), options)
+    .catch(err => {
+      if (err?.code !== "precondition_failed_error") {
+        throw err;
+      }
+    });
 }
 
 export function putFileForShared(session, FILE_PATH, encryptedContent) {
-  return session.putFile(FILE_PATH, encryptedContent, {encrypt: false, dangerouslyIgnoreEtag: true});
+  return session.putFile(FILE_PATH, encryptedContent, { encrypt: false, dangerouslyIgnoreEtag: true })
+    .catch(err => {
+      if (err?.code !== "precondition_failed_error") {
+        throw err;
+      }
+    });
 }
 
 // Replace file content with new "content"
-export function deleteFile(session, FILE_PATH)
-{
-    const options = { encrypt: true }
-    return session.deleteFile(FILE_PATH, options)
+export function deleteFile(session, FILE_PATH) {
+  const options = { encrypt: true }
+  return session.deleteFile(FILE_PATH, options)
 }
 export function jsonCopy(object) {
   return JSON.parse(JSON.stringify(object))
@@ -78,7 +85,7 @@ export function subjectFromKingdomUrl(url) {
     username
   }
 }
-/* 
+/*
 export function resolveSubjects(component, userSession, subjects) {
   subjects.map((subject, index) => {
     const options = {

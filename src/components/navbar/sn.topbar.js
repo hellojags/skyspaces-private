@@ -5,6 +5,7 @@ import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import InputLabel from '@material-ui/core/InputLabel';
+import Link from '@material-ui/core/Link';
 import MuiAlert from "@material-ui/lab/Alert";
 import Select from '@material-ui/core/Select';
 import MenuItem from "@material-ui/core/MenuItem";
@@ -25,7 +26,6 @@ import Search from "@material-ui/icons/Search";
 import MenuIcon from "@material-ui/icons/Menu";
 import { APP_BG_COLOR, DEFAULT_PORTAL, PUBLIC_SHARE_APP_HASH, PUBLIC_SHARE_ROUTE } from "../../sn.constants";
 import { NavLink } from "react-router-dom";
-import { SKYNETHUB_PORTAL } from "../../sn.constants";
 import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined";
 import { getAllPublicApps, launchSkyLink, subtractSkapps } from "../../sn.util";
 import { parseSkylink, SkynetClient } from "skynet-js";
@@ -265,9 +265,10 @@ class SnTopBar extends React.Component {
                 className="hidden-xs-dn"
               >
                 <div className="top-icon-container float-right">
+                  <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{color: APP_BG_COLOR}}>Blog</Link>
                   <Tooltip title="Launch SkyApps" arrow>
                     <IconButton
-                      onClick={() => window.open(SKYNETHUB_PORTAL + "hns/skyapps/")}
+                      onClick={() => window.open("https://skyapps.hns.siasky.net")}
                     >
                       <AppsOutlinedIcon style={{ color: APP_BG_COLOR }} />
                     </IconButton>
