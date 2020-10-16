@@ -3,7 +3,8 @@ import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
 import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
 import Drawer from "@material-ui/core/Drawer";
-import { SKYNETHUB_PORTAL } from "../../sn.constants";
+import { DEFAULT_PORTAL } from "../../sn.constants";
+import Link from "@material-ui/core/Link";
 import List from "@material-ui/core/List";
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import ListItem from "@material-ui/core/ListItem";
@@ -72,12 +73,17 @@ class SnLeftMenu extends React.Component {
                 </div>
         </div>
         <List className="left-menu-list-root">
+        <ListItem  className="appstore-mobile-link hidden-sm-up">
+        <ListItemText>
+          <Link rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{color: APP_BG_COLOR}}>Blog</Link>
+          </ListItemText>
+        </ListItem>
           <ListItem
             button
             className="appstore-mobile-link hidden-sm-up"
             onClick={() => {
               this.props.toggleMobileMenuDisplay();
-              window.open(SKYNETHUB_PORTAL + "hns/skyapps/");
+              window.open("https://skyapps.hns.siasky.net");
             }}
           >
             <ListItemIcon>

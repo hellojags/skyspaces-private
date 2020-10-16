@@ -14,18 +14,18 @@ class SnFooter extends React.Component {
             <footer className={classes.fixfooter}>
                 <Grid container className={classes.root} spacing={1} justify="center" alignContent="center">
                     <Grid item className="font-weight-bold">
-                        <Link href="https://github.com/skynethubio/skhub-appstore-ui#donation" 
+                        <Link rel="noreferrer" href="https://github.com/skynethubio/skhub-appstore-ui#donation" 
                             target="_blank" rel="noreferrer"
                             style={{color: APP_BG_COLOR}}>Donate</Link>
                         <span className="FooterTextspan">|</span>
                     </Grid>
                     <Grid item className="font-weight-bold">
-                        <Link href="#" style={{color: APP_BG_COLOR}}>Privacy</Link>
+                        <Link rel="noopener noreferrer" target="_blank" href="SkySpaces-Privacy Notice.pdf" style={{color: APP_BG_COLOR}}>Privacy</Link>
                         <span className="FooterTextspan">|</span>
                     </Grid>
                     <Grid item className="font-weight-bold">
-                    <Link href="#" style={{color: APP_BG_COLOR}}>Terms</Link>
-                    <span className="FooterTextspan">|</span>
+                        <Link rel="noopener noreferrer" target="_blank" href="SkySpaces-Terms.pdf" style={{color: APP_BG_COLOR}}>Terms</Link>
+                        <span className="FooterTextspan">|</span>
                     </Grid>
                     <Grid item>
                         <a href="https://twitter.com/HelloSkySpaces" target="_blank"
@@ -40,7 +40,7 @@ class SnFooter extends React.Component {
                         </a>
                     </Grid>
                     <Grid item>
-                        <a href="  https://feedback-skyspaces.herokuapp.com" target="_blank"
+                        <a href="https://feedback-skyspaces.herokuapp.com" target="_blank"
                             rel="noopener noreferrer" className="FooterTextspan">
                             <FontAwesomeIcon icon={faCommentAlt} size="1x" />
                         </a>
