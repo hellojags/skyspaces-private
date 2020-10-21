@@ -33,7 +33,7 @@ import {
   SKYLINK_TYPE_SKYLINK,
 } from "./sn.new.constants";
 import { DELETE, UPLOAD } from "../../sn.constants";
-import { getCategoryObjWithoutAllAsArray, getCategoryObjWithoutAll } from "../../sn.category-constants";
+incrctimport { getCategoryObjWithoutAllAsArray, getCategoryObjWithoutAll, CATEGORY_OBJ } from "../../sn.category-constants";
 import { getPortalFromUserSetting, getCompressedImageFile, generateThumbnailFromVideo, videoToImg } from "../../sn.util";
 import {
   bsAddSkylink,
@@ -265,22 +265,32 @@ class SnNew extends React.Component {
     let res;
     switch(app.type){
       case "pictures": 
+      try {
         const dataUrl = await imageCompression.getDataUrlFromFile(skylinkFileBlob);
         const file = await imageCompression.getFilefromDataUrl(dataUrl, "image");
-        const compressedImgFile = await getCompressedImageFile(file)
+        const compressedImgFile = await getCompressedImageFile(file);
         res = await uploadToSkynet(compressedImgFile, client);
+      } catch (e) {
+        console.error("Skyspaces handled exception p", e);
+      }
         app.thumbnail = res != null ? res.skylink : "";
         break;
       case "video":
-        const video = document.querySelector(`#hidden-upload-video`);
-        let videoResolve = null;
-        const videoPromise = new Promise((resolve) => videoResolve = resolve);
-        video.src=skylinkUrl;
-        video.onloadeddata = videoResolve;
-        video.load();
-        await videoPromise;
-        const thumbnailImgFile = await videoToImg(video);
-        res = await uploadToSkynet(thumbnailImgFile, client);
+        try {
+          if (CATEGORY_OBJ[app.type].fileTypeList.indexOf(app.contentType) > -1) {
+            const video = document.querySelector(`#hidden-upload-video`);
+            let videoResolve = null;
+            const videoPromise = new Promise((resolve) => videoResolve = resolve);
+            video.src=skylinkUrl;
+            video.onloadeddata = videoResolve;
+            video.load();
+            await videoPromise;
+            const thumbnailImgFile = await videoToImg(video);
+            res = await uploadToSkynet(thumbnailImgFile, client);
+          }
+        } catch(e) {
+          console.error("Skyspaces handled exception v", e);
+        }
         app.thumbnail = res != null ? res.skylink : "";
         break;
       default:
