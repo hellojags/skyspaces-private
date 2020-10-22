@@ -10,7 +10,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DoneIcon from "@material-ui/icons/Done";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button, Chip, makeStyles, Popover, Snackbar, Typography } from "@material-ui/core";
-import { bsSaveSharedWithObj, bsSetSharedSkylinkIdx, bsShareSkyspace, getSkySpace, importSpaceFromUser } from "../../blockstack/blockstack-api";
+import { bsSaveSharedWithObj, bsSetSharedSkylinkIdx, bsShareSkyspace, getSkySpace, importSpaceFromUserList } from "../../blockstack/blockstack-api";
 import Slide from "@material-ui/core/Slide";
 import { red } from "@material-ui/core/colors";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,8 +38,10 @@ export default (props) => {
 
     const stUserSession = useSelector((state) => state.userSession);
 
-    const importFromUser = () => {
-        importSpaceFromUser(stUserSession, senderId);
+    const importFromUser = async () => {
+        dispatch(setLoaderDisplay(true));
+        await importSpaceFromUserList(stUserSession, [senderId]);
+        dispatch(setLoaderDisplay(false));
     }
 
     return (

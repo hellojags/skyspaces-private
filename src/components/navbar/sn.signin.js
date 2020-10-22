@@ -11,7 +11,7 @@ import { showBlockstackConnect, authenticate } from "@blockstack/connect";
 import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM } from "../../sn.constants";
 import { Tooltip } from "@material-ui/core";
 import { authOrigin, appDetails, userSession } from "../../blockstack/constants";
-import { bsSavePublicKey } from "../../blockstack/blockstack-api";
+import { bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
 import SnImportSharedSpaceModal from "../modals/sn.import-shared-space.modal";
 
 class SnSignin extends React.Component {
@@ -30,9 +30,10 @@ class SnSignin extends React.Component {
       authOrigin,
       userSession,
       sendToSignIn: true,
-      finished: ({ userSession }) => {
+      finished: async ({ userSession }) => {
         this.props.setUserSession(userSession);
         bsSavePublicKey(userSession);
+        console.log("imported spaces", await bsGetImportedSpacesObj(userSession));
         this.props.setPersonGetOtherData(userSession.loadUserData());
       },
       appDetails: appDetails,
