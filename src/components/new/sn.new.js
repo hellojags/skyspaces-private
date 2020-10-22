@@ -33,7 +33,7 @@ import {
   SKYLINK_TYPE_SKYLINK,
 } from "./sn.new.constants";
 import { DELETE, UPLOAD } from "../../sn.constants";
-incrctimport { getCategoryObjWithoutAllAsArray, getCategoryObjWithoutAll, CATEGORY_OBJ } from "../../sn.category-constants";
+import { getCategoryObjWithoutAllAsArray, getCategoryObjWithoutAll, CATEGORY_OBJ } from "../../sn.category-constants";
 import { getPortalFromUserSetting, getCompressedImageFile, generateThumbnailFromVideo, videoToImg } from "../../sn.util";
 import {
   bsAddSkylink,
