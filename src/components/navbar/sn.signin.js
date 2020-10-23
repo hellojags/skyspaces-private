@@ -33,7 +33,8 @@ class SnSignin extends React.Component {
       finished: async ({ userSession }) => {
         this.props.setUserSession(userSession);
         bsSavePublicKey(userSession);
-        console.log("imported spaces", await bsGetImportedSpacesObj(userSession));
+        const importedSpace =  await bsGetImportedSpacesObj(userSession);
+        this.props.setImportedSpace(importedSpace);
         this.props.setPersonGetOtherData(userSession.loadUserData());
       },
       appDetails: appDetails,
@@ -56,13 +57,16 @@ class SnSignin extends React.Component {
     };
     showBlockstackConnect(authOptions);
   };
-  componentDidMount() {
+  async componentDidMount() {
     if (this.props.person == null) {
       if (this.props.userSession.isSignInPending()) {
         this.props.fetchBlockstackPerson(this.props.userSession);
       } else if (this.getPublicToAccHash() != null) {
         this.doSignUp();
       }
+    } else {
+      const importedSpace =  await bsGetImportedSpacesObj(userSession);
+      this.props.setImportedSpace(importedSpace);
     }
   }
 

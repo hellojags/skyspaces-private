@@ -175,12 +175,6 @@ class SnSkySpaceMenu extends React.Component {
             />
           </Tooltip>
         </ListItem>
-        {/* <ListItem onClick={this.addDummySkyspace} className="d-none">
-          <ListItemText style={{ color: APP_BG_COLOR }} primary="Add Dummy" />
-        </ListItem>
-        <ListItem onClick={this.removeDummySkyspace} className="d-none">
-          <ListItemText style={{ color: APP_BG_COLOR }} primary="Del Dummy" />
-        </ListItem> */}
         {this.props.skyspaceList != null && (
           <Card variant="outlined" className="skyspace-menu-card">
             {this.props.skyspaceList.map((skyspace) => (

@@ -774,7 +774,6 @@ export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, s
 }
 
 export const bsGetProfileInfo = (profile) => {
-    console.log("bsGetProfileInfo", profile);
     const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
     const recipientId = recipientIdStr?.replace("/", "");
     return {
