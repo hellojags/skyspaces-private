@@ -207,7 +207,7 @@ class SnTopBar extends React.Component {
 								</div>
 							</div>
 							{ (this.props.person != null || this.props.snPublicHash) && (
-								<div className='col-11 col-sm-10 col-md-9 col-lg-6'>
+								<div className='col-11 col-sm-11 col-md-9 col-lg-6'>
 									<div className='d-flex align-items-center'>
 										<form onSubmit={ this.triggerSearch } className='d-flex flex-grow-1'>
 											<HeaderSearchBar onChange={ (evt) => this.setState({searchStr: evt.target.value}) }/>
