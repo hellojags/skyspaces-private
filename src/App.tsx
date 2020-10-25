@@ -1,24 +1,26 @@
-import React from "react";
 import "./App.css";
-import { library } from "@fortawesome/fontawesome-svg-core";
-
+import React, {Fragment} from "react";
+import theme from "./theme";
+import SnRouter from "./router/sn.router";
+import {Connect} from '@blockstack/connect';
+import {ThemeProvider} from '@material-ui/core';
+import SnLoader from "./components/tools/sn.loader";
+import SnFooter from "./components/footer/sn.footer";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {appDetails, authOrigin, userSession} from "./blockstack/constants";
 import {
+  faBlog,
+  faCloudUploadAlt,
+  faEllipsisV,
   faEnvelope,
   faFan,
+  faHeadphones,
   faLaughWink,
-  faCloudUploadAlt,
   faStar,
   faVideo,
-  faBlog,
-  faWifi,
-  faHeadphones,
-  faEllipsisV
+  faWifi
 } from "@fortawesome/free-solid-svg-icons";
-import SnLoader from "./components/tools/sn.loader";
-import SnRouter from "./router/sn.router";
-import SnFooter from "./components/footer/sn.footer";
-import { Connect } from '@blockstack/connect';
-import {authOrigin, appDetails,userSession} from "./blockstack/constants";
+
 library.add(
   faEnvelope,
   faFan,
@@ -37,49 +39,32 @@ const authOptions = {
   manifestPath: '/manifest.json',
   authOrigin,
   userSession,
-  finished: ({ userSession }: { userSession: any }) => {
+  finished: ({userSession}: { userSession: any }) => {
     console.log(userSession.loadUserData());
   },
-  appDetails:appDetails,
+  appDetails: appDetails,
 };
 
-// // Track when page is loaded
-// const FathomTrack = () => {
-//   useEffect(() => {
-//     if (config.fathomSiteId) {
-//       Fathom.load(config.fathomSiteId, {
-//         url: config.fathomSiteUrl,
-//       });
-//       Fathom.trackPageview();
-//     }
-//   }, []);
-
-//   return <React.Fragment />;
-// };
-
-// // Track on each page change
-// Router.events.on('routeChangeComplete', () => {
-//   Fathom.trackPageview();
-// });
-
 class App extends React.Component {
-  constructor(props: any){
+  constructor(props: any) {
     super(props);
-    if (process.env.NODE_ENV==='production'){
-      console.log = function () {};
+    if (process.env.NODE_ENV === 'production') {
+      console.log = function () {
+      };
     }
   }
 
   render() {
-
     return (
-      <React.Fragment >
-        <Connect authOptions={authOptions}>
-          <SnLoader />
-          <SnRouter />
-          <SnFooter />
-        </Connect>
-      </React.Fragment>
+      <ThemeProvider theme={theme}>
+        <React.Fragment>
+          <Connect authOptions={authOptions}>
+            <SnLoader/>
+            <SnRouter/>
+            <SnFooter/>
+          </Connect>
+        </React.Fragment>
+      </ThemeProvider>
     );
   }
 }

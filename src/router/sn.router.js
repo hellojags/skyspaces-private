@@ -1,15 +1,8 @@
-import React from "react";
 import "../App.css";
-import { withStyles } from "@material-ui/core/styles";
+import React from "react";
+import {withStyles} from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
-import {
-  Route,
-  HashRouter as Router,
-  Switch,
-  Redirect,
-} from "react-router-dom";
-import SnScrollToTop from "./sn.scroll-to-top";
+import {HashRouter as Router, Redirect, Route, Switch,} from "react-router-dom";
 import SnCards from "../components/cards/sn.cards";
 import SnHistory from "../components/history/sn.history";
 import SnNew from "../components/new/sn.new";
@@ -35,18 +28,6 @@ export class SnRouter extends React.Component {
     const { classes } = this.props;
     return (
       <Router>
-        {/* <div classsName="lightbox-container" id="lightbox-container">
-          <ReactImageVideoLightbox 
-           id="light-box"
-          className="light-box"
-        data={[
-          { url: 'https://skynethub.io/AABHk6DdHbve_nfjRNVuaAQTs-ehFiXJx1yM30q7ZAgb2w', type: 'video', altTag: 'some other video' }
-        ]}
-        startIndex={0}
-        onCloseCallback={(evt)=> console.log(evt)}
-      />
-      </div> */}
-      {/* <SnScrollToTop /> */}
         <div className={classes.root + " router-root"}>
           <CssBaseline />
           <SnTopBar onDrawerToggle={this.handleDrawerToggle} />
