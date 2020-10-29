@@ -69,6 +69,7 @@ export class SnRouter extends React.Component {
                     <Route path="/history" component={SnHistory} />
                     <Route path="/public-cards" component={SnCards} />
                     <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
+                    <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
                     <Route component={SnMultiUpload} />
                   </Switch>
                 </div>

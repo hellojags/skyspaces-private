@@ -399,6 +399,7 @@ class SnCards extends React.Component {
                     isSelect={this.state.isSelect}
                     arrSelectedAps={this.state.arrSelectedAps}
                     skyspace={skyspace}
+                    senderId={this.state.senderId}
                     allSpacesObj={this.props.snSkyspaceDetail}
                     cardCount={filteredApps.length}
                     onSelection={(app, isDeselection) => this.selectApp(app, isDeselection)}
@@ -690,7 +691,7 @@ class SnCards extends React.Component {
                   </Button>)}
                 </Grid>
               )}
-              {this.state.hash == null && filteredApps.length > 0 && (
+              {this.state.hash == null && filteredApps.length > 0 && this.state.senderId==null && (
                 <Grid item xs={12} className="muti-cards-action">
                   {!this.state.isSelect && (
 
