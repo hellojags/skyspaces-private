@@ -32,7 +32,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -65,6 +65,7 @@ class SnCards extends React.Component {
     super(props);
     this.state = {
       goToApp: false,
+      senderId: null,
       loadingAllSpacesInfo: true,
       showAddToSkyspace: false,
       skyappId: "",
@@ -180,13 +181,27 @@ class SnCards extends React.Component {
     return categoryCountObj;
   };
 
-  getAppList(category, skyspace, fetchAllSkylinks, hash) {
+  async getAppList(category, skyspace, fetchAllSkylinks, hash, senderId) {
+    senderId = senderId || this.state.senderId;
     category != null && this.props.fetchApps(category);
-    skyspace != null &&
+    if (skyspace != null) {
+      if (senderId != null) {
+        console.log(" fetch from ", senderId, skyspace);
+        const appListFromSharedSpace = await bsGetSharedSpaceAppList(this.props.userSession, decodeURIComponent(senderId), skyspace);
+        console.log("SnCards -> getAppList -> sharedSpaceDetail", appListFromSharedSpace);
+        this.props.setApps(appListFromSharedSpace);
+      } else {
+        this.props.fetchSkyspaceApps({
+          session: this.props.userSession,
+          skyspace: skyspace,
+        });
+      }
+    }
+    /* skyspace != null &&
       this.props.fetchSkyspaceApps({
         session: this.props.userSession,
         skyspace: skyspace,
-      });
+      }); */
     if (hash != null) {
       this.props.setDesktopMenuState(false);
       this.props.setPortalsListAction(INITIAL_PORTALS_OBJ);
@@ -203,9 +218,19 @@ class SnCards extends React.Component {
     }
   }
 
+  setSenderId() {
+    if (this.props.location.pathname.indexOf("imported-spaces") > -1 && this.state.senderId !== this.props.match.params.sender) {
+      this.setState({
+        senderId: this.props.match.params.sender
+      });
+    }
+    return this.props.match.params.sender;
+  }
+
   componentDidMount() {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
+    const senderId = this.setSenderId();
     const queryHash = this.props.location.search.replace("?sialink=", "").trim();
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
@@ -218,16 +243,16 @@ class SnCards extends React.Component {
       hash
     });
     this.props.fetchSkyspaceDetail();
-    this.getAppList(category, skyspace, fetchAllSkylinks, hash);
+    this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
+    const senderId = this.setSenderId();
     const queryHash = this.props.location.search.replace("?sialink=", "").trim();
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
-    console.log("cards component updated");
     if (
       this.state.category !== category ||
       this.state.hash !== hash ||
@@ -236,7 +261,6 @@ class SnCards extends React.Component {
       (fetchAllSkylinks &&
         this.getSearchKeyFromQuery() !== this.state.searchKey)
     ) {
-      console.log("truly updated");
       this.props.fetchSkyspaceDetail();
       this.updateTagFilterList([]);
       this.setState({
@@ -247,7 +271,7 @@ class SnCards extends React.Component {
         page: 1,
       });
       hash && this.props.setPublicHash(hash);
-      this.getAppList(category, skyspace, fetchAllSkylinks, hash);
+      this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
     }
   }
 

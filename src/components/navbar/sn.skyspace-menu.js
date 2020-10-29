@@ -16,6 +16,7 @@ import {
 } from "../../blockstack/blockstack-api";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
   APP_BG_COLOR,
   ADD_SKYSPACE,
@@ -32,6 +33,8 @@ import {
   mapStateToProps,
   matchDispatcherToProps,
 } from "./sn.skyspace-menu.container";
+import cliTruncate from "cli-truncate";
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@material-ui/core";
 
 class SnSkySpaceMenu extends React.Component {
   constructor(props) {
@@ -145,7 +148,7 @@ class SnSkySpaceMenu extends React.Component {
     evt.stopPropagation();
     this.props.setLoaderDisplay(true);
     const sharedWithObj = await bsGetSharedWithObj(this.props.userSession);
-    console.log("SnSkySpaceMenu -> launchShareModal -> sharedWithObj", sharedWithObj)
+    console.log("SnSkySpaceMenu -> launchShareModal -> sharedWithObj", sharedWithObj);
     this.props.setLoaderDisplay(false);
     this.setState({
       showShareSkyspaceModal: true,
@@ -215,11 +218,72 @@ class SnSkySpaceMenu extends React.Component {
                     )}
                   </ListItem>
                 </NavLink>
-                <Divider className="skyspace-menu-divider" component="div" />
               </React.Fragment>
             ))}
           </Card>
         )}
+        {this.props.snImportedSpace?.sharedByUserObj?.length > 0 && (
+          <>
+            <Divider className="skyspace-menu-divider" component="div" />
+            <ListItem button component="a" className="nav-link dummy-link">
+              <ListItemIcon>
+                <BookmarksIcon style={{ color: APP_BG_COLOR }} />
+              </ListItemIcon>
+              <ListItemText style={{ color: APP_BG_COLOR }} primary="Imported Spaces" />
+              <Tooltip title="Refresh Space List" arrow>
+                <RefreshOutlinedIcon
+                  style={{ color: APP_BG_COLOR }}
+                  onClick={this.refreshSkyspace}
+                />
+              </Tooltip>
+              <Tooltip title="Add New Space" arrow>
+                <AddCircleOutlineIcon
+                  style={{ color: APP_BG_COLOR }}
+                  onClick={this.addSkyspace}
+                />
+              </Tooltip>
+            </ListItem>
+          </>)}
+        {this.props.snImportedSpace?.sharedByUserObj?.map((userId) => (
+          <>
+            <Accordion>
+              <Tooltip title={userId}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>{cliTruncate(userId, 20)}</Typography>
+                </AccordionSummary>
+              </Tooltip>
+              <AccordionDetails>
+                {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
+                  <React.Fragment key={skyspace}>
+                    <NavLink
+                      activeClassName="active"
+                      className="nav-link"
+                      onClick={() =>
+                        this.props.isMobile && this.props.toggleMobileMenuDisplay()
+                      }
+                      to={"/imported-spaces/" + encodeURIComponent(userId) + "/" + skyspace}
+                    >
+                      <ListItem
+                        button
+                      /* onClick={(evt) => this.getSkyspace(evt, skyspace)} */
+                      >
+                        <BookmarkIcon style={{ color: APP_BG_COLOR }} />
+                        <ListItemText
+                          primary={skyspace}
+                          style={{ color: APP_BG_COLOR }}
+                        />
+                      </ListItem>
+                    </NavLink>
+                  </React.Fragment>
+                ))}
+              </AccordionDetails>
+            </Accordion>
+          </>
+        ))}
         <SnAddSkyspaceModal
           open={this.state.showAddSkyspace}
           title={this.state.skyspaceModal.title}

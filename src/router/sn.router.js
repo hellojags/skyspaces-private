@@ -46,7 +46,7 @@ export class SnRouter extends React.Component {
         onCloseCallback={(evt)=> console.log(evt)}
       />
       </div> */}
-      {/* <SnScrollToTop /> */}
+        {/* <SnScrollToTop /> */}
         <div className={classes.root + " router-root"}>
           <CssBaseline />
           <SnTopBar onDrawerToggle={this.handleDrawerToggle} />
@@ -68,6 +68,7 @@ export class SnRouter extends React.Component {
                     <Route path="/skyspace/:skyspace" component={SnCards} />
                     <Route path="/history" component={SnHistory} />
                     <Route path="/public-cards" component={SnCards} />
+                    <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
                     <Route component={SnMultiUpload} />
                   </Switch>
                 </div>
