@@ -71,14 +71,16 @@ class SnAppCardActionBtnGrp extends React.Component {
           })}
         >
           <div className="margin-l-auto">
-            {this.props.hideAdd ===false && (<Tooltip title="Add to other Spaces" arrow>
+            {(this.props.hideAdd == null || this.props.hideAdd === false) && (
+            <Tooltip title="Add to other Spaces" arrow>
               <IconButton
                 onClick={this.props.onAdd}
                 style={{ color: APP_BG_COLOR }}
               >
                 <AddCircleOutlineOutlinedIcon />
               </IconButton>
-            </Tooltip>)}
+            </Tooltip>
+            )}
             <Tooltip title="Edit Skylink" arrow>
               <IconButton
                 onClick={this.props.onEdit}

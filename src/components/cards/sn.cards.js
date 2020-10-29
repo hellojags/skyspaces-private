@@ -378,7 +378,8 @@ class SnCards extends React.Component {
             this.state.category,
             this.state.skyspace,
             this.state.fetchAllSkylinks
-          )
+          ),
+        this.state.senderId
       );
     } else {
       return (
