@@ -230,7 +230,7 @@ class SnSkySpaceMenu extends React.Component {
                 <BookmarksIcon style={{ color: APP_BG_COLOR }} />
               </ListItemIcon>
               <ListItemText style={{ color: APP_BG_COLOR }} primary="Imported Spaces" />
-              <Tooltip title="Refresh Space List" arrow>
+              {/* <Tooltip title="Refresh Space List" arrow>
                 <RefreshOutlinedIcon
                   style={{ color: APP_BG_COLOR }}
                   onClick={this.refreshSkyspace}
@@ -241,7 +241,7 @@ class SnSkySpaceMenu extends React.Component {
                   style={{ color: APP_BG_COLOR }}
                   onClick={this.addSkyspace}
                 />
-              </Tooltip>
+              </Tooltip> */}
             </ListItem>
           </>)}
         {this.props.snImportedSpace?.sharedByUserList?.map((userId) => (
