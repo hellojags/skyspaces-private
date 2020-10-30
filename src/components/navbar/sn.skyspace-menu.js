@@ -261,7 +261,7 @@ class SnSkySpaceMenu extends React.Component {
                   <React.Fragment key={skyspace}>
                     <NavLink
                       activeClassName="active"
-                      className="nav-link"
+                      className="imported-space-nav-link"
                       onClick={() =>
                         this.props.isMobile && this.props.toggleMobileMenuDisplay()
                       }
