@@ -672,7 +672,9 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
     const sharedByUserObj = await bsGetSharedByUser(session);
-    const senderToSpacesMap = {};
+    let { senderToSpacesMap, sharedByUserList } = sharedByUserObj;
+    sharedByUserList = sharedByUserList || [];
+    senderToSpacesMap = senderToSpacesMap || {};
     senderIdList.forEach(async senderId=> {
         const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
         const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
@@ -684,7 +686,7 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
         })
         .then(sharedSpaceIdxObj=>{
             senderToSpacesMap[senderId] = sharedSpaceIdxObj;
-            sharedByUserObj.indexOf(senderId) === -1 && sharedByUserObj.push(senderId);
+            sharedByUserList.indexOf(senderId) === -1 && sharedByUserList.push(senderId);
         })
         .catch(err => {
             console.log(err);
@@ -693,9 +695,12 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
         promises.push(promise);
     });
     await Promise.all(promises);
-    opt?.isImport && await putFile(session, SHARED_BY_USER_FILEPATH, sharedByUserObj);
+    opt?.isImport && await putFile(session, SHARED_BY_USER_FILEPATH, {
+        sharedByUserList,
+        senderToSpacesMap
+    });
     return {
-        sharedByUserObj,
+        sharedByUserList,
         senderToSpacesMap
     };
 }
@@ -729,10 +734,10 @@ export const bsGetImportedSpacesObj = async (session, opt) => bsGetSpacesFromUse
 
 export const bsGetSharedByUser = async (session) => {
     let sharedByUserObj =  await getFile(session, SHARED_BY_USER_FILEPATH);
-    if (sharedByUserObj==null || sharedByUserObj==={}) {
-        sharedByUserObj = []
+    if (sharedByUserObj!=null && sharedByUserObj.sharedByUserList!=null){
+        return sharedByUserObj.sharedByUserList;
     }
-    return sharedByUserObj;
+    return [];
 }
 
 export const bsGetShrdSkyspaceIdxFromSender = async ( session, senderStorage, loggedInUserStorageId ) => {

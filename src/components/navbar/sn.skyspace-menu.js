@@ -222,7 +222,7 @@ class SnSkySpaceMenu extends React.Component {
             ))}
           </Card>
         )}
-        {this.props.snImportedSpace?.sharedByUserObj?.length > 0 && (
+        {this.props.snImportedSpace?.sharedByUserList?.length > 0 && (
           <>
             <Divider className="skyspace-menu-divider" component="div" />
             <ListItem button component="a" className="nav-link dummy-link">
@@ -244,7 +244,7 @@ class SnSkySpaceMenu extends React.Component {
               </Tooltip>
             </ListItem>
           </>)}
-        {this.props.snImportedSpace?.sharedByUserObj?.map((userId) => (
+        {this.props.snImportedSpace?.sharedByUserList?.map((userId) => (
           <>
             <Accordion>
               <Tooltip title={userId}>
