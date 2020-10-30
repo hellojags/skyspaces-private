@@ -526,7 +526,11 @@ class SnCards extends React.Component {
       ) {
         source = "skyspace";
       }
-      return <Redirect to={"/skyapps/" + skyappId + "?source=" + source} />;
+      if (this.state.senderId!=null) {
+        return <Redirect to= { `/imported-skyapps/${encodeURIComponent(this.state.senderId)}/${skyappId}?source=${source}`}/>;
+      } else {
+        return <Redirect to={"/skyapps/" + skyappId + "?source=" + source} />;
+      }
     }
     let filteredApps = this.getFilteredApps();
 
