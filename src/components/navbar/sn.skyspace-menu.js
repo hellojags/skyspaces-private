@@ -232,7 +232,9 @@ class SnSkySpaceMenu extends React.Component {
               <ListItemText style={{ color: APP_BG_COLOR }} primary="Imported Spaces" />
             </ListItem>
           </>)}
-        {this.props.snImportedSpace?.sharedByUserList?.map((userId) => (
+        {this.props.snImportedSpace?.sharedByUserList
+        ?.filter(userId=>this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.length>0)
+        .map((userId) => (
           <>
             <Accordion>
               <Tooltip title={userId}>
