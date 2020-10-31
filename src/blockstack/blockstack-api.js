@@ -730,14 +730,11 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     return skylinkArr;
 }
 
-export const bsGetImportedSpacesObj = async (session, opt) => bsGetSpacesFromUserList(session, await bsGetSharedByUser(session), opt);
+export const bsGetImportedSpacesObj = async (session, opt) => bsGetSpacesFromUserList(session, (await bsGetSharedByUser(session))?.sharedByUserList, opt);
 
 export const bsGetSharedByUser = async (session) => {
     let sharedByUserObj = await getFile(session, SHARED_BY_USER_FILEPATH);
-    if (sharedByUserObj != null && sharedByUserObj.sharedByUserList != null) {
-        return sharedByUserObj.sharedByUserList;
-    }
-    return [];
+    return sharedByUserObj;
 }
 
 export const bsGetShrdSkyspaceIdxFromSender = async (session, senderStorage, loggedInUserStorageId) => {
