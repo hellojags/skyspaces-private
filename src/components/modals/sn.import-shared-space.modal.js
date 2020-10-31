@@ -44,6 +44,7 @@ export default (props) => {
         const importedSpace = await importSpaceFromUserList(stUserSession, [senderId]);
         dispatch(setImportedSpace(importedSpace));
         dispatch(setLoaderDisplay(false));
+        setSenderId("");
         props.onNo();
     }
 
