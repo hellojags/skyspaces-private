@@ -53,7 +53,7 @@ export default function SnShareSkyspaceModal(props) {
             const idxCurrentSpace = props.sharedWithObj[id].spaces.indexOf(props.skyspaceName);
             props.sharedWithObj[id].spaces.splice(idxCurrentSpace, 1);
             if (props.sharedWithObj[id].spaces.length === 0) {
-                delete props.sharedWithObj[id];
+                // delete props.sharedWithObj[id];
             } else {
                 skylinkListById[id] = [];
                 props.sharedWithObj[id].spaces.forEach(skyspaceName => {
