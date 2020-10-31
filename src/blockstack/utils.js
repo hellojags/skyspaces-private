@@ -47,7 +47,10 @@ export function putFile(session, FILE_PATH, content, param) {
     });
 }
 
-export function putFileForShared(session, FILE_PATH, encryptedContent) {
+export async function putFileForShared(session, FILE_PATH, encryptedContent) {
+  try {
+    await deleteFile(session, FILE_PATH);
+  } catch(e){}
   return session.putFile(FILE_PATH, encryptedContent, { encrypt: false, dangerouslyIgnoreEtag: true })
     .catch(err => {
       if (err?.code !== "precondition_failed_error") {

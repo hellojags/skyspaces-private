@@ -790,7 +790,26 @@ export const bsGetProfileInfo = (profile) => {
     };
 }
 
+export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLst, skyspaceName, sharedWithObj ) => {
+    const promises = []
+    const rslt = recipientIdStrgLst?.map(recipientIdStrg => {
+        console.log("bsUnshareSpaceFromRecipientLst -> recipientId", recipientIdStrg)
+        promises.push(lookupProfile(sharedWithObj[recipientIdStrg].userid, "https://core.blockstack.org/v1/names")
+        .then(profile => {
+            const recipientStorage = bsGetProfileInfo(profile).storageId;
+            const recipientPathPrefix = SHARED_PATH_PREFIX + recipientStorage + "/";
+            const SHARED_SKYSPACE_FILEPATH = recipientPathPrefix + SKYSPACE_PATH + skyspaceName + '.json';
+            return deleteFile(session, SHARED_SKYSPACE_FILEPATH)
+        })
+        .then(()=>bsShareSkyspace(session, sharedWithObj[recipientIdStrg]["spaces"], sharedWithObj[recipientIdStrgLst].userid)), sharedWithObj);
+    });
+    await Promise.all(promises);
+}
+
+//const getBlockStackIdList = (sharedWithObjKeyLst) => sharedWithObjKeyLst.map(sharedWithObjKey=> props.sharedWithObj[sharedWithObjKey].userid);
+
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
+    console.log("bsShareSkyspace -> skyspaceList, blockstackId, sharedWithObj", skyspaceList, blockstackId, sharedWithObj)
     // blockstackId='block_antares_va.id.blockstack';
     const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
     // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
