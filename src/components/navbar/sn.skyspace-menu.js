@@ -230,18 +230,6 @@ class SnSkySpaceMenu extends React.Component {
                 <BookmarksIcon style={{ color: APP_BG_COLOR }} />
               </ListItemIcon>
               <ListItemText style={{ color: APP_BG_COLOR }} primary="Imported Spaces" />
-              {/* <Tooltip title="Refresh Space List" arrow>
-                <RefreshOutlinedIcon
-                  style={{ color: APP_BG_COLOR }}
-                  onClick={this.refreshSkyspace}
-                />
-              </Tooltip>
-              <Tooltip title="Add New Space" arrow>
-                <AddCircleOutlineIcon
-                  style={{ color: APP_BG_COLOR }}
-                  onClick={this.addSkyspace}
-                />
-              </Tooltip> */}
             </ListItem>
           </>)}
         {this.props.snImportedSpace?.sharedByUserList?.map((userId) => (
@@ -256,8 +244,8 @@ class SnSkySpaceMenu extends React.Component {
                   <Typography>{cliTruncate(userId, 20)}</Typography>
                 </AccordionSummary>
               </Tooltip>
-              <AccordionDetails>
                 {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
+              <AccordionDetails>
                   <React.Fragment key={skyspace}>
                     <NavLink
                       activeClassName="active"
@@ -279,8 +267,8 @@ class SnSkySpaceMenu extends React.Component {
                       </ListItem>
                     </NavLink>
                   </React.Fragment>
-                ))}
               </AccordionDetails>
+                ))}
             </Accordion>
           </>
         ))}
