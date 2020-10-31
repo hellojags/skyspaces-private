@@ -793,7 +793,6 @@ export const bsGetProfileInfo = (profile) => {
 export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLst, skyspaceName, sharedWithObj ) => {
     const promises = []
     const rslt = recipientIdStrgLst?.map(recipientIdStrg => {
-        console.log("bsUnshareSpaceFromRecipientLst -> recipientId", recipientIdStrg)
         promises.push(lookupProfile(sharedWithObj[recipientIdStrg].userid, "https://core.blockstack.org/v1/names")
         .then(profile => {
             const recipientStorage = bsGetProfileInfo(profile).storageId;
