@@ -644,6 +644,13 @@ export const restoreBackup = async (session, backupObj) => {
     return SUCCESS;
 }
 
+export const bsClearStorage = async (session) => {
+    const promises = [];
+    await listFiles(session)
+    .then(filePathList=>filePathList.forEach(path=>promises.push(deleteFile(session, path))));
+    await Promise.all(promises);
+}
+
 export const bsSavePublicKey = async (session) => {
     let publicKey = null;
     try {

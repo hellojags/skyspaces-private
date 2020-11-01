@@ -11,7 +11,7 @@ import { showBlockstackConnect, authenticate } from "@blockstack/connect";
 import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM } from "../../sn.constants";
 import { Tooltip } from "@material-ui/core";
 import { authOrigin, appDetails, userSession } from "../../blockstack/constants";
-import { bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
+import { bsClearStorage, bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
 
 class SnSignin extends React.Component {
   constructor(props) {
@@ -88,6 +88,14 @@ class SnSignin extends React.Component {
     console.log("topbar download button clicked");
   };
 
+  clearAllStorage = async () => {
+    this.props.setLoaderDisplay(true);
+    await bsClearStorage(this.props.userSession);
+    localStorage.clear();
+    this.props.setLoaderDisplay(true);
+    this.logout();
+  }
+
   render() {
     return (
       <>
@@ -160,6 +168,9 @@ class SnSignin extends React.Component {
               <MenuItem onClick={() => this.handleSettings()}>
                 Settings
               </MenuItem>
+              {process.env.NODE_ENV!=='production' && <MenuItem onClick={this.clearAllStorage}>
+                Clear BS Storage
+              </MenuItem>}
               <MenuItem onClick={this.logout}>Logout</MenuItem>
             </Menu>
           </>
