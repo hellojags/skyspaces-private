@@ -63,8 +63,7 @@ class SnSignin extends React.Component {
         this.doSignUp();
       }
     } else {
-      const importedSpace =  await bsGetImportedSpacesObj(userSession);
-      this.props.setImportedSpace(importedSpace);
+      this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
     }
   }
 

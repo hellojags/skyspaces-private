@@ -679,7 +679,7 @@ export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpa
 export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
-    const sharedByUserObj = await bsGetSharedByUser(session);
+    const sharedByUserObj = opt.sharedByUserObj || (await bsGetSharedByUser(session));
     let { senderToSpacesMap={}, sharedByUserList=[] } = sharedByUserObj || {};
     senderIdList && senderIdList.forEach(async senderId => {
         const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
@@ -736,7 +736,11 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     return skylinkArr;
 }
 
-export const bsGetImportedSpacesObj = async (session, opt) => bsGetSpacesFromUserList(session, (await bsGetSharedByUser(session))?.sharedByUserList, opt);
+export const bsGetImportedSpacesObj = async (session, opt={}) => {
+    const sharedByUserObj = await bsGetSharedByUser(session);
+    opt["sharedByUserObj"] = sharedByUserObj;
+    return bsGetSpacesFromUserList(session, sharedByUserObj?.sharedByUserList, opt);
+};
 
 export const bsGetSharedByUser = async (session) => {
     let sharedByUserObj = await getFile(session, SHARED_BY_USER_FILEPATH);
