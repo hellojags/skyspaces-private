@@ -672,10 +672,10 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
     const sharedByUserObj = await bsGetSharedByUser(session);
-    let { senderToSpacesMap, sharedByUserList } = sharedByUserObj;
+    let { senderToSpacesMap={}, sharedByUserList=[] } = sharedByUserObj || {};
     sharedByUserList = sharedByUserList || [];
     senderToSpacesMap = senderToSpacesMap || {};
-    senderIdList.forEach(async senderId => {
+    senderIdList && senderIdList.forEach(async senderId => {
         const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
         const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
 
@@ -805,7 +805,6 @@ export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLs
 //const getBlockStackIdList = (sharedWithObjKeyLst) => sharedWithObjKeyLst.map(sharedWithObjKey=> props.sharedWithObj[sharedWithObjKey].userid);
 
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
-    console.log("bsShareSkyspace -> skyspaceList, blockstackId, sharedWithObj", skyspaceList, blockstackId, sharedWithObj)
     // blockstackId='block_antares_va.id.blockstack';
     const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
     // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
