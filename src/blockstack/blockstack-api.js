@@ -29,6 +29,7 @@ import {
     decryptContent,
     putFileForShared
 } from './utils'
+import { BLOCKSTACK_CORE_NAMES } from '../sn.constants';
 
 //Add OR Update skylink Object
 export const bsAddSkylinkOnly = async (session, skylinkObj, person) => {
@@ -679,7 +680,7 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
         const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
         const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
 
-        const promise = lookupProfile(senderId, "https://core.blockstack.org/v1/names")
+        const promise = lookupProfile(senderId, BLOCKSTACK_CORE_NAMES)
             .then(senderProfile => {
                 const senderStorage = bsGetProfileInfo(senderProfile).storage;
                 return bsGetShrdSkyspaceIdxFromSender(session, senderStorage, loggedInUserStorageId);
@@ -708,7 +709,7 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
 export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
     const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
-    const senderProfile = await lookupProfile(senderId, "https://core.blockstack.org/v1/names");
+    const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
     const senderStorage = bsGetProfileInfo(senderProfile).storage;
     const SHARED_SKYSPACE_FILEPATH = loggedInUserStorageId + "/" + SKYSPACE_PATH + skyspace + '.json';
     const encSkyspaceObj = await fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYSPACE_FILEPATH}`).then(res => res.json());
@@ -747,7 +748,7 @@ export const bsGetShrdSkyspaceIdxFromSender = async (session, senderStorage, log
 export const bsGetSharedSkappListFromSender = async (session, senderId, skhubIdList) => {
     const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
     const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
-    const senderProfile = await lookupProfile(senderId, "https://core.blockstack.org/v1/names");
+    const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
     const senderStorage = bsGetProfileInfo(senderProfile).storage;
     const skappList = [];
     const promises = [];
@@ -768,7 +769,7 @@ export const bsGetSharedSkappListFromSender = async (session, senderId, skhubIdL
 export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, sharedWithObj) => {
     const sharedSkylinkIdxObj = createSkylinkIdxObject();
     const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
-    const profile = await lookupProfile(sharedWithObj[recipientId].userid, "https://core.blockstack.org/v1/names");
+    const profile = await lookupProfile(sharedWithObj[recipientId].userid, BLOCKSTACK_CORE_NAMES);
     sharedSkylinkIdxObj.skhubIdList = skylinkList;
     const encSharedSkylinkIdxObj = await encryptContent(session, JSON.stringify(sharedSkylinkIdxObj), {
         publicKey: profile?.appsMeta?.[document.location.origin]?.publicKey
@@ -790,7 +791,7 @@ export const bsGetProfileInfo = (profile) => {
 export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLst, skyspaceName, sharedWithObj ) => {
     const promises = []
     const rslt = recipientIdStrgLst?.map(recipientIdStrg => {
-        promises.push(lookupProfile(sharedWithObj[recipientIdStrg].userid, "https://core.blockstack.org/v1/names")
+        promises.push(lookupProfile(sharedWithObj[recipientIdStrg].userid, BLOCKSTACK_CORE_NAMES)
         .then(profile => {
             const recipientStorage = bsGetProfileInfo(profile).storageId;
             const recipientPathPrefix = SHARED_PATH_PREFIX + recipientStorage + "/";
@@ -806,7 +807,7 @@ export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLs
 
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
     // blockstackId='block_antares_va.id.blockstack';
-    const profile = await lookupProfile(blockstackId, "https://core.blockstack.org/v1/names");
+    const profile = await lookupProfile(blockstackId, BLOCKSTACK_CORE_NAMES);
     // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
     const key = profile?.appsMeta?.[document.location.origin]?.publicKey;
     const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
