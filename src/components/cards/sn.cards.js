@@ -430,7 +430,12 @@ class SnCards extends React.Component {
         }]
       });
       const portal = this.props.snUserSetting?.setting?.portal || DEFAULT_PORTAL;
-      const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
+      let uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
+      if (uploadedContent) {
+        uploadedContent = {
+          skylink: parseSkylink(uploadedContent)
+        };
+      }
       let historyObj = getEmptyHistoryObject();
       historyObj.fileName = "Public Share";
       historyObj.skylink = uploadedContent.skylink;
@@ -486,11 +491,11 @@ class SnCards extends React.Component {
     publicHashData.data = skappListToSave;
     const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
     const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
-    const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
+    const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
     this.props.setLoaderDisplay(false);
     const newUrl = document.location.href.replace(
       this.state.hash,
-      uploadedContent.skylink
+      parseSkylink(uploadedContent)
     );
     this.setState({
       showInfoModal: true,

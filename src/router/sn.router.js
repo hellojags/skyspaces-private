@@ -16,7 +16,7 @@ import SnNew from "../components/new/sn.new";
 import SnTopBar from "../components/navbar/sn.topbar";
 import SnLeftMenu from "../components/navbar/sn.left-menu";
 import SnUserSettings from "../components/user/sn.user-settings";
-import SnMultiUpload from "../components/upload/sn.multi-upload"
+import SnMultiUpload from "../components/upload/sn.multi-upload";
 
 const useStyles = (theme) => ({
   root: {

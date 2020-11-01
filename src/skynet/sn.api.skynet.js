@@ -1,6 +1,6 @@
 import { ajax } from 'rxjs/ajax';
 import { map, catchError } from 'rxjs/operators';
-import { SkynetClient } from "skynet-js";
+import { parseSkylink, SkynetClient } from "skynet-js";
 import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
 import { DEFAULT_PORTAL } from "../sn.constants";
@@ -34,7 +34,7 @@ export const getSkylinkHeader = (skylinkUrl) => ajax({
   );
 
 
-export const uploadToSkynet = async(file, skynetClient)=> await skynetClient.upload(file);
+export const uploadToSkynet = async(file, skynetClient)=> await skynetClient.uploadFile(file);
 
 export const getPublicApps = async (hash)=> await fetch((document.location.origin.indexOf("localhost")===-1 ? document.location.origin :  DEFAULT_PORTAL)+"/"+hash).then(res=>res.json());
 
@@ -53,6 +53,10 @@ export const savePublicSpace = async (publicHash, inMemObj) => {
   publicHashData.data = skappListToSave;
   const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
   const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
-  const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
-  return uploadedContent;
+  const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
+  if (uploadedContent){
+    return {
+      skylink : parseSkylink(uploadedContent)
+    };
+  }
 };

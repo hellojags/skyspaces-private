@@ -272,7 +272,7 @@ class SnNew extends React.Component {
         } catch (e) {
           console.error("Skyspaces handled exception p", e);
         }
-        app.thumbnail = res != null ? res.skylink : "";
+        app.thumbnail = res != null ? parseSkylink(res) : "";
         break;
       case "video":
         try {
@@ -290,7 +290,7 @@ class SnNew extends React.Component {
         } catch (e) {
           console.error("Skyspaces handled exception v", e);
         }
-        app.thumbnail = res != null ? res.skylink : "";
+        app.thumbnail = res != null ? parseSkylink(res) : "";
         break;
       default:
         console.log("default");
