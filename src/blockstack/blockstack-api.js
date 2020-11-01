@@ -674,8 +674,6 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const senderListWithNoShare = [];
     const sharedByUserObj = await bsGetSharedByUser(session);
     let { senderToSpacesMap={}, sharedByUserList=[] } = sharedByUserObj || {};
-    sharedByUserList = sharedByUserList || [];
-    senderToSpacesMap = senderToSpacesMap || {};
     senderIdList && senderIdList.forEach(async senderId => {
         const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
         const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
