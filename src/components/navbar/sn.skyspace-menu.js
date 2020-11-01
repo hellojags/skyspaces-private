@@ -34,6 +34,7 @@ import {
   matchDispatcherToProps,
 } from "./sn.skyspace-menu.container";
 import cliTruncate from "cli-truncate";
+import SnImportSharedSpaceModal from "../modals/sn.import-shared-space.modal";
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@material-ui/core";
 
 class SnSkySpaceMenu extends React.Component {
@@ -47,6 +48,7 @@ class SnSkySpaceMenu extends React.Component {
       confModalDescription: null,
       skyspaceToDel: null,
       skyspaceToShare: null,
+      showImportSkyspaceModal: false,
       skyspaceModal: {
         title: "Add New Skyspace",
         skyspaceName: null,
@@ -54,6 +56,10 @@ class SnSkySpaceMenu extends React.Component {
       },
     };
   }
+
+  importSharedSpace = () => {
+    this.setState({ showImportSkyspaceModal : true });
+  };
 
   handleClickOpen = () => {
     this.setState({
@@ -222,16 +228,19 @@ class SnSkySpaceMenu extends React.Component {
             ))}
           </Card>
         )}
-        {this.props.snImportedSpace?.sharedByUserList?.length > 0 && (
-          <>
             <Divider className="skyspace-menu-divider" component="div" />
             <ListItem button component="a" className="nav-link dummy-link">
               <ListItemIcon>
                 <BookmarksIcon style={{ color: APP_BG_COLOR }} />
               </ListItemIcon>
               <ListItemText style={{ color: APP_BG_COLOR }} primary="Imported Spaces" />
+              <Tooltip title="Import Spaces From Other Users" arrow>
+            <AddCircleOutlineIcon
+              style={{ color: APP_BG_COLOR }}
+              onClick={this.importSharedSpace}
+            />
+          </Tooltip>
             </ListItem>
-          </>)}
         {this.props.snImportedSpace?.sharedByUserList
         ?.filter(userId=>this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.length>0)
         .map((userId) => (
@@ -305,6 +314,16 @@ class SnSkySpaceMenu extends React.Component {
           content={this.state.confModalDescription}
           sharedWithObj={this.state.sharedWithObj}
         />
+
+<SnImportSharedSpaceModal 
+          open={this.state.showImportSkyspaceModal}
+          onYes={() => {
+            this.setState({ showImportSkyspaceModal: false });
+          }}
+          userSession={this.props.userSession}
+          onNo={() => this.setState({ showImportSkyspaceModal: false })}
+          title={`Import Shared Space`}
+          />
       </>
     );
   }

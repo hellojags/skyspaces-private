@@ -12,14 +12,12 @@ import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM } from "../../sn.constants";
 import { Tooltip } from "@material-ui/core";
 import { authOrigin, appDetails, userSession } from "../../blockstack/constants";
 import { bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
-import SnImportSharedSpaceModal from "../modals/sn.import-shared-space.modal";
 
 class SnSignin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       anchorEl: null,
-      showImportSkyspaceModal: false
     };
   }
 
@@ -88,10 +86,6 @@ class SnSignin extends React.Component {
 
   onDownload = () => {
     console.log("topbar download button clicked");
-  };
-
-  importSharedSpace = () => {
-    this.setState({ showImportSkyspaceModal : true });
   };
 
   render() {
@@ -166,23 +160,10 @@ class SnSignin extends React.Component {
               <MenuItem onClick={() => this.handleSettings()}>
                 Settings
               </MenuItem>
-              <MenuItem onClick={() => this.importSharedSpace()}>
-                Import Shared Space
-              </MenuItem>
               <MenuItem onClick={this.logout}>Logout</MenuItem>
             </Menu>
           </>
         )}
-
-        <SnImportSharedSpaceModal 
-          open={this.state.showImportSkyspaceModal}
-          onYes={() => {
-            this.setState({ showImportSkyspaceModal: false });
-          }}
-          userSession={this.props.userSession}
-          onNo={() => this.setState({ showImportSkyspaceModal: false })}
-          title={`Import Shared Space`}
-          />
       </>
     );
   }
