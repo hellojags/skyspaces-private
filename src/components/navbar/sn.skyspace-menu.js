@@ -256,8 +256,7 @@ class SnSkySpaceMenu extends React.Component {
                 </AccordionSummary>
               </Tooltip>
                 {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
-              <AccordionDetails>
-                  <React.Fragment key={skyspace}>
+              <AccordionDetails key={skyspace}>
                     <NavLink
                       activeClassName="active"
                       className="imported-space-nav-link"
@@ -277,7 +276,6 @@ class SnSkySpaceMenu extends React.Component {
                         />
                       </ListItem>
                     </NavLink>
-                  </React.Fragment>
               </AccordionDetails>
                 ))}
             </Accordion>
