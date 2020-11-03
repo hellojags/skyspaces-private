@@ -9,14 +9,14 @@
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
-            "file": "${workspaceFolder}/index.html"
+            "file": "http://localhost:3000/"
         },
         {
-            "name": "Launch localhost",
+            "name": "Firefox localhost",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
-            "url": "http://localhost/index.html",
+            "url": "http://localhost:3000/",
             "webRoot": "${workspaceFolder}"
         },
         {
