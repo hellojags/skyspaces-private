@@ -53,10 +53,60 @@ export const savePublicSpace = async (publicHash, inMemObj) => {
   publicHashData.data = skappListToSave;
   const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
   const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
-  const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
+  const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
   if (uploadedContent){
     return {
       skylink : parseSkylink(uploadedContent)
     };
   }
+  return null;
 };
+
+/** Start : Skynet Methods **/
+export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendFlag,encrypted,options) => {
+  const skynetClient = new SkynetClient("https://siasky.net");
+  if (publicKey == null || privateKey == null ) {
+    throw new Error("Invalid Keys");
+  }
+  if(appendFlag)
+  {
+    let tempFileData = await getJSONFile(publicKey,fileKey);
+    if(fileData != null && tempFileData != null)
+      fileData = tempFileData.push(fileData);
+  }
+  try {
+    let revision =  1
+    let status = await skynetClient.db.setJSON(privateKey,fileKey,fileData); //<-- update Key Value pair for that specific pubKey
+    console.log("appUser:setJSON:status "+status);
+  }
+  catch (error) {
+    //setErrorMessage(error.message);
+    return false;
+  }
+  return true;
+}
+
+export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
+  const skynetClient = new SkynetClient("https://siasky.net");
+  try
+  {
+    //Get User Public Key
+    if (publicKey == null) {
+      throw new Error("Invalid Keys");
+    }
+    const entry = await skynetClient.db.getJSON(publicKey,fileKey);
+    if(entry)
+    {
+      console.log("entry.data "+entry.data);
+      console.log("entry.revision "+entry.revision);
+      return entry.data;
+    }
+  }
+  catch (error) {
+      //setErrorMessage(error.message);
+      console.log("error.message "+error.message);
+      return null;
+    }
+    return null;
+}
+/** END : Skynet Methods **/

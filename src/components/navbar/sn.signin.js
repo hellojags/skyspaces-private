@@ -21,6 +21,10 @@ class SnSignin extends React.Component {
     };
   }
 
+  routeChange=()=> {
+    this.props.history.push("/login");
+  }
+
   doSignIn = () => {
     const authOptions = {
       redirectTo: "/",
@@ -41,7 +45,6 @@ class SnSignin extends React.Component {
     authenticate(authOptions);
   };
   doSignUp = () => {
-
     const authOptions = {
       redirectTo: "/",
       manifestPath: '/manifest.json',
@@ -104,7 +107,7 @@ class SnSignin extends React.Component {
               onClick={this.doSignIn}
               variant="outlined"
               className="btn-login"
-            >
+            > 
               Login
             </Button>
             <Button

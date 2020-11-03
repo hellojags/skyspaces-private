@@ -17,6 +17,7 @@ import SnTopBar from "../components/navbar/sn.topbar";
 import SnLeftMenu from "../components/navbar/sn.left-menu";
 import SnUserSettings from "../components/user/sn.user-settings";
 import SnMultiUpload from "../components/upload/sn.multi-upload";
+import snLogin from "../components/login/sn.login";
 
 const useStyles = (theme) => ({
   root: {
@@ -61,6 +62,7 @@ export class SnRouter extends React.Component {
                     </Route>
                     <Route path="/upload" component={SnMultiUpload} />
                     <Route path="/settings" component={SnUserSettings} />
+                    <Route path="/login" component={snLogin} />
                     <Route path="/register" component={SnNew} />
                     <Route path="/apps/:category" component={SnCards} />
                     <Route path="/skylinks" component={SnCards} />

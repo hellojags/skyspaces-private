@@ -183,7 +183,7 @@ const SnUpload = React.forwardRef((props, ref) => {
             response = await client.uploadFile(file, { onUploadProgress });
           }
           await props.onUpload({
-            skylink: parseSkylink(response),
+            skylink: response,
             name: file.name,
             contentType: fileType,
             thumbnail:
