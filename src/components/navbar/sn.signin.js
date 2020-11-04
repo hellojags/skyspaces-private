@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { withRouter } from "react-router";
 import { showBlockstackConnect, authenticate } from "@blockstack/connect";
-import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM } from "../../sn.constants";
+import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM, BROWSER_STORAGE } from "../../sn.constants";
 import { Tooltip } from "@material-ui/core";
 import { authOrigin, appDetails, userSession } from "../../blockstack/constants";
 import { bsClearStorage, bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
@@ -21,11 +21,13 @@ class SnSignin extends React.Component {
     };
   }
 
-  routeChange=()=> {
+  gotoSkydbLogin=()=> {
     this.props.history.push("/login");
   }
 
   doSignIn = () => {
+    this.gotoSkydbLogin();
+    return;
     const authOptions = {
       redirectTo: "/",
       manifestPath: '/manifest.json',
@@ -60,7 +62,7 @@ class SnSignin extends React.Component {
   };
   async componentDidMount() {
     if (this.props.person == null) {
-      if (this.props.userSession.isSignInPending()) {
+      if (this.props.userSession.isSignInPending && this.props.userSession.isSignInPending()) {
         this.props.fetchBlockstackPerson(this.props.userSession);
       } else if (this.getPublicToAccHash() != null) {
         this.doSignUp();

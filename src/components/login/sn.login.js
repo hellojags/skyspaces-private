@@ -20,6 +20,37 @@ const styles = theme => ({
 });
 
 class snLogin extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            seed: null
+        }
+    }
+
+    componentDidMount() {
+        if (this.props.person) {
+            this.props.history.push("/upload");
+        }
+    }
+
+    handleSeedChange = (evt)=> {
+        this.setState({
+            seed: evt.target.value
+        });
+    }
+
+    login=()=> {
+        const personObj = {
+            username: this.state.seed,
+            profile: {
+                decentralizedID: this.state.seed
+            }
+        }
+        this.props.setUserSession({skydbseed: this.state.seed});
+        this.props.setPersonGetOtherData(personObj);
+        this.props.history.push("/upload");
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -43,10 +74,10 @@ class snLogin extends React.Component {
                             <Fingerprint />
                         </Grid>
                         <Grid item md={true} sm={true} xs={true}>
-                            <TextField id="seed" label="Password" type="password" fullWidth required />
+                            <TextField id="seed" label="Seed" type="text" onChange={this.handleSeedChange} fullWidth required />
                         </Grid>
                     </Grid>
-                    <Grid container alignItems="center" justify="space-between">
+                    {/* <Grid container alignItems="center" justify="space-between">
                         <Grid item>
                             <FormControlLabel control={
                                 <Checkbox
@@ -54,9 +85,10 @@ class snLogin extends React.Component {
                                 />
                             } label="Remember me" />
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                     <Grid container justify="center" style={{ marginTop: '10px' }}>
-                        <Button variant="outlined" color="primary" style={{ textTransform: "none" }}>Login</Button>
+                        <Button variant="outlined" color="primary" style={{ textTransform: "none" }}
+                            onClick={this.login}>Login</Button>
                     </Grid>
                 </div>
             </Paper>

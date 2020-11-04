@@ -20,17 +20,22 @@ export async function decryptContent(session, content, options) {
   return await session.decryptContent(content, options)
 }
 export function getFile(session, FILE_PATH, param) {
-  const { publicKey } = keyPairFromSeed("skyspaces004");
-  const { privateKey } = keyPairFromSeed("skyspaces004");
-  const options = { decrypt: param?.decrypt ?? true };
-  //return session.getFile(FILE_PATH, options)
-  return getJSONFile(publicKey,FILE_PATH,null,{})
-    .then((content) => {
-      if (content) {
-        //return JSON.parse(content);
-        return content;
-      }
-    })
+  let promise;
+  if (session.skydbseed) {
+    const { publicKey } =  keyPairFromSeed(session.skydbseed);// keyPairFromSeed("skyspaces004");
+    const { privateKey } = keyPairFromSeed(session.skydbseed);//keyPairFromSeed("skyspaces004");
+    promise = getJSONFile(publicKey,FILE_PATH,null,{})
+            .then((content) => {
+              if (content) {
+                //return JSON.parse(content);
+                return content;
+              }
+            })
+  } else {
+    const options = { decrypt: param?.decrypt ?? true };
+    promise =  session.getFile(FILE_PATH, options);
+  }
+  return promise
     .catch(err => {
       if (err.code === "does_not_exist") {
         return null;
@@ -41,8 +46,29 @@ export function getFile(session, FILE_PATH, param) {
 }
 // Replace file content with new "content"
 export function putFile(session, FILE_PATH, content, param) {
-  const { publicKey } = keyPairFromSeed("skyspaces004");
-  const { privateKey } = keyPairFromSeed("skyspaces004");
+  let promise;
+  if (content.hasOwnProperty("lastUpdateTS")) {
+    content.lastUpdateTS = new Date();
+  }
+  if (session.skydbseed) {
+    const { publicKey } =  keyPairFromSeed(session.skydbseed);// keyPairFromSeed("skyspaces004");
+    const { privateKey } = keyPairFromSeed(session.skydbseed);//keyPairFromSeed("skyspaces004");
+    promise = setJSONFile(publicKey,privateKey,FILE_PATH,content,false,false,{});
+  } else {
+    const options = { decrypt: param?.decrypt ?? true };
+    promise =  session.getFile(FILE_PATH, options);
+  }
+  return promise
+  .catch(err => {
+    if (err?.code !== "precondition_failed_error") {
+      throw err;
+    }
+  });
+
+
+
+/*   const { publicKey } = keyPairFromSeed(session.skydbseed);//keyPairFromSeed("skyspaces004");
+  const { privateKey } = keyPairFromSeed(session.skydbseed);//keyPairFromSeed("skyspaces004");
   const options = { encrypt: param?.encrypt ?? true };
   if (content.hasOwnProperty("lastUpdateTS")) {
     content.lastUpdateTS = new Date();
@@ -53,7 +79,7 @@ export function putFile(session, FILE_PATH, content, param) {
       if (err?.code !== "precondition_failed_error") {
         throw err;
       }
-    });
+    }); */
 }
 
 export async function putFileForShared(session, FILE_PATH, encryptedContent) {
