@@ -35,6 +35,7 @@ export const logoutPerson = (userSession) => {
   BROWSER_STORAGE.clear();
   store.dispatch(setSkyspaceList(null));
   if (userSession.skydbseed) {
+    window.location.href=window.location.origin;
     return setPerson(null);
   }
   return {
