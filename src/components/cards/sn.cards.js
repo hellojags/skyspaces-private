@@ -223,7 +223,7 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.replace("?sialink=", "").trim();
+    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
@@ -243,10 +243,9 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.replace("?sialink=", "").trim();
+    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
-    console.log("sender dillema ", senderId, this.state.senderId);
     if (
       this.state.category !== category ||
       this.state.hash !== hash ||
