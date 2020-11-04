@@ -33,6 +33,12 @@ class snLogin extends React.Component {
         }
     }
 
+    componentDidUpdate() {
+        if (this.props.person) {
+            this.props.history.push("/upload");
+        }
+    }
+
     handleSeedChange = (evt)=> {
         this.setState({
             seed: evt.target.value

@@ -26,8 +26,6 @@ class SnSignin extends React.Component {
   }
 
   doSignIn = () => {
-    this.gotoSkydbLogin();
-    return;
     const authOptions = {
       redirectTo: "/",
       manifestPath: '/manifest.json',
@@ -106,11 +104,18 @@ class SnSignin extends React.Component {
         {this.props.person == null && (
           <>
             <Button
+                onClick={this.gotoSkydbLogin}
+                variant="outlined"
+                className="btn-login"
+              > 
+              Sky-DB Login
+            </Button>
+            <Button
               onClick={this.doSignIn}
               variant="outlined"
               className="btn-login"
             > 
-              Login
+              BS Login
             </Button>
             <Button
               onClick={this.doSignUp}
