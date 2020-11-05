@@ -675,9 +675,10 @@ export const bsGetSharedWithObj = async (session) => {
 export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
-
+//TODO: add some comments
 export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpacesFromUserList(session, senderIdList, { isImport: true });
 
+//TODO: add some comments
 export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
@@ -712,8 +713,14 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
         senderToSpacesMap
     };
 }
-
+//
 export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
+    //for skyDB we can do IF consition here
+    // if (skydb)
+    // {
+    //     call skyDbGetSharedSpaceAppList()
+    // }else
+    // { below
     const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
     const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
     const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
