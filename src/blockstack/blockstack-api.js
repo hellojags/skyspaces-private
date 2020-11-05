@@ -678,7 +678,7 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
 // This method is getting called from Modal to import user spaces.
 export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpacesFromUserList(session, senderIdList, { isImport: true });
 
-//TODO: This method pulls shared spaces from senders storage using sender's public key
+//TODO: This method pulls shared spaces from senders storage using (sender's storage path) / (in case of skyDB sender's public key)
 export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
