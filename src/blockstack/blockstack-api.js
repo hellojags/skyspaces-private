@@ -678,7 +678,7 @@ export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
 // This method is getting called from Modal to import user spaces.
 export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpacesFromUserList(session, senderIdList, { isImport: true });
 
-//TODO: This method pulls shared spaces from senders storage using (sender's storage path) / (in case of skyDB sender's public key)
+//TODO: This method pulls ALL shared spaces by ALL senders. Its using senders (sender's storage path) / (in case of skyDB sender's public key) to pull this data
 export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
@@ -758,8 +758,10 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     return skylinkArr;
 }
 
-// get list of UserIDs who has shared Spaces with you.
+// get {senderToSpacesMap={}, sharedByUserList=[]} in sharedByUserObj
 export const bsGetImportedSpacesObj = async (session, opt={}) => {
+    // reading a file containing shared spaces information. senders information.
+    // can we now directly read all data from below method? do we need to call bsGetSpacesFromUserList ?? 
     const sharedByUserObj = await bsGetSharedByUser(session);
     opt["sharedByUserObj"] = sharedByUserObj;
     return bsGetSpacesFromUserList(session, sharedByUserObj?.sharedByUserList, opt);
