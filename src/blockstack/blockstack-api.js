@@ -675,22 +675,25 @@ export const bsGetSharedWithObj = async (session) => {
 export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
-//TODO: add some comments
+// This method is getting called from Modal to import user spaces.
 export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpacesFromUserList(session, senderIdList, { isImport: true });
 
-//TODO: add some comments
+//TODO: This method pulls shared spaces from senders storage using sender's public key
 export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
+    // get existing shared spaces data. senderList and sender-space mapping
     const sharedByUserObj = opt.sharedByUserObj || (await bsGetSharedByUser(session));
     let { senderToSpacesMap={}, sharedByUserList=[] } = sharedByUserObj || {};
     senderIdList && senderIdList.forEach(async senderId => {
+        // get loggedIn user's storage location
         const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
         const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
-
         const promise = lookupProfile(senderId, BLOCKSTACK_CORE_NAMES)
             .then(senderProfile => {
+                // get sender's storage location
                 const senderStorage = bsGetProfileInfo(senderProfile).storage;
+                // get SkyspacesIDX object from senders storage location. in case of SkyDB. storageId is basically PublicKey, and path is DataKey
                 return bsGetShrdSkyspaceIdxFromSender(session, senderStorage, loggedInUserStorageId);
             })
             .then(sharedSpaceIdxObj => {
@@ -719,6 +722,10 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
 //2. With SKYDB , Sender will need to create one entry in skydb while sharing with other user. DataKey["receiver's pubkey"] -> "list of all files shared by sender. key of ...spaceIDX, skylinkindex, skhub.json "
 //3. receiver when imports "senders pubKey", he will be able to fetch complete list by doing getJSON(sender's PubKey, dataKey[receiver(or loggedin user) PubKey] ). You will get list of all files.
 //4. Now receiver will be able to fetch each files using  "senders pubKey" and file path from file fetched in steps #3
+
+// OR
+
+// You can use Public key instead of stoarge ID.
 
 export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     //for skyDB we can do IF consition here
@@ -751,6 +758,7 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     return skylinkArr;
 }
 
+// get list of UserIDs who has shared Spaces with you.
 export const bsGetImportedSpacesObj = async (session, opt={}) => {
     const sharedByUserObj = await bsGetSharedByUser(session);
     opt["sharedByUserObj"] = sharedByUserObj;
