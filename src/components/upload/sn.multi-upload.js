@@ -174,11 +174,11 @@ export default function SnMultiUpload(props) {
     const putsharedfile = await bsPutSkyspaceInShared(stUserSession, encryptedData, skyspaceName, key);
   };
 
-  const getTestFunc = () => {
-    const senderStorageId = "168V9yPBBZ6y85qEonaTNNUqo323E7Pv9i";
-    const skyspaceName = "Wallpaper";
-    const skyspaceObj = bsGetSharedSkyspaceIdxFromSender(stUserSession, senderStorageId, skyspaceName);
-  }
+  // const getTestFunc = () => {
+  //   const senderStorageId = "168V9yPBBZ6y85qEonaTNNUqo323E7Pv9i";
+  //   const skyspaceName = "Wallpaper";
+  //   const skyspaceObj = bsGetSharedSkyspaceIdxFromSender(stUserSession, senderStorageId, skyspaceName);
+  // }
 
   const dirTestFunc = async () => {
     const skylink = "https://siasky.net/AABPKYOIaKdf7PiiEbmxl9etg_CSr6GPtlCmglAgiQsrKw";

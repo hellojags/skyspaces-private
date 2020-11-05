@@ -437,12 +437,13 @@ export const bsPutSkyspaceInShared = (session, encryptedContent, skyspaceName, s
     // return deleteFile(session, SHARED_SKYSPACE_FILEPATH);
 }
 
-export const bsGetSharedSkyspaceIdxFromSender = async (session, senderStorageId, skyspaceName) => {
-    const myPublicKey = getPublicKeyFromPrivate(session.loadUserData().appPrivateKey);
-    const encryptedContent = await fetch(`${GAIA_HUB_URL}/${senderStorageId}/skhub/shared/${myPublicKey}/${SKYSPACE_PATH}${skyspaceName}.json`)
-        .then(res => res.json());
-    const decryptedContent = await decryptContent(session, JSON.stringify(encryptedContent));
-}
+//not in use
+// export const bsGetSharedSkyspaceIdxFromSender = async (session, senderStorageId, skyspaceName) => {
+//     const myPublicKey = getPublicKeyFromPrivate(session.loadUserData().appPrivateKey);
+//     const encryptedContent = await fetch(`${GAIA_HUB_URL}/${senderStorageId}/skhub/shared/${myPublicKey}/${SKYSPACE_PATH}${skyspaceName}.json`)
+//         .then(res => res.json());
+//     const decryptedContent = await decryptContent(session, JSON.stringify(encryptedContent));
+// }
 
 // Add SkhubId to SkySpaces
 export const addToSkySpaceList = (session, skyspaceName, skhubId) => {
