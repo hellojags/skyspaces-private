@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
 import { DEFAULT_PORTAL } from "../sn.constants";
 import { getAllPublicApps } from '../sn.util';
+import store from "../reducers";
 
 export const getSkylinkHeader = (skylinkUrl) => ajax({
   url: skylinkUrl+"?format=concat",
@@ -63,8 +64,14 @@ export const savePublicSpace = async (publicHash, inMemObj) => {
 };
 
 /** Start : Skynet Methods **/
+const getPortal = ()=> {
+  let skynetPortal = store.getState().snUserSetting?.setting?.portal;
+  skynetPortal = (skynetPortal && skynetPortal.trim()!=="") ? skynetPortal : DEFAULT_PORTAL;
+  return skynetPortal;
+}
+
 export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendFlag,encrypted,options) => {
-  const skynetClient = new SkynetClient("https://siasky.net");
+  const skynetClient = new SkynetClient(getPortal());
   if (publicKey == null || privateKey == null ) {
     throw new Error("Invalid Keys");
   }
@@ -87,7 +94,7 @@ export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendF
 }
 
 export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
-  const skynetClient = new SkynetClient("https://siasky.net");
+  const skynetClient = new SkynetClient(getPortal());
   try
   {
     //Get User Public Key
