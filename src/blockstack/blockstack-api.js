@@ -713,7 +713,13 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
         senderToSpacesMap
     };
 }
-//
+//Sharing functionality: This method is fetching "all SHARED skylink JSON objects" from sender storage.
+// For SkyDB, we will only need "Public Key" of "sender" and "DataKey" of shared Object
+//1. NO STORAGE ID logic required for skyDB, Since we just need "public Key" and "dataKey" of sender to fetch data
+//2. With SKYDB , Sender will need to create one entry in skydb while sharing with other user. DataKey["receiver's pubkey"] -> "list of all files shared by sender. key of ...spaceIDX, skylinkindex, skhub.json "
+//3. receiver when imports "senders pubKey", he will be able to fetch complete list by doing getJSON(sender's PubKey, dataKey[receiver(or loggedin user) PubKey] ). You will get list of all files.
+//4. Now receiver will be able to fetch each files using  "senders pubKey" and file path from file fetched in steps #3
+
 export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     //for skyDB we can do IF consition here
     // if (skydb)
