@@ -16,10 +16,34 @@ export async function listFiles(session) {
   return pathList;
 }
 export async function encryptContent(session, content, options) {
-  return await session.encryptContent(content, options);
+  let promise;
+  const sessionType = getUserSessionType(session);
+  switch(sessionType){
+    case ID_PROVIDER_SKYDB:
+      promise = new Promise((resolve, reject) => {
+                  resolve(content);
+                });
+      break;
+    case ID_PROVIDER_BLOCKSTACK:
+    default:
+      promise =  session.encryptContent(content, options);
+  }
+  return await promise;
 }
 export async function decryptContent(session, content, options) {
-  return await session.decryptContent(content, options)
+  let promise;
+  const sessionType = getUserSessionType(session);
+  switch(sessionType){
+    case ID_PROVIDER_SKYDB:
+      promise = new Promise((resolve, reject) => {
+                  resolve(content);
+                });
+      break;
+    case ID_PROVIDER_BLOCKSTACK:
+    default:
+      promise =  session.decryptContent(content, options);
+  }
+  return await promise;
 }
 export function getFile(session, FILE_PATH, param) {
   let promise;
