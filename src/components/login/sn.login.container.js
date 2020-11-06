@@ -8,14 +8,19 @@ import {setUserSession } from "../../reducers/actions/sn.user-session.action";
 import { fetchBlockstackPerson,
     logoutPerson,setPerson,
     setPersonGetOtherData } from "../../reducers/actions/sn.person.action";
+import { setImportedSpace } from "../../reducers/actions/sn.imported-space.action";
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+
     
 export function matchDispatcherToProps(dispatcher){
     return bindActionCreators({ 
         setMobileMenuDisplay,
+        setLoaderDisplay,
         toggleMobileMenuDisplay,
         setUserSession,
         setPerson,
-        setPersonGetOtherData
+        setPersonGetOtherData,
+        setImportedSpace
     }, dispatcher);
 }
 

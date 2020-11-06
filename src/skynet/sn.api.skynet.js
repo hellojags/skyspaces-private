@@ -3,7 +3,7 @@ import { map, catchError } from 'rxjs/operators';
 import { keyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
 import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
-import { APP_SKYDB_SEED, DEFAULT_PORTAL } from "../sn.constants";
+import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from "../sn.constants";
 import { getAllPublicApps } from '../sn.util';
 import store from "../reducers";
 
@@ -94,6 +94,10 @@ export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendF
 }
 
 export const snKeyPairFromSeed = (userSeed)=>keyPairFromSeed(userSeed+APP_SKYDB_SEED);
+
+export const snSerializeSkydbPublicKey = (publicKey)=>publicKey.join(SKYDB_SERIALIZATION_SEPERATOR);
+
+export const snDeserializeSkydbPublicKey = (publicKeyStr)=>Uint8Array.from(publicKeyStr.split(SKYDB_SERIALIZATION_SEPERATOR));
 
 export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
   const skynetClient = new SkynetClient(getPortal());

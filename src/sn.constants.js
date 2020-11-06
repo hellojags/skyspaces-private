@@ -52,6 +52,7 @@ export const EDIT_PORTAL = "RENAME_PORTAL";
 export const DELETE_PORTAL = "DELETE_PORTAL";
 
 export const APP_SKYDB_SEED = "THE_SKYSPACES_APP_SKYDB_SEED";
+export const SKYDB_SERIALIZATION_SEPERATOR = ".";
 
 export const UPLOAD = "Upload";
 export const DOWNLOAD = "Download";

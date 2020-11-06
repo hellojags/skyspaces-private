@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import {getJSONFile,setJSONFile, snKeyPairFromSeed} from "../skynet/sn.api.skynet";
+import {getJSONFile,setJSONFile, snDeserializeSkydbPublicKey, snKeyPairFromSeed} from "../skynet/sn.api.skynet";
 import { SkynetClient } from "skynet-js";
 import { getUserSessionType } from '../sn.util';
 import { ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB } from '../sn.constants';
@@ -45,12 +45,17 @@ export async function decryptContent(session, content, options) {
   }
   return await promise;
 }
+export const getFileUsingPublicKeyStr = async (publicKeyStr, FILE_PATH )=> {
+  const result = await getJSONFile(snDeserializeSkydbPublicKey(publicKeyStr) ,FILE_PATH,null,{});
+  return JSON.parse(result);
+};
+
 export function getFile(session, FILE_PATH, param) {
   let promise;
   const sessionType = getUserSessionType(session);
   switch(sessionType){
     case ID_PROVIDER_SKYDB:
-      const { publicKey } =  snKeyPairFromSeed(session.skydbseed);
+      const { publicKey } =   snKeyPairFromSeed(session.skydbseed);
       promise = getJSONFile(publicKey,FILE_PATH,null,{})
             .then((content) => {
               if (content) {
