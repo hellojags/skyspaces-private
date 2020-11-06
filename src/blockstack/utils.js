@@ -1,6 +1,6 @@
 import crypto from 'crypto';
-import {getJSONFile,setJSONFile} from "../skynet/sn.api.skynet";
-import { SkynetClient,keyPairFromSeed } from "skynet-js";
+import {getJSONFile,setJSONFile, snKeyPairFromSeed} from "../skynet/sn.api.skynet";
+import { SkynetClient } from "skynet-js";
 import { getUserSessionType } from '../sn.util';
 import { ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB } from '../sn.constants';
 
@@ -16,7 +16,7 @@ export async function listFiles(session) {
   return pathList;
 }
 export async function encryptContent(session, content, options) {
-  return await session.encryptContent(content, options)
+  return await session.encryptContent(content, options);
 }
 export async function decryptContent(session, content, options) {
   return await session.decryptContent(content, options)
@@ -26,8 +26,7 @@ export function getFile(session, FILE_PATH, param) {
   const sessionType = getUserSessionType(session);
   switch(sessionType){
     case ID_PROVIDER_SKYDB:
-      const { publicKey } =  keyPairFromSeed(session.skydbseed);// keyPairFromSeed("skyspaces004");
-      const { privateKey } = keyPairFromSeed(session.skydbseed);//keyPairFromSeed("skyspaces004");
+      const { publicKey } =  snKeyPairFromSeed(session.skydbseed);
       promise = getJSONFile(publicKey,FILE_PATH,null,{})
             .then((content) => {
               if (content) {
@@ -60,8 +59,7 @@ export function putFile(session, FILE_PATH, content, param) {
   const sessionType = getUserSessionType(session);
   switch(sessionType){
     case ID_PROVIDER_SKYDB:
-      const { publicKey } =  keyPairFromSeed(session.skydbseed);// keyPairFromSeed("skyspaces004");
-      const { privateKey } = keyPairFromSeed(session.skydbseed);//keyPairFromSeed("skyspaces004");
+      const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
       promise = setJSONFile(publicKey,privateKey,FILE_PATH,content,false,false,{});
       break;
     case ID_PROVIDER_BLOCKSTACK:
@@ -69,14 +67,6 @@ export function putFile(session, FILE_PATH, content, param) {
       const options = { decrypt: param?.decrypt ?? true };
       promise =  session.putFile(FILE_PATH, JSON.stringify(content), options)
   }
-  /* if (session.skydbseed) {
-    const { publicKey } =  keyPairFromSeed(session.skydbseed);// keyPairFromSeed("skyspaces004");
-    const { privateKey } = keyPairFromSeed(session.skydbseed);//keyPairFromSeed("skyspaces004");
-    promise = setJSONFile(publicKey,privateKey,FILE_PATH,content,false,false,{});
-  } else {
-    const options = { decrypt: param?.decrypt ?? true };
-    promise =  session.putFile(FILE_PATH, JSON.stringify(content), options)
-  } */
   return promise
   .catch(err => {
     if (err?.code !== "precondition_failed_error") {
@@ -86,11 +76,22 @@ export function putFile(session, FILE_PATH, content, param) {
 }
 
 export async function putFileForShared(session, FILE_PATH, encryptedContent) {
-  try {
-    await deleteFile(session, FILE_PATH);
-  } catch(e){}
-  return session.putFile(FILE_PATH, encryptedContent, { encrypt: false, dangerouslyIgnoreEtag: true })
-    .catch(err => {
+  const sessionType = getUserSessionType(session);
+  let promise;
+  switch(sessionType){
+    case ID_PROVIDER_SKYDB:
+      const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,encryptedContent,false,false,{});
+      break;
+    case ID_PROVIDER_BLOCKSTACK:
+    default:
+      try {
+        await deleteFile(session, FILE_PATH);
+      } catch(e){}
+      promise = session.putFile(FILE_PATH, encryptedContent, { encrypt: false, dangerouslyIgnoreEtag: true });
+  }
+  promise
+  .catch(err => {
       if (err?.code !== "precondition_failed_error") {
         throw err;
       }

@@ -1,9 +1,9 @@
 import { ajax } from 'rxjs/ajax';
 import { map, catchError } from 'rxjs/operators';
-import { parseSkylink, SkynetClient } from "skynet-js";
+import { keyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
 import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
-import { DEFAULT_PORTAL } from "../sn.constants";
+import { APP_SKYDB_SEED, DEFAULT_PORTAL } from "../sn.constants";
 import { getAllPublicApps } from '../sn.util';
 import store from "../reducers";
 
@@ -92,6 +92,8 @@ export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendF
   }
   return true;
 }
+
+export const snKeyPairFromSeed = (userSeed)=>keyPairFromSeed(userSeed+APP_SKYDB_SEED);
 
 export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
   const skynetClient = new SkynetClient(getPortal());

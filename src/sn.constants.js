@@ -51,6 +51,8 @@ export const ADD_PORTAL = "ADD_PORTAL";
 export const EDIT_PORTAL = "RENAME_PORTAL";
 export const DELETE_PORTAL = "DELETE_PORTAL";
 
+export const APP_SKYDB_SEED = "THE_SKYSPACES_APP_SKYDB_SEED";
+
 export const UPLOAD = "Upload";
 export const DOWNLOAD = "Download";
 export const PUBLIC_IMPORT = "Public Import";
