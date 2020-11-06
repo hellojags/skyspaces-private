@@ -29,7 +29,8 @@ import {
     decryptContent,
     putFileForShared
 } from './utils'
-import { BLOCKSTACK_CORE_NAMES } from '../sn.constants';
+import { BLOCKSTACK_CORE_NAMES, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB } from '../sn.constants';
+import { getUserSessionType } from '../sn.util';
 
 //Add OR Update skylink Object
 export const bsAddSkylinkOnly = async (session, skylinkObj, person) => {
@@ -840,15 +841,26 @@ export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLs
 //const getBlockStackIdList = (sharedWithObjKeyLst) => sharedWithObjKeyLst.map(sharedWithObjKey=> props.sharedWithObj[sharedWithObjKey].userid);
 
 export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
-    // blockstackId='block_antares_va.id.blockstack';
-    const profile = await lookupProfile(blockstackId, BLOCKSTACK_CORE_NAMES);
-    // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
-    const key = profile?.appsMeta?.[document.location.origin]?.publicKey;
-    const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
-    const recipientId = recipientIdStr?.replace("/", "");
-    if (key == null || recipientId == null) {
-        console.log("User not setup for skyspace");
-        throw "User not setup for skyspace";
+    let recipientId;
+    let key;
+    const sessionType = getUserSessionType(session);
+    switch(sessionType){
+        case ID_PROVIDER_SKYDB:
+            recipientId = blockstackId;
+            key = blockstackId;
+            break;
+        case ID_PROVIDER_BLOCKSTACK:
+        default:
+            // blockstackId='block_antares_va.id.blockstack';
+            const profile = await lookupProfile(blockstackId, BLOCKSTACK_CORE_NAMES);
+            // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
+            key = profile?.appsMeta?.[document.location.origin]?.publicKey;
+            const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
+            recipientId = recipientIdStr?.replace("/", "");
+            if (key == null || recipientId == null) {
+                console.log("User not setup for skyspace");
+                throw "User not setup for skyspace";
+            }
     }
     if (sharedWithObj == null) {
         sharedWithObj = (await bsGetSharedWithObj(session)) || {};
