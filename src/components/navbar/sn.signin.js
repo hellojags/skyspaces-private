@@ -36,6 +36,7 @@ class SnSignin extends React.Component {
         this.props.setUserSession(userSession);
         bsSavePublicKey(userSession);
         const importedSpace =  await bsGetImportedSpacesObj(userSession, { isImport: true });
+        // set shared spaces object to list all imported spaces {senderToSpacesMap={}, sharedByUserList=[]}
         this.props.setImportedSpace(importedSpace);
         this.props.setPersonGetOtherData(userSession.loadUserData());
       },
