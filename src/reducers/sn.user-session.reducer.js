@@ -17,12 +17,10 @@ const getUserSession = ()=>{
 }
 
 export default (state = getUserSession(), action) => {
-console.log("state = getUserSession(), action", state, action)
   switch (action.type) {
     case ACT_TY_SET_USER_SESSION:
       return action.payload;
     default:
-      console.log("default user session state", state);
       return state;
   }
 };
