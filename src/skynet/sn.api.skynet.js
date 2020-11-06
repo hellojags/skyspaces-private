@@ -93,7 +93,7 @@ export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendF
   return true;
 }
 
-export const snKeyPairFromSeed = (userSeed)=>keyPairFromSeed(userSeed+APP_SKYDB_SEED);
+export const snKeyPairFromSeed = (userSeed)=>keyPairFromSeed(userSeed);
 
 export const snSerializeSkydbPublicKey = (publicKey)=>publicKey.join(SKYDB_SERIALIZATION_SEPERATOR);
 
