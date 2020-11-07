@@ -129,8 +129,20 @@ export async function putFileForShared(session, FILE_PATH, encryptedContent) {
 
 // Replace file content with new "content"
 export function deleteFile(session, FILE_PATH) {
-  const options = { encrypt: true }
-  return session.deleteFile(FILE_PATH, options)
+  const sessionType = getUserSessionType(session);
+  let promise;
+
+  switch(sessionType){
+    case ID_PROVIDER_SKYDB:
+      const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,null,false,false,{});
+      break;
+    case ID_PROVIDER_BLOCKSTACK:
+    default:
+      const options = { encrypt: true }
+      promise =  session.deleteFile(FILE_PATH, options);
+  }
+  return promise;
 }
 export function jsonCopy(object) {
   return JSON.parse(JSON.stringify(object))
