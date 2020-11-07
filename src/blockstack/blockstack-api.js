@@ -747,19 +747,15 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     //     call skyDbGetSharedSpaceAppList()
     // }else
     // { below
-    const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
-    const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
-    const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
-    const senderStorage = bsGetProfileInfo(senderProfile).storage;
-    const SHARED_SKYSPACE_FILEPATH = loggedInUserStorageId + "/" + SKYSPACE_PATH + skyspace + '.json';
-    const encSkyspaceObj = await fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYSPACE_FILEPATH}`).then(res => res.json());
+    let {senderStorage, loggedInUserStorageId} = await getStorageIds(session, senderId);
+    const SHARED_SKYSPACE_FILEPATH = SHARED_PATH_PREFIX + loggedInUserStorageId + "/" + SKYSPACE_PATH + skyspace + '.json';
+    const encSkyspaceObj = await getEncDataFromSenderStorage(session, SHARED_SKYSPACE_FILEPATH, senderStorage);//await fetch(`${senderStorage}${SHARED_SKYSPACE_FILEPATH}`).then(res => res.json());
     const skyspaceObj = JSON.parse(await decryptContent(session, JSON.stringify(encSkyspaceObj)));
     const promises = [];
     const skylinkArr = [];
     const loop = skyspaceObj?.skhubIdList.map(skhubId => {
-        const SHARED_SKYLINK_FILE_PATH = loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
-        promises.push(fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYLINK_FILE_PATH}`)
-            .then(res => res.json())
+        const SHARED_SKYLINK_FILE_PATH = SHARED_PATH_PREFIX + loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
+        promises.push( getEncDataFromSenderStorage(session, SHARED_SKYLINK_FILE_PATH, senderStorage) 
             .then(encSkylinkObj => decryptContent(session, JSON.stringify(encSkylinkObj)))
             .then(skylinkObjStr => {
                 skylinkArr.push(JSON.parse(skylinkObjStr))
@@ -767,6 +763,42 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     });
     await Promise.all(promises);
     return skylinkArr;
+}
+
+export const getEncDataFromSenderStorage = async (session, filePath, senderStorage)=> {
+    const sessionType = getUserSessionType(session);
+    let encSharedSkyspaceIdx;
+    switch (sessionType) {
+        case ID_PROVIDER_SKYDB:
+            encSharedSkyspaceIdx = await getFileUsingPublicKeyStr(senderStorage,filePath);
+            break;
+        case ID_PROVIDER_BLOCKSTACK:
+        default:
+            encSharedSkyspaceIdx = await fetch(`${senderStorage}${filePath}`).then(res => res.json());
+    }
+    return encSharedSkyspaceIdx;
+}
+
+export const getStorageIds = async (session, senderId) => {
+    const sessionType = getUserSessionType(session);
+    let senderStorage, loggedInUserStorageId;
+    switch (sessionType) {
+        case ID_PROVIDER_SKYDB:
+            loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
+            senderStorage = senderId;
+            break;
+        case ID_PROVIDER_BLOCKSTACK:
+        default:
+            const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
+            loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
+            const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
+            senderStorage = bsGetProfileInfo(senderProfile).storage;
+    }
+    return {
+        loggedInUserStorageId,
+        senderStorage,
+        sessionType
+    }
 }
 
 // get {senderToSpacesMap={}, sharedByUserList=[]} in sharedByUserObj
@@ -785,16 +817,7 @@ export const bsGetSharedByUser = async (session) => {
 
 export const bsGetShrdSkyspaceIdxFromSender = async (session, senderStorage, loggedInUserStorageId) => {
     const SHARED_SKYSPACE_IDX_FILEPATH = SHARED_PATH_PREFIX + loggedInUserStorageId + '/' + SKYSPACE_IDX_FILEPATH;
-    const sessionType = getUserSessionType(session);
-    let encSharedSkyspaceIdx;
-    switch (sessionType) {
-        case ID_PROVIDER_SKYDB:
-            encSharedSkyspaceIdx = await getFileUsingPublicKeyStr(senderStorage,SHARED_SKYSPACE_IDX_FILEPATH);
-            break;
-        case ID_PROVIDER_BLOCKSTACK:
-        default:
-            encSharedSkyspaceIdx = await fetch(`${senderStorage}${SHARED_SKYSPACE_IDX_FILEPATH}`).then(res => res.json());
-    }
+    let encSharedSkyspaceIdx = await getEncDataFromSenderStorage(session, SHARED_SKYSPACE_IDX_FILEPATH, senderStorage);
     const sharedSkyspaceIdx = await decryptContent(session, JSON.stringify(encSharedSkyspaceIdx));
     return JSON.parse(sharedSkyspaceIdx);
 }
