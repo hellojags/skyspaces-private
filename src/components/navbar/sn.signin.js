@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { withRouter } from "react-router";
 import { showBlockstackConnect, authenticate } from "@blockstack/connect";
-import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM, BROWSER_STORAGE, ID_PROVIDER_SKYDB } from "../../sn.constants";
+import { APP_BG_COLOR, PUBLIC_TO_ACC_QUERY_PARAM, BROWSER_STORAGE, ID_PROVIDER_SKYDB, ID_PROVIDER_BLOCKSTACK } from "../../sn.constants";
 import { Tooltip } from "@material-ui/core";
 import { authOrigin, appDetails, userSession } from "../../blockstack/constants";
 import { bsClearStorage, bsGetImportedSpacesObj, bsSavePublicKey } from "../../blockstack/blockstack-api";
@@ -195,7 +195,7 @@ class SnSignin extends React.Component {
               {getUserSessionType(this.props.userSession) === ID_PROVIDER_SKYDB && (<MenuItem onClick={() => this.showSkydbPublicKey()}>
                 Show Skydb Public Key
               </MenuItem>)}
-              {process.env.NODE_ENV !== 'production' && <MenuItem onClick={this.clearAllStorage}>
+              {process.env.NODE_ENV !== 'production' && getUserSessionType(this.props.userSession) === ID_PROVIDER_BLOCKSTACK && <MenuItem onClick={this.clearAllStorage}>
                 Clear BS Storage
               </MenuItem>}
               <MenuItem onClick={this.logout}>Logout</MenuItem>
