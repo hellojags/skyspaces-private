@@ -110,8 +110,6 @@ export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
     const entry = await skynetClient.db.getJSON(publicKey,fileKey);
     if(entry)
     {
-      console.log("entry.data "+entry.data);
-      console.log("entry.revision "+entry.revision);
       return entry.data;
     }
   }
