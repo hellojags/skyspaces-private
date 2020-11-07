@@ -781,11 +781,12 @@ export const getEncDataFromSenderStorage = async (session, filePath, senderStora
 
 export const getStorageIds = async (session, senderId) => {
     const sessionType = getUserSessionType(session);
-    let senderStorage, loggedInUserStorageId;
+    let senderStorage, loggedInUserStorageId, remoteUserStorage;
     switch (sessionType) {
         case ID_PROVIDER_SKYDB:
             loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
             senderStorage = senderId;
+            remoteUserStorage =  senderId;
             break;
         case ID_PROVIDER_BLOCKSTACK:
         default:
@@ -793,10 +794,12 @@ export const getStorageIds = async (session, senderId) => {
             loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
             const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
             senderStorage = bsGetProfileInfo(senderProfile).storage;
+            remoteUserStorage = bsGetProfileInfo(senderProfile).storageId;
     }
     return {
         loggedInUserStorageId,
         senderStorage,
+        remoteUserStorage,
         sessionType
     }
 }
@@ -864,14 +867,15 @@ export const bsGetProfileInfo = (profile) => {
 export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLst, skyspaceName, sharedWithObj ) => {
     const promises = []
     const rslt = recipientIdStrgLst?.map(recipientIdStrg => {
-        promises.push(lookupProfile(sharedWithObj[recipientIdStrg].userid, BLOCKSTACK_CORE_NAMES)
-        .then(profile => {
-            const recipientStorage = bsGetProfileInfo(profile).storageId;
-            const recipientPathPrefix = SHARED_PATH_PREFIX + recipientStorage + "/";
-            const SHARED_SKYSPACE_FILEPATH = recipientPathPrefix + SKYSPACE_PATH + skyspaceName + '.json';
-            return deleteFile(session, SHARED_SKYSPACE_FILEPATH)
+        promises.push(getStorageIds(session, sharedWithObj[recipientIdStrg].userid)
+            .then(storageObj=>storageObj.remoteUserStorage)
+            .then(recipientStorage=>{
+                const recipientPathPrefix = SHARED_PATH_PREFIX + recipientStorage + "/";
+                const SHARED_SKYSPACE_FILEPATH = recipientPathPrefix + SKYSPACE_PATH + skyspaceName + '.json';
+                return deleteFile(session, SHARED_SKYSPACE_FILEPATH)
         })
-        .then(()=>bsShareSkyspace(session, sharedWithObj[recipientIdStrg]["spaces"], sharedWithObj[recipientIdStrgLst].userid)), sharedWithObj);
+        .then(()=>bsShareSkyspace(session, sharedWithObj[recipientIdStrg]["spaces"], sharedWithObj[recipientIdStrgLst].userid), sharedWithObj)
+        );
     });
     await Promise.all(promises);
 }
