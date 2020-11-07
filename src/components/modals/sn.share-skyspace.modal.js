@@ -185,16 +185,6 @@ export default function SnShareSkyspaceModal(props) {
             </Button>
                 </DialogActions>
             </Dialog>
-            {/* <Snackbar
-        open={showAlert}
-        autoHideDuration={40000}
-        onClose={() => setShowAlert(false)}
-        style={{ zIndex: 999999}}
-      >
-        <Alert onClose={() => setShowAlert(false)} severity={"error"}>
-          The user has not created an account with Skyspaces!
-        </Alert>
-      </Snackbar> */}
         </>
     );
 }
