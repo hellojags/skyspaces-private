@@ -823,16 +823,12 @@ export const bsGetShrdSkyspaceIdxFromSender = async (session, senderStorage, log
 }
 
 export const bsGetSharedSkappListFromSender = async (session, senderId, skhubIdList) => {
-    const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
-    const loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
-    const senderProfile = await lookupProfile(senderId, BLOCKSTACK_CORE_NAMES);
-    const senderStorage = bsGetProfileInfo(senderProfile).storage;
+    let {senderStorage, loggedInUserStorageId} = await getStorageIds(session, senderId);
     const skappList = [];
     const promises = [];
     skhubIdList.forEach(skhubId => {
-        const SHARED_SKYLINK_PATH = loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
-        promises.push(fetch(`${senderStorage}${SHARED_PATH_PREFIX}${SHARED_SKYLINK_PATH}`)
-            .then(res => res.json())
+        const SHARED_SKYLINK_PATH = SHARED_PATH_PREFIX + loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
+        promises.push(getEncDataFromSenderStorage(session, SHARED_SKYLINK_PATH, senderStorage)
             .then(encSharedSkapp => decryptContent(session, JSON.stringify(encSharedSkapp)))
             .then(sharedSkappStr => {
                 skappList.push(JSON.parse(sharedSkappStr))
