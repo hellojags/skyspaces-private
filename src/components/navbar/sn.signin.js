@@ -28,10 +28,20 @@ class SnSignin extends React.Component {
   }
 
   gotoSkydbLogin = () => {
-    this.props.history.push("/login");
+    const publicHash = this.getPublicToAccHash();
+    let queryParam = "";
+    if (publicHash) {
+      queryParam = "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + publicHash;
+    }
+    this.props.history.push("/login" + queryParam);
   }
 
   doSignIn = () => {
+    const publicHash = this.getPublicToAccHash();
+    if (publicHash) {
+      const queryParam = "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + publicHash;
+      this.props.history.push("/upload" + queryParam);
+    }
     const authOptions = {
       redirectTo: "/",
       manifestPath: '/manifest.json',
@@ -52,6 +62,11 @@ class SnSignin extends React.Component {
     authenticate(authOptions);
   };
   doSignUp = () => {
+    const publicHash = this.getPublicToAccHash();
+    if (publicHash) {
+      const queryParam = "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + publicHash;
+      this.props.history.push("/upload" + queryParam);
+    }
     const authOptions = {
       redirectTo: "/",
       manifestPath: '/manifest.json',
@@ -70,7 +85,8 @@ class SnSignin extends React.Component {
       if (this.props.userSession.isSignInPending && this.props.userSession.isSignInPending()) {
         this.props.fetchBlockstackPerson(this.props.userSession);
       } else if (this.getPublicToAccHash() != null) {
-        this.doSignUp();
+        // this.doSignUp();
+        this.gotoSkydbLogin();
       }
     } else {
       this.props.setImportedSpace(await bsGetImportedSpacesObj(this.props.userSession || userSession));

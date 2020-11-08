@@ -110,6 +110,10 @@ export default function SnMultiUpload(props) {
 
   useEffect(() => {
     handlePublicToAcc();
+  }, [query.get(PUBLIC_TO_ACC_QUERY_PARAM)]);
+
+  useEffect(() => {
+    handlePublicToAcc();
   }, []);
 
   const handlePublicToAcc = () => {
@@ -202,7 +206,7 @@ export default function SnMultiUpload(props) {
     const publicObj = await getPublicApps(query.get(PUBLIC_TO_ACC_QUERY_PARAM));
     const promises = [];
     const skhubIdList = [];
-    publicObj.map(app => {
+    const val = publicObj?.data?.map(app => {
       app.skhubId = null;
       promises.push(bsAddSkylinkOnly(stUserSession, app, stPerson).then((skhubid) => skhubIdList.push(skhubid)));
     });

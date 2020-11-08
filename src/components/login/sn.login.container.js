@@ -3,7 +3,7 @@ import { setMobileMenuDisplay,
         toggleMobileMenuDisplay 
         } from "../../reducers/actions/sn.mobile-menu.action";
 import { fetchSkyspaceList } from "../../reducers/actions/sn.skyspace-list.action";
-import { toggleDesktopMenuDisplay } from "../../reducers/actions/sn.desktop-menu.action";
+import { toggleDesktopMenuDisplay, setDesktopMenuState } from "../../reducers/actions/sn.desktop-menu.action";
 import {setUserSession } from "../../reducers/actions/sn.user-session.action";
 import { fetchBlockstackPerson,
     logoutPerson,setPerson,
@@ -20,7 +20,9 @@ export function matchDispatcherToProps(dispatcher){
         setUserSession,
         setPerson,
         setPersonGetOtherData,
-        setImportedSpace
+        setImportedSpace,
+        toggleDesktopMenuDisplay,
+        setDesktopMenuState
     }, dispatcher);
 }
 

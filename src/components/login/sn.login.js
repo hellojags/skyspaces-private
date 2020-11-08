@@ -24,11 +24,14 @@ class snLogin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            seed: null
+            seed: null,
         }
     }
 
     componentDidMount() {
+        if (this.props.showDesktopMenu===false) {
+            this.props.setDesktopMenuState(true);
+        }
         if (this.props.person) {
             this.props.history.push("/upload");
         }
@@ -59,7 +62,7 @@ class snLogin extends React.Component {
         this.props.setPersonGetOtherData(personObj);
         this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
         this.props.setLoaderDisplay(false);
-        this.props.history.push("/upload");
+        this.props.history.push("/upload"+this.props.location.search);
     }
 
     render() {

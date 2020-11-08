@@ -24,7 +24,7 @@ import {
   DEFAULT_PORTAL,
   PUBLIC_SHARE_BASE_URL,
   PUBLIC_SHARE_ROUTE,
-  PUBLIC_SHARE_APP_HASH, SKYSPACE_DEFAULT_PATH, PUBLIC_TO_ACC_QUERY_PARAM
+  PUBLIC_SHARE_APP_HASH, PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME
 } from "../../sn.constants";
 import {
   CATEGORY_OBJ,
@@ -471,12 +471,16 @@ class SnCards extends React.Component {
 
   addPublicSpaceToAccount = async () => {
     let publicUpload = null;
-    // if (this.props.snPublicInMemory.addedSkapps?.length>0 || this.props.snPublicInMemory.deletedSkapps?.length>0) {
     this.props.setLoaderDisplay(true);
     publicUpload = await savePublicSpace(this.state.hash, this.props.snPublicInMemory);
     this.props.setLoaderDisplay(false);
-    // }
-    document.location.href = SKYSPACE_DEFAULT_PATH + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
+    const redirectToRoute = "/login" + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
+    if (process.env.NODE_ENV === 'production') {
+      document.location.href = SKYSPACE_HOSTNAME + "/#" + redirectToRoute;
+    } else {
+      this.props.setPublicHash(null);
+      this.props.history.push(redirectToRoute);
+    }
   }
 
   savePublicSpace = async () => {
