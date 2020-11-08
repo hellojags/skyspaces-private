@@ -54,7 +54,7 @@ export const savePublicSpace = async (publicHash, inMemObj) => {
   publicHashData.data = skappListToSave;
   const skylinkListFile = getSkylinkPublicShareFile(publicHashData);
   const portal = document.location.origin.indexOf("localhost") === -1 ? document.location.origin : DEFAULT_PORTAL;
-  const uploadedContent = await new SkynetClient(portal).upload(skylinkListFile);
+  const uploadedContent = await new SkynetClient(portal).uploadFile(skylinkListFile);
   if (uploadedContent){
     return {
       skylink : parseSkylink(uploadedContent)
