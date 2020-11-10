@@ -202,7 +202,7 @@ class SnSignin extends React.Component {
             >
               <div style={{ color: APP_BG_COLOR, fontWeight: "bold" }}>
                 {/* UserName: {this.props.person.profile.name} <br/> */}
-                UserID: {this.props.person.username}
+                {/* UserID: {this.props.person.username} */}
               </div>
 
               <MenuItem onClick={() => this.handleSettings()}>
