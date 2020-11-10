@@ -1,6 +1,6 @@
 import { ajax } from 'rxjs/ajax';
 import { map, catchError } from 'rxjs/operators';
-import { keyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
+import { genKeyPairFromSeed, parseSkylink, SkynetClient } from "skynet-js";
 import { of } from 'rxjs';
 import prettyBytes from 'pretty-bytes';
 import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from "../sn.constants";
@@ -75,6 +75,7 @@ export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendF
   if (publicKey == null || privateKey == null ) {
     throw new Error("Invalid Keys");
   }
+  const jsonObj = await getJSONFile(publicKey, fileKey, null, {getEntry: true});
   if(appendFlag)
   {
     let tempFileData = await getJSONFile(publicKey,fileKey);
@@ -82,9 +83,8 @@ export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendF
       fileData = tempFileData.push(fileData);
   }
   try {
-    let revision =  1
-    let status = await skynetClient.db.setJSON(privateKey,fileKey,fileData); //<-- update Key Value pair for that specific pubKey
-    console.log("appUser:setJSON:status "+status);
+    let revision =  (jsonObj ? jsonObj.revision : 0)  + 1;
+    let status = await skynetClient.db.setJSON(privateKey,fileKey,fileData, revision); //<-- update Key Value pair for that specific pubKey
   }
   catch (error) {
     //setErrorMessage(error.message);
@@ -93,11 +93,11 @@ export const setJSONFile = async (publicKey, privateKey,fileKey,fileData,appendF
   return true;
 }
 
-export const snKeyPairFromSeed = (userSeed)=>keyPairFromSeed(userSeed);
+export const snKeyPairFromSeed = (userSeed)=>genKeyPairFromSeed(userSeed);
 
-export const snSerializeSkydbPublicKey = (publicKey)=>publicKey.join(SKYDB_SERIALIZATION_SEPERATOR);
+export const snSerializeSkydbPublicKey = (publicKey)=>publicKey;
 
-export const snDeserializeSkydbPublicKey = (publicKeyStr)=>Uint8Array.from(publicKeyStr.split(SKYDB_SERIALIZATION_SEPERATOR));
+export const snDeserializeSkydbPublicKey = (publicKeyStr)=>publicKeyStr;
 
 export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
   const skynetClient = new SkynetClient(getPortal());
@@ -110,6 +110,9 @@ export const getJSONFile = async (publicKey,fileKey,encrypted,options) => {
     const entry = await skynetClient.db.getJSON(publicKey,fileKey);
     if(entry)
     {
+      if (options.getEntry) {
+        return entry;
+      }
       return entry.data;
     }
   }
