@@ -17,7 +17,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { SkynetClient, parseSkylink } from "skynet-js";
 import UploadFile from "./UploadFile";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
