@@ -96,7 +96,7 @@ export default function SnShareSkyspaceModal(props) {
             props.onNo();
         } catch (err) {
             dispatch(setLoaderDisplay(false));
-            console.log("share space error", err);
+            setDeletedIdList([]);
             setShowAlert(true);
         }
     }
@@ -125,11 +125,11 @@ export default function SnShareSkyspaceModal(props) {
                                     .filter(key => deletedIdList.indexOf(key) === -1)
                                     .filter(id => props.sharedWithObj[id].spaces.indexOf(props.skyspaceName) > -1)
                                     .map((key, idx) =>
-                                    <Tooltip title={props.sharedWithObj[key].userid} arrow>
-                                        <Chip key={idx} label={cliTruncate(props.sharedWithObj[key].userid, 30)}
-                                            onDelete={() => handleDelete(key)}
-                                            color="primary" variant="outlined" />
-                                    </Tooltip>
+                                        <Tooltip title={props.sharedWithObj[key].userid} arrow>
+                                            <Chip key={idx} label={cliTruncate(props.sharedWithObj[key].userid, 30)}
+                                                onDelete={() => handleDelete(key)}
+                                                color="primary" variant="outlined" />
+                                        </Tooltip>
                                     )}
                                 <TextField
                                     id="recipientId"
