@@ -845,10 +845,20 @@ export const bsGetSharedSkappListFromSender = async (session, senderId, skhubIdL
 export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, sharedWithObj) => {
     const sharedSkylinkIdxObj = createSkylinkIdxObject();
     const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
-    const profile = await lookupProfile(sharedWithObj[recipientId].userid, BLOCKSTACK_CORE_NAMES);
+    let publicKey;
+    const sessionType = getUserSessionType(session);
+    switch(sessionType){
+        case ID_PROVIDER_SKYDB:
+            publicKey = recipientId;
+            break;
+        case ID_PROVIDER_BLOCKSTACK:
+        default:
+            const profile = await lookupProfile(sharedWithObj[recipientId].userid, BLOCKSTACK_CORE_NAMES);
+            publicKey = profile?.appsMeta?.[document.location.origin]?.publicKey
+    }
     sharedSkylinkIdxObj.skhubIdList = skylinkList;
     const encSharedSkylinkIdxObj = await encryptContent(session, JSON.stringify(sharedSkylinkIdxObj), {
-        publicKey: profile?.appsMeta?.[document.location.origin]?.publicKey
+        publicKey
     });
     const SHARED_SKYLINK_IDX_FILEPATH = recipientPathPrefix + SKYLINK_IDX_FILEPATH;
     await putFileForShared(session, SHARED_SKYLINK_IDX_FILEPATH, encSharedSkylinkIdxObj);
