@@ -1,7 +1,9 @@
 import React from "react";
+import "./sn.topbar.css";
 import skyapplogo from "../../SkySpaces_g.png";
 import FormControl from '@material-ui/core/FormControl';
 import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
+import AppsIcon from "@material-ui/icons/Apps";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,7 +11,7 @@ import Link from '@material-ui/core/Link';
 import MuiAlert from "@material-ui/lab/Alert";
 import Select from '@material-ui/core/Select';
 import MenuItem from "@material-ui/core/MenuItem";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import Tooltip from "@material-ui/core/Tooltip";
@@ -38,6 +40,7 @@ import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { getPublicApps, getSkylinkPublicShareFile } from "../../skynet/sn.api.skynet";
 import SnInfoModal from "../modals/sn.info.modal";
+import { Drawer } from "@material-ui/core";
 
 const drawerWidth = 240;
 const useStyles = (theme) => ({
@@ -67,6 +70,11 @@ const useStyles = (theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  appLogo: {
+    color: theme.palette.mediumGray,
+    fontSize: 35,
+    marginRight: 20,
+  },
   toolbar: theme.mixins.toolbar,
 });
 
@@ -88,6 +96,8 @@ class SnTopBar extends React.Component {
       publicPortal: DEFAULT_PORTAL,
       showInfoModal: false,
       infoModalContent: "",
+      anchor: "",
+      isTrue: false,
       onInfoModalClose: () => this.setState({ showInfoModal: false })
     };
   }
@@ -190,42 +200,58 @@ class SnTopBar extends React.Component {
     const { classes } = this.props;
     return (
       <>
-        <AppBar
-          position="fixed"
-          className={classes.appBar + " topbar-container"}
-          color="inherit"
-        >
-          <Toolbar className={clsx({
-            "d-none": !this.props.snTopbarDisplay,
-          })}>
-            <Grid container spacing={1} alignItems="center">
-              {this.props.snShowDesktopMenu && (
+        <div>
+        <div className="container-fluid main-container">
+        <nav className="navbar navbar-light hdr-nvbr-main">
+        {this.props.person != null && (
+              <Drawer anchor={this.state.anchor} isTrue={this.state.isTrue} setIsTrue={(evt)=>this.setState({isTrue: evt})} />
+            )}
+        <a
+              className={`${"navbar-brand"} ${
+                this.props.authRoute ? "auth-navi-brand" : "navi-brnd"
+              } ${this.props.authRoute && "logoAlignMent"}`}
+            >
+              {/* logo */}
+              <img
+                style={{ cursor: "pointer" }}
+                onClick={this.handleLogoClick}
+                src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+                alt=""
+                loading="lazy"
+                height="40"
+                width="170"
+              />
 
-                <Grid item xs={1} sm={2} className="hidden-sm-up center-flex-div-content"
-                >
-                  <MenuIcon onClick={this.props.toggleMobileMenuDisplay} />
-                </Grid>
+              {/* search input */}
+              {this.props.authRoute ? null : (
+                <>
+                  <div className="search_main_div">
+                    <span>
+                      <i className="fas fa-search srch-icon-inside-field-input"></i>
+                    </span>
+
+                    <input
+                      className="form-control mr-sm-2 srch_inpt"
+                      type="search"
+                      placeholder="Search in SkySpaces or download Skylink"
+                      aria-label="Search"
+                    />
+                  </div>
+                  {/* search inside nav-brand */}
+                  <div className="srch_btn_main_div">
+                    <button className="btn srch_btn_nvbar" onClick={this.onDownload}>
+                      <label>
+                        <i className="fa fa-download icon_download_nvbar"></i>
+                      </label>
+                    </button>
+                  </div>
+                </>
               )}
-              <Grid item xs={1} sm={2} className="p-top10">
-                <div className="ribbon hidden-xs-dn"><span>BETA</span></div>
-                <NavLink className="sm-up-logo" to="/" onClick={this.handleLogoClick}>
-                  <img
-                    src={skyapplogo}
-                    alt="SkySpaces"
-                    className="cursor-pointer hidden-xs-dn"
-                    height="40"
-                    width="170"
-                  ></img>
-                  <img
-                    src={skyapplogo_only}
-                    alt="SkySpaces"
-                    className="cursor-pointer hidden-sm-up"
-                    height="30"
-                    width="30"
-                  ></img>
-                </NavLink>
-              </Grid>
-              {(this.props.person != null || this.props.snPublicHash) && (
+            </a>
+              {/*(this.props.person != null || this.props.snPublicHash) && (
                 <>
                   <Grid item xs={7} sm={7} className="topbar-srch-grid">
                     <div className="float-center">
@@ -257,22 +283,25 @@ class SnTopBar extends React.Component {
                     </Tooltip>
                   </Grid>
                 </>
-              )}
+                        )*/}
 
-              <Grid
+              {/* <Grid
                 item
                 sm={this.props.person != null ? 2 : (this.props.snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
-              >
-                <div className="top-icon-container float-right">
+              > */}
+                <div
+              className="btn-icons-nvbr-div"
+              style={{ display: "flex", alignItems: "center" }}
+            >
                   <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{color: APP_BG_COLOR}}>Blog</Link>
-                  <Tooltip title="Launch SkyApps" arrow>
-                    <IconButton
-                      onClick={() => window.open("https://skyapps.hns.siasky.net")}
-                    >
-                      <AppsOutlinedIcon style={{ color: APP_BG_COLOR }} />
-                    </IconButton>
-                  </Tooltip>
+                  <div className="butn-th-main-div">
+                <button className="btn th_btn_nvbar">
+                  <AppsIcon
+                    className={this.props.classes.appLogo}
+                  />
+                </button>
+              </div>
                   {!this.props.snShowDesktopMenu && (
                     this.renderChangePortal("Change Portal")
                   )}
@@ -281,7 +310,7 @@ class SnTopBar extends React.Component {
                     <SnSignin />
                   )}
                 </div>
-              </Grid>
+              {/* </Grid> */}
               <Grid
                 item
                 xs={(this.props.person != null || this.props.snPublicHash != null) ? 2 : 10}
@@ -295,9 +324,9 @@ class SnTopBar extends React.Component {
                   {this.renderChangePortal("")}
                 </div>
               </Grid>
-            </Grid>
-          </Toolbar>
-        </AppBar>
+            </nav>
+          </div>
+        </div>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={this.state.invalidSkylink}

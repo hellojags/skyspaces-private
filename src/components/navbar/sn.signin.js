@@ -3,7 +3,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { Link } from '@material-ui/core';
+import { Link, withStyles } from '@material-ui/core';
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { withRouter } from "react-router";
@@ -15,17 +15,39 @@ import { bsClearStorage, bsGetImportedSpacesObj, bsSavePublicKey } from "../../b
 import SnInfoModal from "../modals/sn.info.modal";
 import { getUserSessionType } from "../../sn.util";
 import { snKeyPairFromSeed, snSerializeSkydbPublicKey } from "../../skynet/sn.api.skynet";
+import UserMenu from "./sn.user-menu";
 
+
+const useStyles = (theme) => ({
+  avatar : {
+    boxShadow: "0 0 10px rgba(0,0,0,.4)",
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: "50%",
+    width: 45,
+    height: 45,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: "bold",
+    color: "white",
+    cursor: "pointer",
+  }
+})
 class SnSignin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       anchorEl: null,
+      userMenu: null,
       showInfoModal: false,
       onInfoModalClose: () => this.setState({ showInfoModal: false }),
       infoModalContent: "public"
     };
   }
+
+  userMenuClick = (event) => {
+    this.setState({userMenu: event.currentTarget});
+  };
 
   gotoSkydbLogin = () => {
     const publicHash = this.getPublicToAccHash();
@@ -130,69 +152,46 @@ class SnSignin extends React.Component {
   };
 
   render() {
+    const { classes } = this.props;
     return (
       <>
+      {this.props.person != null && <UserMenu userMenu={this.state.userMenu} setUserMenu={(evt)=>this.setState({userMenu: evt})} />}
         {this.props.person == null && (
           <>
-            <Button
-              onClick={this.gotoSkydbLogin}
-              variant="outlined"
-              className="btn-login"
-            >
-              Sky-DB Login
-            </Button>
-            <Button
-              onClick={this.doSignIn}
-              variant="outlined"
-              className="btn-login"
-            >
-              BS Login
-            </Button>
-            <Button
-              onClick={this.doSignUp}
-              variant="contained"
-              className="btn-signup"
-            >
-              Sign Up
-            </Button>
-            {/* <Grid container spacing={1} >
-            <Grid item>
-              <Button onClick={this.doSignIn} variant="outlined" style={{borderColor:APP_BG_COLOR, color: APP_BG_COLOR, fontWeight: "bold" }}>
-                Login
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button onClick={this.doSignUp} variant="contained" style={{ background: APP_BG_COLOR, color: "white", fontWeight: "bold" }}>
-                Sign Up
-              </Button>
-            </Grid>
-          </Grid> */}
+            <div className="login-butn-main-out-div">
+                    <button
+                      onClick={this.gotoSkydbLogin}
+                      type="button"
+                      className="btn btn-sm butn-out-login-nvbr"
+                    >
+                      Login
+                    </button>
+                  </div>
+                  <div className="signUp-butn-main-out-div">
+                    <button
+                      onClick={this.doSignUp}
+                      style={{ border: "1px solid #1ed660" }}
+                      type="button"
+                      className="btn  btn-sm butn-out-signup"
+                    >
+                      Sign up
+                    </button>
+                  </div>
+
           </>
         )}
-        {/* {this.props.person && (
-          <>
-            <Tooltip title="Download Skylink" arrow className="topbar-dwnld">
-              <IconButton onClick={this.onDownload}>
-                <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR }} />
-              </IconButton>
-            </Tooltip>
-            </>
-            )} */}
         {this.props.person && (
           <>
-            <Tooltip title={"Welcome " + this.props.person.username.replace(".id.blockstack", "") + " !"}>
-              <Avatar
-                alt="Remy Sharp"
-                src=""
-                className="app-bg-color cursor-pointer"
-                aria-controls="simple-menu"
-                aria-haspopup="true"
-                onClick={(evt) => this.handleClick(evt)}
-              >
-                {this.props.person.username.charAt(0).toUpperCase()}
-              </Avatar>
-            </Tooltip>
-            <Menu
+            <div
+                  onClick={this.userMenuClick}
+                  className={classes.avatar}
+                >
+                  {this.props.person.username.charAt(0).toUpperCase()}
+                </div>
+
+
+
+            {/* <Menu
               id="simple-menu"
               anchorEl={this.state.anchorEl}
               keepMounted
@@ -200,10 +199,10 @@ class SnSignin extends React.Component {
               onClose={() => this.handleClick()}
               className="avatar-menu"
             >
-              <div style={{ color: APP_BG_COLOR, fontWeight: "bold" }}>
+              <div style={{ color: APP_BG_COLOR, fontWeight: "bold" }}> */}
                 {/* UserName: {this.props.person.profile.name} <br/> */}
                 {/* UserID: {this.props.person.username} */}
-              </div>
+              {/* </div>
 
               <MenuItem onClick={() => this.handleSettings()}>
                 Settings
@@ -215,7 +214,7 @@ class SnSignin extends React.Component {
                 Clear BS Storage
               </MenuItem>}
               <MenuItem onClick={this.logout}>Logout</MenuItem>
-            </Menu>
+            </Menu> */}
           </>
         )}
         <SnInfoModal
@@ -234,4 +233,4 @@ class SnSignin extends React.Component {
 export default connect(
   mapStateToProps,
   matchDispatcherToProps
-)(withRouter(SnSignin));
+)(withRouter(withStyles(useStyles)(SnSignin)));

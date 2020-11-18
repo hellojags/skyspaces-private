@@ -31,31 +31,12 @@ const useStyles = (theme) => ({
   toolbar: theme.mixins.toolbar,
 });
 
-export class SnRouter extends React.Component {
-  render() {
-    const { classes } = this.props;
+const SnRouter = () => {
     return (
       <Router>
-        {/* <div classsName="lightbox-container" id="lightbox-container">
-          <ReactImageVideoLightbox 
-           id="light-box"
-          className="light-box"
-        data={[
-          { url: 'https://skynethub.io/AABHk6DdHbve_nfjRNVuaAQTs-ehFiXJx1yM30q7ZAgb2w', type: 'video', altTag: 'some other video' }
-        ]}
-        startIndex={0}
-        onCloseCallback={(evt)=> console.log(evt)}
-      />
-      </div> */}
-        {/* <SnScrollToTop /> */}
-        <div className={classes.root + " router-root"}>
           <CssBaseline />
-          <SnTopBar onDrawerToggle={this.handleDrawerToggle} />
-          <SnLeftMenu />
-          <main className={classes.content + " router-main"}>
-            <div className={classes.toolbar}>
-              <div id="content-wrapper" className="d-flex flex-column">
-                <div id="content">
+          <SnTopBar  />
+          {/* <SnLeftMenu /> */}
                   <Switch>
                     <Route exact path="/">
                       <Redirect to="/upload" />
@@ -75,14 +56,8 @@ export class SnRouter extends React.Component {
                     <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
                     <Route component={SnMultiUpload} />
                   </Switch>
-                </div>
-              </div>
-            </div>
-          </main>
-        </div>
       </Router>
     );
-  }
 }
 
-export default withStyles(useStyles, { withTheme: true })(SnRouter);
+export default SnRouter;
