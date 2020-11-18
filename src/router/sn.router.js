@@ -18,6 +18,7 @@ import SnUserSettings from "../components/user/sn.user-settings";
 import SnMultiUpload from "../components/upload/sn.multi-upload";
 import snLogin from "../components/login/sn.login";
 import SnProfile from "../components/sn.profile";
+import SnLandingUpload from "../components/upload/sn.landing-upload";
 
 const useStyles = (theme) => ({
   root: {
@@ -32,32 +33,32 @@ const useStyles = (theme) => ({
 });
 
 const SnRouter = () => {
-    return (
-      <Router>
-          <CssBaseline />
-          <SnTopBar  />
-          {/* <SnLeftMenu /> */}
-                  <Switch>
-                    <Route exact path="/">
-                      <Redirect to="/upload" />
-                    </Route>
-                    <Route path="/upload" component={SnMultiUpload} />
-                    <Route path="/settings" component={SnUserSettings} />
-                    <Route path="/login" component={snLogin} />
-                    <Route path="/register" component={SnNew} />
-                    <Route path="/apps/:category" component={SnCards} />
-                    <Route path="/skylinks" component={SnCards} />
-                    <Route path="/skyapps/:id" component={SnNew} />
-                    <Route path="/skyspace/:skyspace" component={SnCards} />
-                    <Route path="/history" component={SnHistory} />
-                    <Route path="/profile" component={SnProfile} />
-                    <Route path="/public-cards" component={SnCards} />
-                    <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
-                    <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
-                    <Route component={SnMultiUpload} />
-                  </Switch>
-      </Router>
-    );
+  return (
+    <Router>
+      <SnTopBar />
+      {/* <SnLeftMenu /> */}
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/public-upload" />
+        </Route>
+        <Route path="/upload" component={SnMultiUpload} />
+        <Route path="/public-upload" component={SnLandingUpload} />
+        <Route path="/settings" component={SnUserSettings} />
+        <Route path="/login" component={snLogin} />
+        <Route path="/register" component={SnNew} />
+        <Route path="/apps/:category" component={SnCards} />
+        <Route path="/skylinks" component={SnCards} />
+        <Route path="/skyapps/:id" component={SnNew} />
+        <Route path="/skyspace/:skyspace" component={SnCards} />
+        <Route path="/history" component={SnHistory} />
+        <Route path="/profile" component={SnProfile} />
+        <Route path="/public-cards" component={SnCards} />
+        <Route path="/imported-spaces/:sender/:skyspace" component={SnCards} />
+        <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
+        <Route component={SnMultiUpload} />
+      </Switch>
+    </Router>
+  );
 }
 
 export default SnRouter;
