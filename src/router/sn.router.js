@@ -19,6 +19,7 @@ import SnMultiUpload from "../components/upload/sn.multi-upload";
 import snLogin from "../components/login/sn.login";
 import SnProfile from "../components/sn.profile";
 import SnLandingUpload from "../components/upload/sn.landing-upload";
+import SnFooter from "../components/footer/sn.footer";
 
 const useStyles = (theme) => ({
   root: {
@@ -57,6 +58,9 @@ const SnRouter = () => {
         <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
         <Route component={SnMultiUpload} />
       </Switch>
+      <div>
+        <SnFooter />
+      </div>
     </Router>
   );
 }
