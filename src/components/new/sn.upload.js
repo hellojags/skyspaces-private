@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useImperativeHandle, useRef } from "react";
 import HttpStatus from "http-status-codes";
 import bytes from "bytes";
 import Grid from "@material-ui/core/Grid";
@@ -30,7 +30,7 @@ const SnUpload = React.forwardRef((props, ref) => {
   const [uploadErr, setUploadErr] = useState(false);
   const [isDir, setIsDir] = useState(false);
   const apiUrl = props.portal != null ? props.portal : DEFAULT_PORTAL;
-
+  const gridRef = useRef();
   const client = new SkynetClient(apiUrl);
 
   useEffect(()=>{
@@ -218,6 +218,13 @@ const SnUpload = React.forwardRef((props, ref) => {
     }, undefined);
   };
 
+  useImperativeHandle(ref, () => ({
+
+    handleDrop,
+    gridRef
+
+  }));
+
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: handleDrop,
   });
@@ -232,7 +239,7 @@ const SnUpload = React.forwardRef((props, ref) => {
                 "drop-active": isDragActive,
               })}
               {...getRootProps()}
-              ref={ref}
+              ref={gridRef}
             >
               <span className="home-upload-text">
                 <h3>

@@ -631,7 +631,7 @@ class SnCards extends React.Component {
                 </Button>
                   <Button
                     variant="contained"
-                    onClick={() => this.uploadEleRef.current.click()}
+                    onClick={() => this.uploadEleRef.current.gridRef.current.click()}
                     color="primary"
                     className="btn-bg-color"
                   >

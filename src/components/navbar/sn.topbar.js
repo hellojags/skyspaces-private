@@ -70,6 +70,10 @@ const useStyles = (theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  searchBarForm: {
+    width: "100%",
+    display: "flex"
+  },
   appLogo: {
     color: theme.palette.mediumGray,
     fontSize: 35,
@@ -111,6 +115,8 @@ class SnTopBar extends React.Component {
   };
 
   triggerSearch = async (evt) => {
+    console.log("on trigger search");
+
     evt.preventDefault();
     evt.stopPropagation();
     if (this.props.snPublicHash != null) {
@@ -151,6 +157,7 @@ class SnTopBar extends React.Component {
     }
   };
   onDownload = () => {
+    console.log("ondownload");
     try {
       let skylink = parseSkylink(this.state.searchStr)
       //alert("skylink" + skylink)
@@ -226,8 +233,9 @@ class SnTopBar extends React.Component {
               />
 
               {/* search input */}
-              {this.props.authRoute ? null : (
+              {(this.props.person != null || this.props.snPublicHash) && (
                 <>
+                  <form onSubmit={this.triggerSearch} className={classes.searchBarForm}>
                   <div className="search_main_div">
                     <span>
                       <i className="fas fa-search srch-icon-inside-field-input"></i>
@@ -238,16 +246,20 @@ class SnTopBar extends React.Component {
                       type="search"
                       placeholder="Search in SkySpaces or download Skylink"
                       aria-label="Search"
+                      onChange={(evt) =>
+                        this.setState({ searchStr: evt.target.value })
+                      }
                     />
                   </div>
                   {/* search inside nav-brand */}
                   <div className="srch_btn_main_div">
-                    <button className="btn srch_btn_nvbar" onClick={this.onDownload}>
+                    <button className="btn srch_btn_nvbar" type="button" onClick={this.onDownload}>
                       <label>
                         <i className="fa fa-download icon_download_nvbar"></i>
                       </label>
                     </button>
                   </div>
+                    </form>
                 </>
               )}
             </a>

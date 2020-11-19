@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { createRef, useRef, useState } from "react";
 import "./sn.landing-upload.css";
 import { DropzoneArea } from "material-ui-dropzone";
 import ImageIcon from "@material-ui/icons/Image";
 import SnLandingUploadDisclaimer from "./sn.landing-upload-disclaimer";
 import { parseSkylink } from "skynet-js";
-import { launchSkyLink } from "../../sn.util";
+import { getPortalFromUserSetting, launchSkyLink } from "../../sn.util";
 import { useSelector } from "react-redux";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
-
+import SnUpload from "../new/sn.upload";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -19,6 +19,9 @@ function SnLandingUpload(props) {
     const [thumbnail, setThumb] = useState("");
     const [userSkylink, setUserSkylink] = useState("");
     const [invalidSkylink, setInvalidSkylink] = useState(false);
+    const [isDirUpload, setIsDirUpload] = useState(false);
+
+    const uploadEleRef = useRef();
 
     const stUserSession = useSelector((state) => state.userSession);
 
@@ -51,14 +54,23 @@ function SnLandingUpload(props) {
 
                             <div className="col col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 firstColumn">
                                 {/* col 1 title */}
-                                <div className="colum1-title-div">Upload Your Files</div>
+                                <div className="colum1-title-div">Upload Your {isDirUpload ? "Directory" : "Files"}</div>
                                 {/* drag n drop col 1 */}
                                 <div className="col1-dnd-div">
                                     {/* dropzone */}
 
+                                    <div className="d-none">
+                                        <SnUpload
+                                        name="files"
+                                        ref={uploadEleRef}
+                                        directoryMode={isDirUpload}
+                                        onUpload={console.log}
+                                        />
+                                    </div>
+
                                     <DropzoneArea
                                         filesLimit={5}
-                                        onChange={handleImage}
+                                        onChange={(files)=>uploadEleRef.current.handleDrop(files)}
                                         className="dropZonArea_drop_image"
                                         Icon={"none"}
                                         maxFileSize={210000000}
@@ -72,14 +84,16 @@ function SnLandingUpload(props) {
                                                         color: "gray",
                                                     }}
                                                 >
-                                                    Drop Your FIles here
+                                                    Drop Your {isDirUpload ? "Directory" : "Files"} here
                       </span>
                                             </div>
                                         }
                                     />
                                 </div>
                                 <div className="butn-upld-col1-toggle-div">
-                                    <button className="btn  btn butn-upld-col1">
+                                    <button className="btn  btn butn-upld-col1"
+                                        onClick={(evt)=>uploadEleRef.current.gridRef.current.click(evt)}>
+                                        {/*  onClick={(evt)=>console.log(uploadEleRef)}> */}
                                         <i className="fa fa-download upld-col1-icon-downld">
                                             &nbsp;&nbsp;&nbsp;Upload
                   </i>
@@ -89,6 +103,7 @@ function SnLandingUpload(props) {
                                             <input
                                                 type="checkbox"
                                                 className="custom-control-input"
+                                                onChange={(evt)=>setIsDirUpload(evt.target.checked)}
                                                 id="customSwitches"
                                             />
                                             <label
