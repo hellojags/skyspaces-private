@@ -19,7 +19,7 @@ import UserMenu from "./sn.user-menu";
 
 
 const useStyles = (theme) => ({
-  avatar : {
+  avatar: {
     boxShadow: "0 0 10px rgba(0,0,0,.4)",
     backgroundColor: theme.palette.primary.main,
     borderRadius: "50%",
@@ -46,7 +46,7 @@ class SnSignin extends React.Component {
   }
 
   userMenuClick = (event) => {
-    this.setState({userMenu: event.currentTarget});
+    this.setState({ userMenu: event.currentTarget });
   };
 
   gotoSkydbLogin = () => {
@@ -155,39 +155,43 @@ class SnSignin extends React.Component {
     const { classes } = this.props;
     return (
       <>
-      {this.props.person != null && <UserMenu userMenu={this.state.userMenu} setUserMenu={(evt)=>this.setState({userMenu: evt})} />}
+        {this.props.person != null &&
+          <UserMenu
+            userMenu={this.state.userMenu}
+            setUserMenu={(evt) => this.setState({ userMenu: evt })}
+            onShowSkyDbPublicKey={this.showSkydbPublicKey} />}
         {this.props.person == null && (
           <>
             <div className="login-butn-main-out-div">
-                    <button
-                      onClick={this.gotoSkydbLogin}
-                      type="button"
-                      className="btn btn-sm butn-out-login-nvbr"
-                    >
-                      Login
+              <button
+                onClick={this.gotoSkydbLogin}
+                type="button"
+                className="btn btn-sm butn-out-login-nvbr"
+              >
+                Login
                     </button>
-                  </div>
-                  <div className="signUp-butn-main-out-div">
-                    <button
-                      onClick={this.doSignUp}
-                      style={{ border: "1px solid #1ed660" }}
-                      type="button"
-                      className="btn  btn-sm butn-out-signup"
-                    >
-                      Sign up
+            </div>
+            <div className="signUp-butn-main-out-div">
+              <button
+                onClick={this.doSignUp}
+                style={{ border: "1px solid #1ed660" }}
+                type="button"
+                className="btn  btn-sm butn-out-signup"
+              >
+                Sign up
                     </button>
-                  </div>
+            </div>
 
           </>
         )}
         {this.props.person && (
           <>
             <div
-                  onClick={this.userMenuClick}
-                  className={classes.avatar}
-                >
-                  {this.props.person.username.charAt(0).toUpperCase()}
-                </div>
+              onClick={this.userMenuClick}
+              className={classes.avatar}
+            >
+              {this.props.person.username.charAt(0).toUpperCase()}
+            </div>
 
 
 
@@ -200,9 +204,9 @@ class SnSignin extends React.Component {
               className="avatar-menu"
             >
               <div style={{ color: APP_BG_COLOR, fontWeight: "bold" }}> */}
-                {/* UserName: {this.props.person.profile.name} <br/> */}
-                {/* UserID: {this.props.person.username} */}
-              {/* </div>
+            {/* UserName: {this.props.person.profile.name} <br/> */}
+            {/* UserID: {this.props.person.username} */}
+            {/* </div>
 
               <MenuItem onClick={() => this.handleSettings()}>
                 Settings

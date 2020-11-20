@@ -11,6 +11,7 @@ import ArrowDropDownSharpIcon from "@material-ui/icons/ArrowDropDownSharp";
 // import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { makeStyles } from "@material-ui/core/styles";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import Box from "@material-ui/core/Box";
 import CameraAltIcon from "@material-ui/icons/CameraAlt";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -97,6 +98,11 @@ function UserMenu(props) {
     dispatch(logoutPerson(stUserSession));
   }
 
+  const showPublicKey = () => {
+    userMenuClose();
+    props.onShowSkyDbPublicKey();
+  };
+
   return (
     <>
       <Popover
@@ -178,7 +184,14 @@ function UserMenu(props) {
               </div>
             </div>
             <div className={classes.menuListContainers}
-                onClick={logout}>
+              onClick={showPublicKey}>
+              <VisibilityIcon style={{ fontSize: 18 }} />
+              <div style={{ paddingLeft: 20 }}>
+                <Typography variant="span">Show Skydb Public Key</Typography>
+              </div>
+            </div>
+            <div className={classes.menuListContainers}
+              onClick={logout}>
               <ExitToAppIcon style={{ fontSize: 18 }} />
               <div style={{ paddingLeft: 20 }}>
                 <Typography variant="span">Sign out</Typography>
