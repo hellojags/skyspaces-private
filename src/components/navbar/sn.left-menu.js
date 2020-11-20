@@ -193,7 +193,7 @@ class SnLeftMenu extends React.Component {
     );
   }
 
-  drawer = (
+  drawer = () => (
 
     <>
       {/* <Header /> */}
@@ -327,7 +327,7 @@ class SnLeftMenu extends React.Component {
 
     return (
 
-      <nav className={this.props.classes.drawer} aria-label="mailbox folders">
+      this.props.person && <nav className={this.props.classes.drawer} aria-label="mailbox folders">
         {/* matches */true ? (
           <Hidden xsDown implementation="css">
             <Drawer
@@ -337,7 +337,7 @@ class SnLeftMenu extends React.Component {
               variant="permanent"
               open
             >
-              {this.drawer}
+              {this.drawer()}
             </Drawer>
           </Hidden>
         ) : null}
