@@ -223,7 +223,7 @@ class SnLeftMenu extends React.Component {
             </NavLink>
           </div>
 
-         {/*  <div className={this.props.classes.linksStyles}>
+          {/*  <div className={this.props.classes.linksStyles}>
             <img
               src={editDocIcon}
               className={this.props.classes.iconStyling}
@@ -234,99 +234,15 @@ class SnLeftMenu extends React.Component {
             </Typography>
           </div> */}
 
-          {/* for section two */}
-          <div className={this.props.classes.spaceLinkStyle}>
-            <span>
-              <BiCoinStack className={this.props.classes.spaceIcon} />
-              <Typography variant="span">
-                <Link to="/dashboard/spaces" className={this.props.classes.linkName}>
-                  Spaces
-                </Link>
-              </Typography>
-            </span>
-            <span>
-              <AddCircleOutlineIcon className={this.props.classes.spaceIcon} />
-            </span>
-          </div>
-          {/* expanded */}
-          <div className={this.props.classes.spacesCont}>
-            <span>
-              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
-              <Typography variant="span" className={this.props.classes.spacelinkName}>
-                Animal Space <span className={this.props.classes.spacesNumber}>(12)</span>
-              </Typography>
-            </span>
-            <span>
-              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
+          <>
+            {this.props.person != null && (
+              <SnSkySpaceMenu
+                // isMobile={isMobile}
+                toggleMobileMenuDisplay={this.toggleMobileMenuDisplay}
+              />
+            )}
+          </>
 
-              <FaShareSquare className={this.props.classes.shareIconStyle} />
-            </span>
-          </div>
-          <div className={this.props.classes.spacesCont}>
-            <span>
-              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
-              <Typography variant="span" className={this.props.classes.spacelinkName}>
-                Freedom Space <span className={this.props.classes.spacesNumber}>(12)</span>
-              </Typography>
-            </span>
-            <span>
-              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
-
-              <FaShareSquare className={this.props.classes.shareIconStyle} />
-            </span>
-          </div>
-          <div className={this.props.classes.spacesCont}>
-            <span>
-              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
-              <Typography variant="span" className={this.props.classes.spacelinkName}>
-                Super Space <span className={this.props.classes.spacesNumber}>(12)</span>
-              </Typography>
-            </span>
-            <span>
-              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
-
-              <FaShareSquare className={this.props.classes.shareIconStyle} />
-            </span>
-          </div>
-          <div className={this.props.classes.spacesCont}>
-            <span>
-              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
-              <Typography variant="span" className={this.props.classes.spacelinkName}>
-                Music Space <span className={this.props.classes.spacesNumber}>(12)</span>
-              </Typography>
-            </span>
-            <span>
-              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
-
-              <FaShareSquare className={this.props.classes.shareIconStyle} />
-            </span>
-          </div>
-          <div className={this.props.classes.spacesCont}>
-            <span>
-              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
-              <Typography variant="span" className={this.props.classes.spacelinkName}>
-                Video Space <span className={this.props.classes.spacesNumber}>(12)</span>
-              </Typography>
-            </span>
-            <span>
-              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
-
-              <FaShareSquare className={this.props.classes.shareIconStyle} />
-            </span>
-          </div>
-          <div className={this.props.classes.spacesCont}>
-            <span>
-              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
-              <Typography variant="span" className={this.props.classes.spacelinkName}>
-                Demo Space <span className={this.props.classes.spacesNumber}>(12)</span>
-              </Typography>
-            </span>
-            <span>
-              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
-
-              <FaShareSquare className={this.props.classes.shareIconStyle} />
-            </span>
-          </div>
 
           <div className={this.props.classes.spaceLinkStyle}>
             <span>
