@@ -50,6 +50,7 @@
     "react-dropzone": "^11.0.2",
     "react-hook-form": "^6.3.1",
     "react-horizontal-scrolling-menu": "^0.7.7",
+    "react-icons": "^3.11.0",
     "react-image-gallery": "^1.0.8",
     "react-image-video-lightbox": "^2.0.1",
     "react-material-ui-form-validator": "^2.1.1",

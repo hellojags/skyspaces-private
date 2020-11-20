@@ -37,7 +37,7 @@ const SnRouter = () => {
   return (
     <Router>
       <SnTopBar />
-      {/* <SnLeftMenu /> */}
+      <SnLeftMenu />
       <Switch>
         <Route exact path="/">
           <Redirect to="/public-upload" />

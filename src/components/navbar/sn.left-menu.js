@@ -1,4 +1,19 @@
 import React from "react";
+import leftMenuStyles from "./sn.left-menu.styles";
+import { AiOutlineUpload } from "react-icons/ai";
+import editDocIcon from "./images/writing.png";
+import { BiCoinStack } from "react-icons/bi";
+import { ImTree } from "react-icons/im";
+import { FaShareSquare } from "react-icons/fa";
+import BackupIcon from "@material-ui/icons/Backup";
+import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import VerticalSplitOutlinedIcon from "@material-ui/icons/VerticalSplitOutlined";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import ScreenShareIcon from "@material-ui/icons/ScreenShare";
+import WifiIcon from "@material-ui/icons/Wifi";
 import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
 import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
@@ -22,6 +37,9 @@ import {
   mapStateToProps,
   matchDispatcherToProps,
 } from "./sn.left-menu.container";
+import { Typography } from "@material-ui/core";
+import InnerIcon from "./images/icon.jpeg";
+
 
 const drawerWidth = 300;
 const useStyles = (theme) => ({
@@ -60,24 +78,24 @@ class SnLeftMenu extends React.Component {
   menuBar(classes, isMobile) {
     return (
       <React.Fragment>
-        <div className={classes.toolbar}>
+        <div className={this.props.classes.toolbar}>
           <div className="banner-text hidden-sm-up">
-          <div className="ribbon"><span>BETA</span></div>
-          <img
-                  src={skyapplogo}
-                  alt="SkySpaces"
-                  className="cursor-pointer hidden-sm-up center"
-                  height="40"
-                  width="170"
-                ></img>
-                </div>
+            <div className="ribbon"><span>BETA</span></div>
+            <img
+              src={skyapplogo}
+              alt="SkySpaces"
+              className="cursor-pointer hidden-sm-up center"
+              height="40"
+              width="170"
+            ></img>
+          </div>
         </div>
         <List className="left-menu-list-root">
-        <ListItem  className="appstore-mobile-link hidden-sm-up">
-        <ListItemText>
-          <Link rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{color: APP_BG_COLOR}}>Blog</Link>
-          </ListItemText>
-        </ListItem>
+          <ListItem className="appstore-mobile-link hidden-sm-up">
+            <ListItemText>
+              <Link rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link>
+            </ListItemText>
+          </ListItem>
           <ListItem
             button
             className="appstore-mobile-link hidden-sm-up"
@@ -155,28 +173,263 @@ class SnLeftMenu extends React.Component {
             )}
           </>
         </List>
-       
+
         <div className="fixfooter">
-        <div className={classes.FooterText}> 
-                            &copy; 2020 SkySpaces
+          <div className={this.props.classes.FooterText}>
+            &copy; 2020 SkySpaces
                             {/* <a 
                             href="https://github.com/skynethubio/SkySpaces" 
                             target="_blank"
                             rel="noopener noreferrer">
                                 <FontAwesomeIcon icon={faGithub} />
                             </a> */}
-                            </div>
-                            <a href="https://sia.tech/" target="_blank"
-                                rel="noopener noreferrer">
-                                <img src={builtWithSiaLogo} alt="Built With Sia" height="50" width="50" />
-                            </a>
-                        </div>
+          </div>
+          <a href="https://sia.tech/" target="_blank"
+            rel="noopener noreferrer">
+            <img src={builtWithSiaLogo} alt="Built With Sia" height="50" width="50" />
+          </a>
+        </div>
       </React.Fragment>
     );
   }
 
+  drawer = (
+
+    <>
+      {/* <Header /> */}
+      <div className="main-example">
+        <div className={this.props.classes.sideNavContainer}>
+          {/* for section one */}
+
+          <div className={this.props.classes.linksStyles}>
+            <AiOutlineUpload className={this.props.classes.iconStyling} />
+            <NavLink to="/upload"
+              activeClassName="active"
+              className={this.props.classes.linkName}>
+              <Typography variant="span">
+                Upload
+            </Typography>
+            </NavLink>
+          </div>
+
+          <div className={this.props.classes.linksStyles}>
+            <AddBoxOutlinedIcon className={this.props.classes.iconStyling} />
+            <NavLink to="/register"
+              activeClassName="active"
+              className={this.props.classes.linkName}>
+              <Typography variant="span">
+                New
+            </Typography>
+            </NavLink>
+          </div>
+
+         {/*  <div className={this.props.classes.linksStyles}>
+            <img
+              src={editDocIcon}
+              className={this.props.classes.iconStyling}
+              style={{ height: "20px" }}
+            />
+            <Typography variant="span" className={this.props.classes.linkName}>
+              Register
+            </Typography>
+          </div> */}
+
+          {/* for section two */}
+          <div className={this.props.classes.spaceLinkStyle}>
+            <span>
+              <BiCoinStack className={this.props.classes.spaceIcon} />
+              <Typography variant="span">
+                <Link to="/dashboard/spaces" className={this.props.classes.linkName}>
+                  Spaces
+                </Link>
+              </Typography>
+            </span>
+            <span>
+              <AddCircleOutlineIcon className={this.props.classes.spaceIcon} />
+            </span>
+          </div>
+          {/* expanded */}
+          <div className={this.props.classes.spacesCont}>
+            <span>
+              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
+              <Typography variant="span" className={this.props.classes.spacelinkName}>
+                Animal Space <span className={this.props.classes.spacesNumber}>(12)</span>
+              </Typography>
+            </span>
+            <span>
+              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
+
+              <FaShareSquare className={this.props.classes.shareIconStyle} />
+            </span>
+          </div>
+          <div className={this.props.classes.spacesCont}>
+            <span>
+              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
+              <Typography variant="span" className={this.props.classes.spacelinkName}>
+                Freedom Space <span className={this.props.classes.spacesNumber}>(12)</span>
+              </Typography>
+            </span>
+            <span>
+              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
+
+              <FaShareSquare className={this.props.classes.shareIconStyle} />
+            </span>
+          </div>
+          <div className={this.props.classes.spacesCont}>
+            <span>
+              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
+              <Typography variant="span" className={this.props.classes.spacelinkName}>
+                Super Space <span className={this.props.classes.spacesNumber}>(12)</span>
+              </Typography>
+            </span>
+            <span>
+              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
+
+              <FaShareSquare className={this.props.classes.shareIconStyle} />
+            </span>
+          </div>
+          <div className={this.props.classes.spacesCont}>
+            <span>
+              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
+              <Typography variant="span" className={this.props.classes.spacelinkName}>
+                Music Space <span className={this.props.classes.spacesNumber}>(12)</span>
+              </Typography>
+            </span>
+            <span>
+              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
+
+              <FaShareSquare className={this.props.classes.shareIconStyle} />
+            </span>
+          </div>
+          <div className={this.props.classes.spacesCont}>
+            <span>
+              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
+              <Typography variant="span" className={this.props.classes.spacelinkName}>
+                Video Space <span className={this.props.classes.spacesNumber}>(12)</span>
+              </Typography>
+            </span>
+            <span>
+              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
+
+              <FaShareSquare className={this.props.classes.shareIconStyle} />
+            </span>
+          </div>
+          <div className={this.props.classes.spacesCont}>
+            <span>
+              <BookmarkIcon className={this.props.classes.spaceBookIcon} />
+              <Typography variant="span" className={this.props.classes.spacelinkName}>
+                Demo Space <span className={this.props.classes.spacesNumber}>(12)</span>
+              </Typography>
+            </span>
+            <span>
+              {/* <EditOutlinedIcon className={this.props.classes.editIconStyle} /> */}
+
+              <FaShareSquare className={this.props.classes.shareIconStyle} />
+            </span>
+          </div>
+
+          <div className={this.props.classes.spaceLinkStyle}>
+            <span>
+              <ImTree className={this.props.classes.iconStyling} />
+              <Typography variant="span">
+                <Link to="/dashboard/sharedSpaces" className={this.props.classes.linkName}>
+                  {" "}
+                  Shared Spaces
+                </Link>
+              </Typography>
+            </span>
+            <span>
+              <AddCircleOutlineIcon className={this.props.classes.spaceIcon} />
+            </span>
+          </div>
+
+          <div className={this.props.classes.sideProf_div}>
+            {/* 1st side Inner icon */}
+            <div className={this.props.classes.innerSideProf_div}>
+              <div className={this.props.classes.icon_side_inner_div}>
+                <img
+                  src={InnerIcon}
+                  style={{
+                    width: "25px",
+                    borderRadius: "100%",
+                    height: "25px",
+                  }}
+                />
+              </div>
+              <div style={{ paddingLeft: "20px", marginTop: "-5px" }}>
+                <span style={{ fontSize: "12px" }}>jollyvector</span>
+                <div className={this.props.classes.icon_sub_title_div}>
+                  Video Space
+                  <span style={{ color: "#1ed660", paddingLeft: "7px" }}>
+                    (13)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 2nd side inner icon */}
+
+            <div className={this.props.classes.innerSideProf2_div}>
+              <div className={this.props.classes.icon_side_inner_div}>
+                <img
+                  src={InnerIcon}
+                  style={{
+                    width: "25px",
+                    borderRadius: "100%",
+                    height: "25px",
+                  }}
+                />
+              </div>
+              <div style={{ paddingLeft: "20px", marginTop: "-5px" }}>
+                <span style={{ fontSize: "12px" }}>jollyvector</span>
+                <div className={this.props.classes.icon_sub_title_div}>
+                  Audio Space
+                  <span style={{ color: "#1ed660", paddingLeft: "7px" }}>
+                    (25)
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ paddingTop: "30px" }}>
+            <div className={this.props.classes.image_logo_sideBarfooter}>
+              <img
+                src="https://skyspaces.io/static/media/Sia.7dd07c88.svg"
+                height="60"
+                width="60"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   render() {
     const { classes } = this.props;
+
+    return (
+
+      <nav className={this.props.classes.drawer} aria-label="mailbox folders">
+        {/* matches */true ? (
+          <Hidden xsDown implementation="css">
+            <Drawer
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+              variant="permanent"
+              open
+            >
+              {this.drawer}
+            </Drawer>
+          </Hidden>
+        ) : null}
+      </nav>
+
+    );
+
+
     return (
       <React.Fragment>
         <Hidden smUp={true} implementation="css">
@@ -197,25 +450,25 @@ class SnLeftMenu extends React.Component {
         </Hidden>
         {this.props.showDesktopMenu && (
 
-        <Hidden xsDown implementation="css">
-          <Drawer
-            className={classes.drawer}
-            variant="persistent"
-            anchor="left"
-            open={this.props.showDesktopMenu}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            {this.menuBar(classes)}
-          </Drawer>
-        </Hidden>
+          <Hidden xsDown implementation="css">
+            <Drawer
+              className={this.props.classes.drawer}
+              variant="persistent"
+              anchor="left"
+              open={this.props.showDesktopMenu}
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+            >
+              {this.menuBar(classes)}
+            </Drawer>
+          </Hidden>
         )}
       </React.Fragment>
     );
   }
 }
 
-export default withStyles(useStyles, { withTheme: true })(
+export default withStyles(leftMenuStyles, { withTheme: true })(
   connect(mapStateToProps, matchDispatcherToProps)(SnLeftMenu)
 );
