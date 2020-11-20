@@ -3,6 +3,7 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ShareOutlinedIcon from '@material-ui/icons/ShareOutlined';
 import SnShareSkyspaceModal from "../modals/sn.share-skyspace.modal";
+import InnerIcon from "./images/icon.jpeg";
 import SnConfirmationModal from "../modals/sn.confirmation.modal";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { BiCoinStack } from "react-icons/bi";
@@ -18,6 +19,7 @@ import {
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import {
   APP_BG_COLOR,
   ADD_SKYSPACE,
@@ -39,6 +41,7 @@ import SnImportSharedSpaceModal from "../modals/sn.import-shared-space.modal";
 import { Accordion, AccordionDetails, AccordionSummary, Typography, withStyles } from "@material-ui/core";
 import leftMenuStyles from "./sn.left-menu.styles";
 import { FaShareSquare } from "react-icons/fa";
+import { ImTree } from "react-icons/im";
 
 class SnSkySpaceMenu extends React.Component {
   constructor(props) {
@@ -221,60 +224,64 @@ class SnSkySpaceMenu extends React.Component {
           ))
         )}
 
+        <div className={this.props.classes.spaceLinkStyle}>
+          <span>
+            <ImTree className={this.props.classes.iconStyling} />
+            <Typography variant="span">
+              Shared Spaces
+              </Typography>
+          </span>
+          <span>
+            <AddCircleOutlineIcon className={this.props.classes.spaceIcon}
+              onClick={this.importSharedSpace} />
+          </span>
+        </div>
 
-        <Divider className="skyspace-menu-divider" component="div" />
-        <ListItem button component="a" className="nav-link dummy-link">
-          <ListItemIcon>
-            <BookmarksIcon style={{ color: APP_BG_COLOR }} />
-          </ListItemIcon>
-          <ListItemText style={{ color: APP_BG_COLOR }} primary="Imported Spaces" />
-          <Tooltip title="Import Spaces From Other Users" arrow>
-            <AddCircleOutlineIcon
-              style={{ color: APP_BG_COLOR }}
-              onClick={this.importSharedSpace}
-            />
-          </Tooltip>
-        </ListItem>
-        {this.props.snImportedSpace?.sharedByUserList
-          ?.filter(userId => this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.length > 0)
-          .map((userId) => (
-            <>
-              <Accordion>
-                <Tooltip title={userId}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography>{cliTruncate(userId, 20)}</Typography>
-                  </AccordionSummary>
-                </Tooltip>
-                {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
-                  <AccordionDetails key={skyspace}>
-                    <NavLink
-                      activeClassName="active"
-                      className="imported-space-nav-link"
-                      onClick={() =>
-                        this.props.isMobile && this.props.toggleMobileMenuDisplay()
-                      }
-                      to={"/imported-spaces/" + encodeURIComponent(userId) + "/" + skyspace}
-                    >
-                      <ListItem
-                        button
-                      /* onClick={(evt) => this.getSkyspace(evt, skyspace)} */
+        <div className={this.props.classes.sideProf_div}>
+          {this.props.snImportedSpace?.sharedByUserList
+            ?.filter(userId => this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.length > 0)
+            .map((userId) => (
+              <>
+
+                <div className={this.props.classes.innerSideProf_div} key={userId}>
+                  <div className={this.props.classes.icon_side_inner_div}>
+                    {/* <img
+                  src={InnerIcon}
+                  style={{
+                    width: "25px",
+                    borderRadius: "100%",
+                    height: "25px",
+                  }}
+                /> */}
+                    <AccountCircleIcon className={this.props.classes.spaceIcon} />
+                  </div>
+
+                  <div style={{ paddingLeft: "20px", marginTop: "-5px" }}>
+                    <span style={{ fontSize: "12px" }}>{cliTruncate(userId, 20)}</span>
+                    {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
+                      <NavLink
+                        activeClassName="active"
+                        key={skyspace}
+                        className="imported-space-nav-link"
+                        onClick={() =>
+                          this.props.isMobile && this.props.toggleMobileMenuDisplay()
+                        }
+                        to={"/imported-spaces/" + encodeURIComponent(userId) + "/" + skyspace}
                       >
-                        <BookmarkIcon style={{ color: APP_BG_COLOR }} />
-                        <ListItemText
-                          primary={skyspace}
-                          style={{ color: APP_BG_COLOR }}
-                        />
-                      </ListItem>
-                    </NavLink>
-                  </AccordionDetails>
-                ))}
-              </Accordion>
-            </>
-          ))}
+                        <div className={this.props.classes.icon_sub_title_div} >
+                          {cliTruncate(skyspace, 10)}
+                          {/* <span style={{ color: "#1ed660", paddingLeft: "7px" }}>
+                    (13)
+                  </span> */}
+                        </div>
+                      </NavLink>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ))}
+        </div>
+
         <SnAddSkyspaceModal
           open={this.state.showAddSkyspace}
           title={this.state.skyspaceModal.title}
