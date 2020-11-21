@@ -75,8 +75,8 @@ function SnLandingUpload(props) {
                                     </div>
 
                                     <DropzoneArea
-                                        filesLimit={5}
-                                        onChange={(files)=>uploadEleRef.current.handleDrop(files)}
+                                        filesLimit={100}
+                                        onDrop={(files)=>uploadEleRef.current.handleDrop(files)}
                                         className="dropZonArea_drop_image"
                                         Icon={"none"}
                                         maxFileSize={210000000}
