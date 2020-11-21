@@ -1,4 +1,4 @@
-import React, { createRef, useRef, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import "./sn.landing-upload.css";
 import { DropzoneArea } from "material-ui-dropzone";
 import ImageIcon from "@material-ui/icons/Image";
@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import SnUpload from "../new/sn.upload";
+import { useHistory } from "react-router-dom";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -22,9 +23,14 @@ function SnLandingUpload(props) {
     const [isDirUpload, setIsDirUpload] = useState(false);
 
     const uploadEleRef = useRef();
+    const history = useHistory();
 
     const stUserSession = useSelector((state) => state.userSession);
+    const stPerson = useSelector((state) => state.person);
 
+    useEffect(() => {
+        stPerson!=null && history.push("/upload")
+    }, [])
     const handleImage = (files) => {
         if (files.length) {
             setThumb(files[0]);
