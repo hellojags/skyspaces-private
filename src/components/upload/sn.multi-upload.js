@@ -238,10 +238,7 @@ export default function SnMultiUpload(props) {
                     </div>
                     <DropzoneArea
                       showPreviewsInDropzone={false}
-                      onDrop={(files) => {
-                        console.log("no of file sent to upload", files.length);
-                        uploadEleRef.current.handleDrop(files)
-                      }}
+                      onDrop={uploadEleRef.current.handleDrop}
                       //  className={classes.dropZonArea}
                       Icon={"none"}
                       maxFileSize={210000000}
