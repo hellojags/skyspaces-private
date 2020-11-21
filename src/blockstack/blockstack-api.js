@@ -62,7 +62,6 @@ export const bsAddSkhubListToSkylinkIdx = async (session, skhubIdList) => {
 };
 
 export const bsAddSkylink = async (session, skylinkObj, person) => {
-console.log("person", person)
     // check if skhubId is present. If new Object, this value will be empty
     if (person == null) {
         return;
