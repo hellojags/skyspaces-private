@@ -1,17 +1,33 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
+import useStyles from "./sn.cards.styles";
+import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
 import Grid from "@material-ui/core/Grid";
+import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton";
+import AppsIcon from "@material-ui/icons/Apps";
+import ReorderIcon from "@material-ui/icons/Reorder";
+import MenuItem from "@material-ui/core/MenuItem";
+import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
+import DescriptionOutlinedIcon from "@material-ui/icons/DescriptionOutlined";
+import MoreVertOutlinedIcon from "@material-ui/icons/MoreVertOutlined";
+import InputBase from "@material-ui/core/InputBase";
+import LowPriorityIcon from "@material-ui/icons/LowPriority";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import PublishIcon from "@material-ui/icons/Publish";
+import HeadsetIcon from "@material-ui/icons/Headset";
 import { INITIAL_PORTALS_OBJ } from "../../blockstack/constants";
 import SnUpload from "../new/sn.upload";
 import { v4 as uuidv4 } from 'uuid';
 import { SkynetClient, parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject, getEmptySkylinkObject } from "../new/sn.new.constants";
 import BlockIcon from '@material-ui/icons/Block';
-import { Button, FormControlLabel, Switch } from "@material-ui/core";
+import { Button, FormControlLabel, Switch, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import Avatar from '@material-ui/core/Avatar';
-import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import { green } from "@material-ui/core/colors";
 import { subtractSkapps, getPortalFromUserSetting, setTypeFromFile, getAllPublicApps } from "../../sn.util";
@@ -40,25 +56,27 @@ import UploadProgress from "../upload/UploadProgress/UploadProgress";
 import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
 import AudioPlayer from "../categories/audio/sn.audio-player";
 
-const useStyles = (theme) => ({
-  small: {
-    width: theme.spacing(3),
-    height: theme.spacing(3),
+
+const BootstrapInput = withStyles((theme) => ({
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: "white",
+    color: theme.palette.linksColor,
+    //   border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    //   transition: theme.transitions.create(['border-color', 'box-shadow']),
+    // Use the system font instead of the default Roboto font.
+    "&:focus": {
+      // borderRadius: 4,
+      // borderColor: '#80bdff',
+      backgroundColor: "white",
+      // boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
   },
-  avatar: {
-    backgroundColor: green[500],
-  },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "0px",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
-});
+}))(InputBase);
+
 
 class SnCards extends React.Component {
   constructor(props) {
@@ -89,7 +107,18 @@ class SnCards extends React.Component {
       hash: null,
       showInfoModal: false,
       infoModalContent: null,
-      isDir: false
+      isDir: false,
+
+
+
+      //new UI START
+      activeStep: 0,
+      filterSelection: "emp",
+      isTrue: false,
+      GridUi: true
+
+      //new UI END
+
     };
     this.openSkyApp = this.openSkyApp.bind(this);
     this.handleSrchSbmt = this.handleSrchSbmt.bind(this);
@@ -98,7 +127,46 @@ class SnCards extends React.Component {
     this.uploadEleRef = React.createRef();
   }
 
+  //new ui start
+  setActiveStep = (activeStep) => this.setState({ activeStep });
+  setFilterSelection = (filterSelection) => this.setState({ filterSelection });
+  setGridUi = (GridUi) => this.setState({ GridUi });
+  handleUploadSection = (value) => {
+    this.setIsTrue(value);
+  };
+  handleChange = (event) => {
+    this.setFilterSelection(event.target.value);
+  };
 
+  getStepContent = (stepIndex) => {
+    switch (stepIndex) {
+      case 0:
+        return {/* <AllSpaces /> */ };
+      case 1:
+        return {/* <ImagesGallery handleUploadSection={handleUploadSection} /> */ };
+      case 2:
+        return {/* <AudioSpaces /> */ };
+      case 3:
+        return {/* <EditFile /> */ };
+      default:
+        return "unknown step";
+    }
+  }
+  getStepContentForList = (stepIndex) => {
+    switch (stepIndex) {
+      case 0:
+        return {/* <AllSpacesListView /> */ };
+      case 1:
+        return {/* <ImagesGallery handleUploadSection={handleUploadSection} /> */ };
+      case 2:
+        return {/* <AudioSpacesListView /> */ };
+      case 3:
+        return {/* <EditFile /> */ };
+      default:
+        return "unknown step";
+    }
+  }
+  //new ui end
 
   updateSwitches = (switchFilterList) => {
     const { filterCriteria } = this.state;
@@ -223,7 +291,7 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
@@ -243,7 +311,7 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=")>-1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
     if (
@@ -512,6 +580,7 @@ class SnCards extends React.Component {
 
   render() {
     const { goToApp, skyappId, fetchAllSkylinks } = this.state;
+    const { classes } = this.props;
     const page = this.state.filterCriteria.page;
     const filterList = this.state.filterCriteria.tagFilterList;
     let filterCriteria = "";
@@ -534,13 +603,164 @@ class SnCards extends React.Component {
       ) {
         source = "skyspace";
       }
-      if (this.state.senderId!=null) {
-        return <Redirect to= { `/imported-skyapps/${encodeURIComponent(this.state.senderId)}/${skyappId}?source=${source}`}/>;
+      if (this.state.senderId != null) {
+        return <Redirect to={`/imported-skyapps/${encodeURIComponent(this.state.senderId)}/${skyappId}?source=${source}`} />;
       } else {
         return <Redirect to={"/skyapps/" + skyappId + "?source=" + source} />;
       }
     }
     let filteredApps = this.getFilteredApps();
+
+
+    return (
+      <main className={true ? classes.content : null}>
+        <div style={{ paddingTop: 70, minHeight: "calc(100vh - 100px)" }}>
+
+          <Grid
+            container
+            className="most_main_grid_gallery"
+            spacing={3}
+            style={{ width: "99%", margin: "auto" }}
+          >
+            <Grid item lg={2} md={2} sm={12} xs={12}>
+              <Typography className={classes.gallery_title}>Spaces</Typography>
+              <Typography className={classes.gallery_subTitle}>
+                {this.state.hash == null && skyspace}
+                {this.state.hash != null && "Public Space"}
+              </Typography>
+            </Grid>
+            {filteredApps.length > 0 && <>
+              <Grid
+                item
+                lg={10}
+                md={10}
+                sm={12}
+                xs={12}
+                className={`${classes.gallery_title_btns_grid
+                  } ${"most_main_grid_gallery_style"}`}
+              >
+                {/*  All */}
+                <Typography
+                  onClick={() => this.updateTagFilterList([])}
+                  variant="span"
+                  className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext}`}
+                >
+                  All
+            <Typography variant="span" className={classes.innerValue_All}>
+                    {" "}
+                    {this.props.snApps && this.props.snApps.length}
+                  </Typography>
+                </Typography>
+                {Object.keys(getCategoryObjWithoutAll())
+                  .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
+                  .map((key, idx) => (
+                    <Typography
+                      onClick={() => this.setActiveStep(1)}
+                      variant="span"
+                      key={idx}
+                      className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text}`}
+                    >
+                      <CameraAltOutlinedIcon style={{ fontSize: "20px" }} />
+                        &nbsp; {getCategoryObjWithoutAll()[key].heading}
+                      <Typography variant="span" className={classes.innerValue_All}>
+                        {categoryWiseCount[key]
+                          ? categoryWiseCount[key]
+                          : 0}
+                      </Typography>
+                    </Typography>
+                  ))}
+              </Grid>
+            </>}
+            {this.isTrue ? null : (
+              <>
+                <Grid
+                  item
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  xs={12}
+                  style={{ display: "flex", alignItems: "flex-end" }}
+                >
+                  <input
+                    accept="image/*"
+                    className={classes.input}
+                    id="contained-button-file"
+                    multiple
+                    type="file"
+                  />
+                  {/* <label htmlFor="contained-button-file">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ color: "white", borderRadius: 10 }}
+                      component="span"
+                      startIcon={<PublishIcon style={{ color: "white" }} />}
+                    >
+                      Upload
+                </Button>
+                  </label> */}
+
+                  {/* <span style={{ marginLeft: 20 }}></span>
+                  <IconButton aria-label="delete" onClick={() => this.setGridUi(true)}>
+                    <AppsIcon className={classes.appsIcon} />
+                  </IconButton>
+
+                  <IconButton aria-label="delete" onClick={() => this.setGridUi(false)}>
+                    <ReorderIcon className={classes.reOrdered} />
+                  </IconButton> */}
+                </Grid>
+
+                <Grid
+                  item
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  xs={12}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  {/* <LowPriorityIcon className={classes.lowPriorIcon} />
+                  <FormControl className={classes.formControl}>
+                    <Select
+                      input={<BootstrapInput />}
+                      inputProps={{
+                        classes: {
+                          icon: classes.icon,
+                        },
+                      }}
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={this.filterSelection}
+                      disableUnderline={true}
+                      onChange={this.handleChange}
+                    >
+                      <MenuItem value={"emp"} className={classes.menuColor}>
+                        Latest filter
+                  </MenuItem>
+                      <MenuItem value={20}>Twenty</MenuItem>
+                      <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
+                  </FormControl> */}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.sharedSpaceButn}
+                    startIcon={<CheckCircleIcon style={{ color: "white" }} />}
+                  >
+                    Select
+              </Button>
+                </Grid>
+              </>
+            )}
+          </Grid>
+
+          {/* {this.GridUi ? this.getStepContent(this.state.activeStep) : this.getStepContentForList(this.state.activeStep)} */}
+        </div>
+      </main>
+    );
 
     return (
       <div className="card-parent-conatiner">
