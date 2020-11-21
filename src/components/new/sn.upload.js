@@ -40,10 +40,8 @@ const SnUpload = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     if (props.directoryMode || isDir) {
-      console.log("changed dir");
       inputRef.current.setAttribute("webkitdirectory", "true");
     } else {
-      console.log("changed dir off");
       inputRef.current.removeAttribute("webkitdirectory");
     }
   }, [props.directoryMode, isDir]);

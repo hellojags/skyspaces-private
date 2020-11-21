@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import FormControl from "@material-ui/core/FormControl";
 import useStyles from "./sn.multi-upload.styles";
 import { useLocation } from "react-router-dom";
@@ -67,16 +67,17 @@ export default function SnMultiUpload(props) {
   const [skyspaceList, setSkyspaceList] = useState([]);
   const [dnldSkylink, setDnldSkylink] = useState([]);
   const [showPublicToAccModal, setShowPublicToAccModal] = useState(false);
-  const uploadEleRef = React.createRef();
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
-
+  const [dropZoneInputProps, setDropZoneInputProps] = useState({});
   const [state, setState] = React.useState({
     checkedA: false,
     checkedB: true,
   });
   const [thumbnail, setThumb] = React.useState("");
+  const uploadEleRef = createRef();
+  const dropZoneRef = createRef();
 
   const stUserSession = useSelector((state) => state.userSession);
   const stSnSkyspaceList = useSelector((state) => state.snSkyspaceList);
@@ -92,6 +93,14 @@ export default function SnMultiUpload(props) {
   useEffect(() => {
     handlePublicToAcc();
   }, [query.get(PUBLIC_TO_ACC_QUERY_PARAM)]);
+
+  useEffect(() => {
+    if (isDirUpload) {
+      setDropZoneInputProps({webkitdirectory: true});
+    } else {
+      setDropZoneInputProps({})
+    } 
+  }, [isDirUpload]);
 
   useEffect(() => {
     handlePublicToAcc();
@@ -238,9 +247,13 @@ export default function SnMultiUpload(props) {
                     </div>
                     <DropzoneArea
                       showPreviewsInDropzone={false}
-                      onDrop={uploadEleRef.current.handleDrop}
+                      onDrop={(files) => {
+                        uploadEleRef.current.handleDrop(files)
+                      }}
                       //  className={classes.dropZonArea}
                       Icon={"none"}
+                      // ref={dropZoneRef}
+                      inputProps={dropZoneInputProps}
                       maxFileSize={210000000}
                       onDelete={delImg}
                       filesLimit={100}
