@@ -33,14 +33,17 @@ const SnUpload = React.forwardRef((props, ref) => {
   const gridRef = useRef();
   const client = new SkynetClient(apiUrl);
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(setUploadList(files));
+    props.onUploadProgress && props.onUploadProgress(files);
   }, [files]);
 
   useEffect(() => {
     if (props.directoryMode || isDir) {
+      console.log("changed dir");
       inputRef.current.setAttribute("webkitdirectory", "true");
     } else {
+      console.log("changed dir off");
       inputRef.current.removeAttribute("webkitdirectory");
     }
   }, [props.directoryMode, isDir]);
@@ -125,7 +128,6 @@ const SnUpload = React.forwardRef((props, ref) => {
     const onFileStateChange = (file, state) => {
       setFiles((previousFiles) => {
         const index = previousFiles.findIndex((f) => f.file === file);
-
         return [
           ...previousFiles.slice(0, index),
           {
@@ -137,7 +139,7 @@ const SnUpload = React.forwardRef((props, ref) => {
       });
     };
 
-    await acceptedFiles.reduce(async (memo , file) => {
+    await acceptedFiles.reduce(async (memo, file) => {
       await memo;
       // Reject files larger than our hard limit of 1 GB with proper message
       if (file.size > bytes("1 GB")) {
@@ -156,7 +158,7 @@ const SnUpload = React.forwardRef((props, ref) => {
         resForCompressed = await client.uploadFile(compressedFile);
       }
       if (fileType && fileType.startsWith("video")) {
-        const videoThumbnail = await generateThumbnailFromVideo({file});
+        const videoThumbnail = await generateThumbnailFromVideo({ file });
         resForCompressed = await client.uploadFile(videoThumbnail);
       }
       const onUploadProgress = (progress) => {
@@ -186,7 +188,7 @@ const SnUpload = React.forwardRef((props, ref) => {
             name: file.name,
             contentType: fileType,
             thumbnail:
-            resForCompressed != null ? parseSkylink(resForCompressed) : null,
+              resForCompressed != null ? parseSkylink(resForCompressed) : null,
             contentLength: file.size,
           });
           onFileStateChange(file, {
@@ -243,24 +245,24 @@ const SnUpload = React.forwardRef((props, ref) => {
             >
               <span className="home-upload-text">
                 <h3>
-                <CloudUploadOutlinedIcon /> Upload your {(props.directoryMode || isDir) ? "Directory" : "Files"}
+                  <CloudUploadOutlinedIcon /> Upload your {(props.directoryMode || isDir) ? "Directory" : "Files"}
                 </h3>
               </span>
             </Grid>
             <Grid item xs={12} sm={3}>
-            <div className="float-right upload-dir-switch">
-              <FormControlLabel
-                className="no-gutters"
-                control={
-                  <Switch
-                    checked={isDir}
-                    onChange={(evt) => setIsDir(evt.target.checked)}
-                    name="checkedA"
-                    className="app-bg-switch"
-                  />
-                }
-                label="Directory"
-              />
+              <div className="float-right upload-dir-switch">
+                <FormControlLabel
+                  className="no-gutters"
+                  control={
+                    <Switch
+                      checked={isDir}
+                      onChange={(evt) => setIsDir(evt.target.checked)}
+                      name="checkedA"
+                      className="app-bg-switch"
+                    />
+                  }
+                  label="Directory"
+                />
               </div>
             </Grid>
             <input id="idInp" {...getInputProps()} className="offscreen" />
