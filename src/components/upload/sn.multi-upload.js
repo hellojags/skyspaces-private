@@ -70,7 +70,6 @@ export default function SnMultiUpload(props) {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
-  const [dropZoneInputProps, setDropZoneInputProps] = useState({});
   const [state, setState] = React.useState({
     checkedA: false,
     checkedB: true,
@@ -94,13 +93,6 @@ export default function SnMultiUpload(props) {
     handlePublicToAcc();
   }, [query.get(PUBLIC_TO_ACC_QUERY_PARAM)]);
 
-  useEffect(() => {
-    if (isDirUpload) {
-      setDropZoneInputProps({webkitdirectory: true});
-    } else {
-      setDropZoneInputProps({})
-    } 
-  }, [isDirUpload]);
 
   useEffect(() => {
     handlePublicToAcc();
@@ -252,8 +244,7 @@ export default function SnMultiUpload(props) {
                       }}
                       //  className={classes.dropZonArea}
                       Icon={"none"}
-                      // ref={dropZoneRef}
-                      inputProps={dropZoneInputProps}
+                      ref={dropZoneRef}
                       maxFileSize={210000000}
                       onDelete={delImg}
                       filesLimit={100}
@@ -312,7 +303,7 @@ export default function SnMultiUpload(props) {
                             Skylink: {fileObj?.url}
                           </Typography>)}
                           {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.img_name_txt}>
-                            Status: {fileObj?.status}
+                            {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                           </Typography>)}
                         </div>
                         <div style={{ display: "flex", alignItems: "center" }}>
