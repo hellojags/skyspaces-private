@@ -1,8 +1,25 @@
 import { makeStyles } from "@material-ui/core/styles";
 
+
 export default makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+  },
+  content: {
+    [theme.breakpoints.up("sm")]: {
+      width: `calc(100% - ${295}px)`,
+      marginLeft: 295,
+    },
+    backgroundColor: theme.palette.whiteBgColor,
+    padding: theme.spacing(3),
+  },
+  publicContent: {
+    [theme.breakpoints.up("sm")]: {
+      width: `calc(100% - ${0}px)`,
+      // marginLeft: 295,
+    },
+    backgroundColor: theme.palette.whiteBgColor,
+    padding: theme.spacing(3),
   },
   appsIcon: {
     color: theme.palette.linksColor,
