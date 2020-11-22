@@ -331,6 +331,27 @@ export default function SnMultiUpload(props) {
           </Grid>
         </Grid>
       </div>
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={4000}
+        onClose={() => setShowAlert(false)}
+      >
+        <Alert onClose={() => setShowAlert(false)} severity={alertSeverity || "success"}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
+      {/* <UploadProgress /> */}
+      <SnAddToSkyspaceModal
+        userSession={stUserSession}
+        title={"Import Into Existing Space Or Add To New Space"}
+        open={showPublicToAccModal}
+        disableBackdropClick={true}
+        disableEscapeKeyDown={true}
+        availableSkyspaces={stSnSkyspaceList}
+        showAddSkyspace={true}
+        onClose={() => setShowPublicToAccModal(false)}
+        onSave={importPublicAppsToSpaces}
+      />
     </main>
   );
 }
