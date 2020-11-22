@@ -207,7 +207,7 @@ class SnTopBar extends React.Component {
     const { classes } = this.props;
     return (
       <>
-        {this.props.snShowDesktopMenu && <div>
+        {this.props.snTopbarDisplay && <div>
           <div className="container-fluid main-container">
             <nav className="navbar navbar-light hdr-nvbr-main">
               {this.props.person != null && (

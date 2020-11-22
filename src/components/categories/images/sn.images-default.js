@@ -368,13 +368,6 @@ export default function SnImagesDefault(props) {
                         <div
                           className={`inner_image_icons ${classes.inner_image_icons}`}
                         >
-                          {/* <FavoriteBorderOutlinedIcon style={{ cursor: "pointer" }} />
-                  <AddCircleOutlineOutlinedIcon
-                    style={{ marginLeft: "10px", cursor: "pointer" }}
-                  />
-                  <EditOutlinedIcon
-                    style={{ marginLeft: "10px", cursor: "pointer" }}
-                  /> */}
                           {props.isSelect && (
                             <>
                               {props.arrSelectedAps.indexOf(app) === -1 && (
