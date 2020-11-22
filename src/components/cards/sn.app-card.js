@@ -277,6 +277,18 @@ class SnAppCard extends React.Component {
                       )}
                     </Typography>
                   </div>
+                  {this.props.isSelect && (
+                            <div style={{marginLeft: "auto"}}>
+                              {this.props.arrSelectedAps.indexOf(app) === -1 && (
+                                <RadioButtonUncheckedIcon className="selection-radio"
+                                  onClick={() => this.props.onSelection(app)} />
+                              )}
+                              {this.props.arrSelectedAps.indexOf(app) > -1 && (
+                                <RadioButtonCheckedIcon className="selection-radio"
+                                  onClick={() => this.props.onSelection(app, true)} />
+                              )}
+                            </div>
+                          )}
                 </div>
                 <div style={{ paddingLeft: 62 }} className={classes.createAtTime}>
                   {app.skylink} <Tooltip title="Copy Skylink to clipboard" arrow>
