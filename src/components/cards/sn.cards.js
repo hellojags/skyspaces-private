@@ -557,6 +557,7 @@ class SnCards extends React.Component {
   }
 
   deleteFromPublic = (evt) => {
+    evt.preventDefault();
     if (this.state.isSelect && this.state.arrSelectedAps.length > 0) {
       console.log("public apps to delete ", this.state.arrSelectedAps);
       const inMemObj = this.props.snPublicInMemory;
@@ -576,7 +577,8 @@ class SnCards extends React.Component {
     this.props.setApps(getAllPublicApps(this.props.snApps, inMemObj.addedSkapps, inMemObj.deletedSkapps));
   }
 
-  addPublicSpaceToAccount = async () => {
+  addPublicSpaceToAccount = async (evt) => {
+    evt.preventDefault();
     let publicUpload = null;
     this.props.setLoaderDisplay(true);
     publicUpload = await savePublicSpace(this.state.hash, this.props.snPublicInMemory);
@@ -590,7 +592,8 @@ class SnCards extends React.Component {
     }
   }
 
-  savePublicSpace = async () => {
+  savePublicSpace = async (evt) => {
+    evt.preventDefault();
     this.props.setLoaderDisplay(true);
     const publicHashData = await getPublicApps(this.state.hash);
     const skappListToSave = getAllPublicApps(publicHashData.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps);
@@ -615,6 +618,21 @@ class SnCards extends React.Component {
         document.location.href = newUrl;
       }
     });
+  }
+
+  selectPublicAll = (evt, filteredApps) => {
+    evt.preventDefault();
+    this.setState({ isSelect: true, arrSelectedAps: filteredApps })
+  }
+
+  cancelPublicSelect = (evt) => {
+    evt.preventDefault();
+    this.setState({ isSelect: false, arrSelectedAps: [] });
+  }
+
+  publicSelect = (evt) => {
+    evt.preventDefault();
+    this.setState({ isSelect: true, arrSelectedAps: [] });
   }
 
   render() {
@@ -652,7 +670,7 @@ class SnCards extends React.Component {
 
 
     return (
-      <main className={true ? classes.content : null}>
+      <main className={this.state.hash ? classes.publicContent : classes.content}>
         <div style={{ paddingTop: 70, minHeight: "calc(100vh - 100px)" }}>
 
           <Grid
@@ -720,8 +738,8 @@ class SnCards extends React.Component {
               <>
                 <Grid
                   item
-                  lg={6}
-                  md={6}
+                  lg={this.state.hash != null ? 12 : 6}
+                  md={this.state.hash != null ? 12 : 6}
                   sm={12}
                   xs={12}
                   style={{ display: "flex", alignItems: "flex-end" }}
@@ -742,12 +760,14 @@ class SnCards extends React.Component {
                           color="primary"
                           style={{ color: "white", borderRadius: 10 }}
                           component="span"
+                          type="button"
                           startIcon={<PublishIcon style={{ color: "white" }} />}
                         >
                           Upload
                     </Button>
                         <Button
                           variant="contained"
+                          type="button"
                           onClick={this.addPublicSpaceToAccount}
                           color="primary"
                           style={{ color: "white", borderRadius: 10 }}
@@ -767,6 +787,7 @@ class SnCards extends React.Component {
                         </div>
                         <Button
                           variant="contained"
+                          type="button"
                           onClick={this.savePublicSpace}
                           color="primary"
                           style={{ color: "white", borderRadius: 10 }}
@@ -777,6 +798,7 @@ class SnCards extends React.Component {
                 </Button>
                         <Button
                           variant="contained"
+                          type="button"
                           onClick={this.deleteFromPublic}
                           color="primary"
                           style={{ color: "white", borderRadius: 10 }}
@@ -787,8 +809,9 @@ class SnCards extends React.Component {
                 </Button>
                         <Button
                           variant="contained"
-                          onClick={() => this.setState({ isSelect: true, arrSelectedAps: filteredApps })}
+                          onClick={(evt)=>this.selectPublicAll(evt, filteredApps)}
                           color="primary"
+                          type="button"
                           style={{ color: "white", borderRadius: 10 }}
                           component="span"
                           startIcon={<PublishIcon style={{ color: "white" }} />}
@@ -797,7 +820,7 @@ class SnCards extends React.Component {
                 </Button>
                         {!this.state.isSelect && (<Button
                           variant="contained"
-                          onClick={() => this.setState({ isSelect: true, arrSelectedAps: [] })}
+                          onClick={this.publicSelect}
                           color="primary"
                           style={{ color: "white", borderRadius: 10 }}
                           component="span"
@@ -806,7 +829,7 @@ class SnCards extends React.Component {
                           Select
                         </Button>)}
                         {this.state.isSelect && (<Button
-                          onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
+                          onClick={this.cancelPublicSelect}
                           variant="contained"
                           color="primary"
                           style={{ color: "white", borderRadius: 10 }}
