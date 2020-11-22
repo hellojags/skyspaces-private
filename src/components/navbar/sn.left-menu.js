@@ -262,7 +262,8 @@ class SnLeftMenu extends React.Component {
 
     return (
 
-      this.props.person && <nav className={this.props.classes.drawer} aria-label="mailbox folders">
+      this.props.showDesktopMenu && this.props.person &&
+      <nav className={this.props.classes.drawer} aria-label="mailbox folders">
         {/* matches */true ? (
           <Hidden xsDown implementation="css">
             <Drawer

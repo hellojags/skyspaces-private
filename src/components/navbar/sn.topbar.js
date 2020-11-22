@@ -207,62 +207,61 @@ class SnTopBar extends React.Component {
     const { classes } = this.props;
     return (
       <>
-        <div>
-        <div className="container-fluid main-container">
-        <nav className="navbar navbar-light hdr-nvbr-main">
-        {this.props.person != null && (
-              <Drawer anchor={this.state.anchor} isTrue={this.state.isTrue} setIsTrue={(evt)=>this.setState({isTrue: evt})} />
-            )}
-        <a
-              className={`${"navbar-brand"} ${
-                this.props.authRoute ? "auth-navi-brand" : "navi-brnd"
-              } ${this.props.authRoute && "logoAlignMent"}`}
-            >
-              {/* logo */}
-              <img
-                style={{ cursor: "pointer" }}
-                onClick={this.handleLogoClick}
-                src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
-                width="30"
-                height="30"
-                className="d-inline-block align-top"
-                alt=""
-                loading="lazy"
-                height="40"
-                width="170"
-              />
-
-              {/* search input */}
-              {(this.props.person != null || this.props.snPublicHash) && (
-                <>
-                  <form onSubmit={this.triggerSearch} className={classes.searchBarForm}>
-                  <div className="search_main_div">
-                    <span>
-                      <i className="fas fa-search srch-icon-inside-field-input"></i>
-                    </span>
-
-                    <input
-                      className="form-control mr-sm-2 srch_inpt"
-                      type="search"
-                      placeholder="Search in SkySpaces or download Skylink"
-                      aria-label="Search"
-                      onChange={(evt) =>
-                        this.setState({ searchStr: evt.target.value })
-                      }
-                    />
-                  </div>
-                  {/* search inside nav-brand */}
-                  <div className="srch_btn_main_div">
-                    <button className="btn srch_btn_nvbar" type="button" onClick={this.onDownload}>
-                      <label>
-                        <i className="fa fa-download icon_download_nvbar"></i>
-                      </label>
-                    </button>
-                  </div>
-                    </form>
-                </>
+        {this.props.snShowDesktopMenu && <div>
+          <div className="container-fluid main-container">
+            <nav className="navbar navbar-light hdr-nvbr-main">
+              {this.props.person != null && (
+                <Drawer anchor={this.state.anchor} isTrue={this.state.isTrue} setIsTrue={(evt) => this.setState({ isTrue: evt })} />
               )}
-            </a>
+              <a
+                className={`${"navbar-brand"} ${this.props.authRoute ? "auth-navi-brand" : "navi-brnd"
+                  } ${this.props.authRoute && "logoAlignMent"}`}
+              >
+                {/* logo */}
+                <img
+                  style={{ cursor: "pointer" }}
+                  onClick={this.handleLogoClick}
+                  src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
+                  width="30"
+                  height="30"
+                  className="d-inline-block align-top"
+                  alt=""
+                  loading="lazy"
+                  height="40"
+                  width="170"
+                />
+
+                {/* search input */}
+                {(this.props.person != null || this.props.snPublicHash) && (
+                  <>
+                    <form onSubmit={this.triggerSearch} className={classes.searchBarForm}>
+                      <div className="search_main_div">
+                        <span>
+                          <i className="fas fa-search srch-icon-inside-field-input"></i>
+                        </span>
+
+                        <input
+                          className="form-control mr-sm-2 srch_inpt"
+                          type="search"
+                          placeholder="Search in SkySpaces or download Skylink"
+                          aria-label="Search"
+                          onChange={(evt) =>
+                            this.setState({ searchStr: evt.target.value })
+                          }
+                        />
+                      </div>
+                      {/* search inside nav-brand */}
+                      <div className="srch_btn_main_div">
+                        <button className="btn srch_btn_nvbar" type="button" onClick={this.onDownload}>
+                          <label>
+                            <i className="fa fa-download icon_download_nvbar"></i>
+                          </label>
+                        </button>
+                      </div>
+                    </form>
+                  </>
+                )}
+              </a>
               {/*(this.props.person != null || this.props.snPublicHash) && (
                 <>
                   <Grid item xs={7} sm={7} className="topbar-srch-grid">
@@ -302,26 +301,26 @@ class SnTopBar extends React.Component {
                 sm={this.props.person != null ? 2 : (this.props.snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-                <div
-              className="btn-icons-nvbr-div"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-                  <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{color: APP_BG_COLOR}}>Blog</Link>
-                  <div className="butn-th-main-div">
-                <button className="btn th_btn_nvbar">
-                  <AppsIcon
-                    className={this.props.classes.appLogo}
-                  />
-                </button>
-              </div>
-                  {!this.props.snShowDesktopMenu && (
-                    this.renderChangePortal("Change Portal")
-                  )}
-                  {this.props.snShowDesktopMenu && (
-                    // TODO: need to create a reducer for signin component display
-                    <SnSignin />
-                  )}
+              <div
+                className="btn-icons-nvbr-div"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link>
+                <div className="butn-th-main-div">
+                  <button className="btn th_btn_nvbar">
+                    <AppsIcon
+                      className={this.props.classes.appLogo}
+                    />
+                  </button>
                 </div>
+                {!this.props.snShowDesktopMenu && (
+                  this.renderChangePortal("Change Portal")
+                )}
+                {this.props.snShowDesktopMenu && (
+                  // TODO: need to create a reducer for signin component display
+                  <SnSignin />
+                )}
+              </div>
               {/* </Grid> */}
               <Grid
                 item
@@ -339,6 +338,7 @@ class SnTopBar extends React.Component {
             </nav>
           </div>
         </div>
+        }
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={this.state.invalidSkylink}
