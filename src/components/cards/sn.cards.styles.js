@@ -13,6 +13,9 @@ const useStyles = (theme) => ({
     backgroundColor: theme.palette.whiteBgColor,
     padding: theme.spacing(3),
   },
+  categoryFilterLogo: {
+    fontSize: "20px"
+  },
   publicContent: {
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${0}px)`,

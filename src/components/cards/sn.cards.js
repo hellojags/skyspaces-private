@@ -723,7 +723,8 @@ class SnCards extends React.Component {
                       key={idx}
                       className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text}`}
                     >
-                      <CameraAltOutlinedIcon style={{ fontSize: "20px" }} />
+                      {/* <CameraAltOutlinedIcon style={{ fontSize: "20px" }} /> */}
+                        <span style={{ fontSize: "20px" }}>{CATEGORY_OBJ[key].getLogo(classes.categoryFilterLogo)}</span>
                         &nbsp; {getCategoryObjWithoutAll()[key].heading}
                       <Typography variant="span" className={classes.innerValue_All}>
                         {categoryWiseCount[key]

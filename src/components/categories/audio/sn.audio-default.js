@@ -222,8 +222,20 @@ export default function SnAudioDefault(props) {
                       )}
                   </Typography>
                 </div>
+                {props.isSelect && (
+                  <div style={{marginLeft: "auto"}}>
+                    {props.arrSelectedAps.indexOf(app) === -1 && (
+                      <RadioButtonUncheckedIcon className="selection-radio"
+                        onClick={() => props.onSelection(app)} />
+                    )}
+                    {props.arrSelectedAps.indexOf(app) > -1 && (
+                      <RadioButtonCheckedIcon className="selection-radio"
+                        onClick={() => props.onSelection(app, true)} />
+                    )}
+                  </div>
+                )}
               
-              <div style={{ marginLeft: "auto"}}>
+              {!props.isSelect && <div style={{ marginLeft: "auto"}}>
                 <Tooltip title="Play" arrow>
                   <IconButton
                     onClick={() => { onPlayButtonClicked(app.skhubId) }}
@@ -231,7 +243,7 @@ export default function SnAudioDefault(props) {
                     <PlayArrowIcon />
                   </IconButton>
                 </Tooltip>
-              </div>
+              </div>}
               </div>
             </Grid>
             <Grid item xs={12} style={{ paddingTop: 0, paddingBottom: 0 }}>
