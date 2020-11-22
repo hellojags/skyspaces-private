@@ -446,6 +446,45 @@ class SnCards extends React.Component {
       );
     } else {
       return (
+        <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
+          {filteredApps
+            .slice(
+              (page - 1) * ITEMS_PER_PAGE,
+              (page - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+            )
+            .map((app, i) => {
+              cardCount = cardCount + 1;
+              return (
+                <SnAppCard
+                  key={i}
+                  app={app}
+                  hash={this.state.hash}
+                  isSelect={this.state.isSelect}
+                  arrSelectedAps={this.state.arrSelectedAps}
+                  skyspace={skyspace}
+                  senderId={this.state.senderId}
+                  allSpacesObj={this.props.snSkyspaceDetail}
+                  cardCount={filteredApps.length}
+                  onSelection={(app, isDeselection) => this.selectApp(app, isDeselection)}
+                  onOpenSkyApp={this.openSkyApp}
+                  onDelete={() => {
+                    this.props.fetchSkyspaceDetail();
+                    this.getAppList(
+                      this.state.category,
+                      this.state.skyspace,
+                      this.state.fetchAllSkylinks
+                    );
+                  }
+                  }
+                />
+              );
+            })
+          }
+        </Grid>
+      );
+
+
+      return (
         <Grid item xs={12}>
           <Grid container spacing={1}>
             {filteredApps
@@ -644,9 +683,15 @@ class SnCards extends React.Component {
                   onClick={() => this.updateTagFilterList([])}
                   variant="span"
                   className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext}`}
+                  style={
+                    this.state.filterCriteria != null &&
+                      this.state.filterCriteria.tagFilterList.length === 0
+                      ? { backgroundColor: "APP_BG_COLOR" }
+                      : {}
+                  }
                 >
                   All
-            <Typography variant="span" className={classes.innerValue_All}>
+                    <Typography variant="span" className={classes.innerValue_All}>
                     {" "}
                     {this.props.snApps && this.props.snApps.length}
                   </Typography>
@@ -655,7 +700,7 @@ class SnCards extends React.Component {
                   .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
                   .map((key, idx) => (
                     <Typography
-                      onClick={() => this.setActiveStep(1)}
+                      onClick={() => this.updateTagFilterList([key])}
                       variant="span"
                       key={idx}
                       className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text}`}
@@ -688,18 +733,91 @@ class SnCards extends React.Component {
                     multiple
                     type="file"
                   />
-                  {/* <label htmlFor="contained-button-file">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={{ color: "white", borderRadius: 10 }}
-                      component="span"
-                      startIcon={<PublishIcon style={{ color: "white" }} />}
-                    >
-                      Upload
+                  {this.state.hash != null && filteredApps.length > 0 &&
+                    (
+                      <label htmlFor="contained-button-file">
+                        <Button
+                          onClick={() => this.uploadEleRef.current.gridRef.current.click()}
+                          variant="contained"
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Upload
+                    </Button>
+                        <Button
+                          variant="contained"
+                          onClick={this.addPublicSpaceToAccount}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Add To Skyspaces
                 </Button>
-                  </label> */}
-
+                        <div className="d-none">
+                          <SnUpload
+                            name="files"
+                            ref={this.uploadEleRef}
+                            directoryMode={this.state.isDir}
+                            onUpload={this.onPublicUpload}
+                            portal={getPortalFromUserSetting(this.props.snUserSetting)}
+                          />
+                        </div>
+                        <Button
+                          variant="contained"
+                          onClick={this.savePublicSpace}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Save
+                </Button>
+                        <Button
+                          variant="contained"
+                          onClick={this.deleteFromPublic}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Delete
+                </Button>
+                        <Button
+                          variant="contained"
+                          onClick={() => this.setState({ isSelect: true, arrSelectedAps: filteredApps })}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Select All
+                </Button>
+                        {!this.state.isSelect && (<Button
+                          variant="contained"
+                          onClick={() => this.setState({ isSelect: true, arrSelectedAps: [] })}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Select
+                        </Button>)}
+                        {this.state.isSelect && (<Button
+                          onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
+                          variant="contained"
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Cancel
+                        </Button>)}
+                      </label>
+                    )
+                  }
                   {/* <span style={{ marginLeft: 20 }}></span>
                   <IconButton aria-label="delete" onClick={() => this.setGridUi(true)}>
                     <AppsIcon className={classes.appsIcon} />
@@ -744,21 +862,81 @@ class SnCards extends React.Component {
                       <MenuItem value={30}>Thirty</MenuItem>
                     </Select>
                   </FormControl> */}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.sharedSpaceButn}
-                    startIcon={<CheckCircleIcon style={{ color: "white" }} />}
-                  >
-                    Select
+                  {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && (
+                    <>
+                      {!this.state.isSelect &&
+                        <Button
+                          variant="contained"
+                          onClick={() => this.setState({ isSelect: true, arrSelectedAps: [] })}
+                          color="primary"
+                          className={classes.sharedSpaceButn}
+                          startIcon={<CheckCircleIcon style={{ color: "white" }} />}
+                        >
+                          Select
+                        </Button>
+                      }
+                      {this.state.isSelect && (
+                        <>
+                          <Button
+                            onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
+                            variant="contained"
+                            color="primary"
+                            className={classes.sharedSpaceButn}
+                          >
+                            Cancel
+                </Button>
+                          <Button
+                            onClick={() => this.setState({ arrSelectedAps: filteredApps })}
+                            variant="contained"
+                            color="primary"
+                            className={classes.sharedSpaceButn}
+                          >
+                            Select All
               </Button>
+                          <Button
+                            onClick={() => this.setState({ arrSelectedAps: [] })}
+                            variant="contained"
+                            color="primary"
+                            className={classes.sharedSpaceButn}
+                          >
+                            De-Select All
+            </Button>
+                          <Button
+                            onClick={() => this.createSkylinkPublicShare()}
+                            variant="contained"
+                            color="primary"
+                            className={classes.sharedSpaceButn}
+                          >
+                            Public Share
+            </Button>
+                        </>
+                      )}
+                    </>
+                  )}
                 </Grid>
               </>
             )}
           </Grid>
 
           {/* {this.GridUi ? this.getStepContent(this.state.activeStep) : this.getStepContentForList(this.state.activeStep)} */}
+          {this.renderCards(filteredApps, page, cardCount, skyspace)}
+          <Grid item xs={12}>
+            {filterCriteria === 'audio' ?
+              <AudioPlayer /> :
+              <SnPagination
+                page={page}
+                totalCount={filteredApps.length}
+                onChange={this.udpdatePage}
+              />}
+          </Grid>
         </div>
+        <SnInfoModal
+          open={this.state.showInfoModal}
+          onClose={this.state.onInfoModalClose}
+          title="Public Share Link"
+          type="public-share"
+          content={this.state.infoModalContent}
+        />
       </main>
     );
 
