@@ -17,12 +17,15 @@
 }
 .navi-brnd {
   display: flex;
-  width: 66%;
+  width: 73%;
+  align-items: center;
+  justify-content: space-between;
 }
 .search_main_div {
   padding-left: 50px;
-  width: 90%;
+  width: 73%;
   display: flex;
+  align-items: center;
 }
 .search_main_div_changed{
   /* padding-left: 25px; */

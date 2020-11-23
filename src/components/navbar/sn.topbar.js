@@ -235,7 +235,7 @@ class SnTopBar extends React.Component {
                 {(this.props.person != null || this.props.snPublicHash) && (
                   <>
                     <form onSubmit={this.triggerSearch} className={classes.searchBarForm}>
-                      <div className="search_main_div">
+                      <div className="search_main_div" style={{marginLeft: "auto"}}>
                         <span>
                           <i className="fas fa-search srch-icon-inside-field-input"></i>
                         </span>
