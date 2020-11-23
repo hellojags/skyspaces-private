@@ -204,3 +204,7 @@
 .cursor-pointer {
   cursor: pointer;
 }
+
+.MuiChip-root.active {
+  background-color: #1ed660;
+}
