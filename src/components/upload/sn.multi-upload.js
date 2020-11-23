@@ -207,16 +207,16 @@ export default function SnMultiUpload(props) {
                     {stSnSkyspaceList && <AutoComp list={stSnSkyspaceList}
                       onChange={setSkyspaceList} />}
                   </Grid>
-                  <Grid
-                    item
-                    lg={5}
+                  {stPerson && (<Grid item lg={5}
                     md={5}
                     sm={5}
-                    xs={12}
-                    style={{ padding: "none" }}
-                  >
-                    {/* <AutoComp /> */}
-                  </Grid>
+                    xs={12} className="select-grid">
+                    <FormControl className={classes.formControl} error={errorObj.tags}>
+                      <ChipInput defaultValue={skyapp.tags} onChange={setTags}
+                      />
+                      <FormHelperText>Please select tags.</FormHelperText>
+                    </FormControl>
+                  </Grid>)}
                   <Grid item xs={2}>
                     <Switch
                       onChange={handleSwitchChnge}

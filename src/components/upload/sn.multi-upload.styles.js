@@ -17,6 +17,9 @@ export default makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
+  formControl : {
+    width: "100%"
+  },
   most_main_grid_uc: {
     padding: "60px 0px 0px 0px",
     width: "100%",
