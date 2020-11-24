@@ -229,7 +229,8 @@ export default function SnMultiUpload(props) {
                 {/* dropzone */}
                 <Grid container spacing={3} className="drpZone_main_grid">
                   <Grid item xs={12}>
-                    <div className="d-none">
+                    {/* <div className="d-none"> */}
+                    <div>
                       <SnUpload
                         name="files"
                         ref={uploadEleRef}
@@ -237,44 +238,51 @@ export default function SnMultiUpload(props) {
                         onUpload={onUpload}
                       />
                     </div>
-                    <DropzoneArea
-                      showPreviewsInDropzone={false}
-                      onDrop={(files) => {
-                        uploadEleRef.current.handleDrop(files)
-                      }}
-                      //  className={classes.dropZonArea}
-                      Icon={"none"}
-                      ref={dropZoneRef}
-                      maxFileSize={210000000}
-                      onDelete={delImg}
-                      filesLimit={100}
-                      showAlerts={false}
-                      dropzoneText={
-                        <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                          <div>
-                            <BsFileEarmarkArrowUp
+                    <div className="d-none">
+
+                      <DropzoneArea
+                        showPreviewsInDropzone={false}
+                        onDrop={(files) => {
+                          uploadEleRef.current.handleDrop(files)
+                        }}
+                        //  className={classes.dropZonArea}
+                        Icon={"none"}
+                        inputProps={{ webkitdirectory: true, mozdirectory: true }}
+                        ref={dropZoneRef}
+                        webkitdirectory={true}
+                        mozdirectory={true}
+                        maxFileSize={210000000}
+                        onDelete={delImg}
+                        filesLimit={100}
+                        showAlerts={false}
+                        dropzoneText={
+                          <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                            <div>
+                              <BsFileEarmarkArrowUp
+                                style={{
+                                  fontSize: "55px",
+                                  color: "#c5c5c5",
+                                  marginBottom: "10px",
+                                }}
+                              />
+                            </div>
+                            <span
                               style={{
-                                fontSize: "55px",
+                                fontSize: 14,
+                                fontWeight: "bold",
                                 color: "#c5c5c5",
-                                marginBottom: "10px",
                               }}
-                            />
-                          </div>
-                          <span
-                            style={{
-                              fontSize: 14,
-                              fontWeight: "bold",
-                              color: "#c5c5c5",
-                            }}
-                          >
-                            Drop a {isDirUpload ? "directory" : "file"} here or
+                            >
+                              Drop a {isDirUpload ? "directory" : "file"} here or
                         <span style={{ color: "#1ed660", marginLeft: "3px" }}>
-                              click here to upload
+                                click here to upload
                         </span>
-                          </span>
-                        </div>
-                      }
-                    />
+                            </span>
+                          </div>
+                        }
+                      />
+                    </div>
+
                   </Grid>
                 </Grid>
 
