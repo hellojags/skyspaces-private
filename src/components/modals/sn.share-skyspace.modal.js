@@ -137,7 +137,7 @@ export default function SnShareSkyspaceModal(props) {
                                     fullWidth
                                     value={recipientId}
                                     autoComplete="off"
-                                    helperText="Please enter recipient blockstack ID."
+                                    helperText="Please enter recipient's user Id or public key"
                                     onChange={evt => {
                                         setAnchorEl(evt.target);
                                         setRecipientId(evt.target.value);
