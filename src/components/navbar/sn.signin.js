@@ -166,22 +166,21 @@ class SnSignin extends React.Component {
               <button
                 onClick={this.gotoSkydbLogin}
                 type="button"
-                className="btn btn-sm butn-out-login-nvbr"
+                class="btn btn-sm butn-out-login-nvbr"
               >
                 Login
-                    </button>
+            </button>
             </div>
             <div className="signUp-butn-main-out-div">
               <button
-                onClick={this.doSignUp}
+                /* onClick={this.doSignUp} */
                 style={{ border: "1px solid #1ed660" }}
                 type="button"
-                className="btn  btn-sm butn-out-signup"
+                class="btn  btn-sm butn-out-signup"
               >
                 Sign up
-                    </button>
+            </button>
             </div>
-
           </>
         )}
         {this.props.person && (

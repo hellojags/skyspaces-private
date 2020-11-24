@@ -33,7 +33,7 @@ const useStyles = (theme) => ({
   toolbar: theme.mixins.toolbar,
 });
 
-const SnRouter = () => {
+const SnRouter = (props) => {
   return (
     <Router>
       <SnTopBar />

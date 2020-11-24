@@ -70,6 +70,7 @@ const App = () => {
   const [forLightGray, setforLightGray] = useState("#f7f7f7");
   const [forLinkColors, setForLinksColor] = useState("#656d70");
   const [whiteBgColorTheme, setwhiteBgColorTheme] = useState("#ffffff");
+  const [activeDark, setActiveDark] = useState(false);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
@@ -77,36 +78,70 @@ const App = () => {
     }
   }, [])
 
+  React.useEffect(() => {
+    let getMode = localStorage.getItem("darkMode");
+    if (getMode === "true") {
+      setActiveDark(true);
+    } else {
+      setActiveDark(false);
+    }
+  }, [localStorage.getItem("darkMode")]);
+
+  const handleDarkMode = (val) => {
+    // console.log("called");
+    setActiveDark(val);
+  };
+
   const lightTheme = createMuiTheme({
     palette: {
       primary: {
         main: "#1ed660",
         textColor: "#636f70",
       },
-      whiteBgColor: whiteBgColorTheme,
-      linksColor: forLinkColors,
+      headerBgColor: "#ffffff",
+      whiteBgColor: "#ffffff",
+      linksColor: "#656d70",
       secondary: {
         main: "#636f70",
         textColor: "#c5c5c5",
       },
-      lightGray: forLightGray,
+      sliderBg: "#ffffff",
+      centerBar: "#ffffff",
+      lightGray: "#f7f7f7",
+      mediumGray: "#c5c5c5",
+      lightGreen: "#daffe7",
+      spacesTabsCount: "#EAEAEA",
+    },
+  });
+
+  const darkTheme = createMuiTheme({
+    palette: {
+      primary: {
+        main: "#1ed660",
+        textColor: "#636f70",
+      },
+      sliderBg: "#141418",
+      centerBar: "#343537",
+      spacesTabsCount: "#000000",
+      headerBgColor: "#1a1b1d",
+      whiteBgColor: "#000000",
+      linksColor: "#ffffff",
+      secondary: {
+        main: "#636f70",
+        textColor: "#c5c5c5",
+      },
+      lightGray: "#1a1b1d",
       mediumGray: "#c5c5c5",
       lightGreen: "#daffe7",
     },
   });
 
-  const functionForChangeTheme = () => {
-    setforLightGray(forLightGray === "#f7f7f7" ? "#1a1b1d" : "#f7f7f7");
-    setForLinksColor(forLinkColors === "#656d70" ? "#ffffff" : "#656d70");
-    setwhiteBgColorTheme(
-      whiteBgColorTheme === "#ffffff" ? "#000000" : "#ffffff"
-    );
-  };
-
   return (
-    <MuiThemeProvider theme={lightTheme}>
+    <MuiThemeProvider theme={activeDark ? darkTheme : lightTheme}>
       <SnLoader />
-      <SnRouter />
+      <div>
+        <SnRouter handleDarkMode={handleDarkMode} />
+      </div>
     </MuiThemeProvider>
   );
 }

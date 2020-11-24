@@ -164,7 +164,7 @@ function UserMenu(props) {
                 </div>
               </div>
             </Link>
-            {/* <div
+            <div
               className={classes.menuListContainers}
               style={{ paddingTop: 0, paddingBottom: 0 }}
             >
@@ -180,7 +180,7 @@ function UserMenu(props) {
                   inputProps={{ "aria-label": "secondary checkbox" }}
                 />
               </div>
-            </div> */}
+            </div>
             <div className={classes.menuListContainers}
               onClick={showPublicKey}>
               <VisibilityIcon style={{ fontSize: 18 }} />
