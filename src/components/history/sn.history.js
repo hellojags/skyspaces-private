@@ -10,7 +10,7 @@ import {
   APP_BG_COLOR, STORAGE_SKYAPP_DETAIL_KEY,
   BROWSER_STORAGE
 } from "../../sn.constants";
-import MaterialTable from "material-table"
+import MaterialTable from "material-table";
 import { readableBytes } from "../../sn.util";
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -153,7 +153,7 @@ class SnHistory extends React.Component {
     return (rowData.savedToSkySpaces === false) ?
       <Tooltip title="Add to Spaces" arrow>
         <IconButton onClick={() => this.onSaveToSkyspace(rowData)}>
-          <AddCircleOutlineOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 25 }} />
+          <AddCircleOutlineOutlinedIcon className={this.props.classes.spaceIcon}/>
         </IconButton>
       </Tooltip> : <div>{rowData.skyspaces}</div>;
   }
@@ -212,14 +212,55 @@ class SnHistory extends React.Component {
     }
     return (
       <main className={classes.content}>
+        <div style={{ paddingTop: 40 }}>
         <Grid container spacing={3} className={classes.most_main_grid_actvHstry}>
-          <Grid item xs={12} className={classes.main_grid_actvHstry}>
-            <Paper
-              className={`${classes.paper} ${classes.MaintabsPaper_actvHstry}`}
-            >
-              <Paper className={classes.tabsPaper_actvHstry}>
-                <Grid container spacing={3} style={{ paddingBottom: "10px" }}>
-                  <Grid item xs={12}>
+      <Grid item xs={12} className={classes.main_grid_actvHstry}>
+        <Paper
+          className={`${classes.paper} ${classes.MaintabsPaper_actvHstry}`}
+        >
+          <Paper className={classes.tabsPaper_actvHstry}>
+            <Grid container spacing={3} style={{ paddingBottom: "10px" }}>
+              <Grid item xs={12}>
+              <div
+                  style={{
+                    paddingTop: "40px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography className={classes.actvHstry_title}>
+                    Activity History
+                  </Typography>
+                  {/* search */}
+                  <div className={classes.search_main_div}>
+                    <span>
+                      <i
+                        className="fas fa-search srch-icon-inside-field-input"
+                        style={{ position: "relative", top: "8px" }}
+                      ></i>
+                    </span>
+
+                    <input
+                      className={`form-control mr-sm-2 ${classes.srch_inpt}`}
+                      type="search"
+                      placeholder="Search"
+                      aria-label="Search"
+                    />
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    boxShadow: "0 0 10px rgba(0,0,0,.4)",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {/* <Table /> */}
+                </div>
+
+
                     <div
                       style={{
                         paddingTop: "40px",
@@ -234,6 +275,8 @@ class SnHistory extends React.Component {
                     </div>
                     <div
                       style={{
+                        display: "flex",
+                        justifyContent: "center",
                         boxShadow: "0 0 10px rgba(0,0,0,.4)",
                         borderRadius: "10px",
                       }}
@@ -277,7 +320,8 @@ class SnHistory extends React.Component {
         <div>
         <SnFooter />
       </div>
-      </main>
+      </div>
+      </main> 
     );
   }
 }

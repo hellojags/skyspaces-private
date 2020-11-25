@@ -12,6 +12,13 @@ const styles = (theme) => ({
         backgroundColor: theme.palette.whiteBgColor,
         padding: theme.spacing(3),
     },
+    contentBgColor: {
+        backgroundColor: theme.palette.whiteBgColor,
+      },
+      spaceIcon: {
+        color: theme.palette.primary.main,
+        fontSize: "20px",
+      },
     paper: {
         padding: theme.spacing(2),
         textAlign: "center",
