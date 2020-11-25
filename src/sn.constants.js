@@ -33,6 +33,7 @@ export const STORAGE_SKYSPACE_LIST_KEY = "SKYSPACELIST";
 export const STORAGE_USER_SETTING_KEY = "USER_SETTING";
 export const STORAGE_PORTALS_LIST_KEY = "PORTALS_LIST";
 export const STORAGE_USER_SESSION_KEY = "USER_SESSION";
+export const STORAGE_DARK_MODE_KEY = "darkMode";
 export const BROWSER_STORAGE = localStorage;
 export const BLOCKSTACK_CORE_NAMES = "https://core.blockstack.org/v1/names";
 export const STORAGE_REDIRECT_POST_LOGIN_KEY = "REDIRECT_POST_LOGIN";

@@ -33,6 +33,7 @@ import SnAppSkyspaceList from "./sn.app-skyspacelist.reducer";
 import SnImportedSpace from "./sn.imported-space.reducer";
 import SnHistory from "./sn.history.reducer";
 import SnUploadListReducer from "./sn.upload-list.reducer";
+import SnDarkMode from "./sn.dark-mode.reducer";
 import SnAudioPlayerReducer from "./sn.audio-player.reducer";
 import { composeWithDevTools } from 'redux-devtools-extension';
 const redux = require("redux");
@@ -61,7 +62,8 @@ const allReducers = combineReducers({
   snPublicInMemory: SnPublicInMemory,
   snUploadList: SnUploadListReducer,
   SnAudioPlayer: SnAudioPlayerReducer,
-  snImportedSpace: SnImportedSpace
+  snImportedSpace: SnImportedSpace,
+  snDarkMode: SnDarkMode
 });
 
 const rootEpic = combineEpics(

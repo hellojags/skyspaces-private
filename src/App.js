@@ -23,6 +23,8 @@ import { authOrigin, appDetails, userSession } from "./blockstack/constants";
 import { createMuiTheme } from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { ThemeProvider } from "react-bootstrap";
+import { STORAGE_DARK_MODE_KEY } from "./sn.constants";
+import { useSelector } from "react-redux";
 library.add(
   faEnvelope,
   faFan,
@@ -72,23 +74,20 @@ const App = () => {
   const [whiteBgColorTheme, setwhiteBgColorTheme] = useState("#ffffff");
   const [activeDark, setActiveDark] = useState(false);
 
+  const stDarkMode = useSelector((state) => state.snDarkMode);
+
+
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
       console.log = function () { };
     }
-  }, [])
+  }, []);
 
   React.useEffect(() => {
-    let getMode = localStorage.getItem("darkMode");
-    if (getMode === "true") {
-      setActiveDark(true);
-    } else {
-      setActiveDark(false);
-    }
-  }, [localStorage.getItem("darkMode")]);
+    setActiveDark(stDarkMode);
+  }, [stDarkMode]);
 
   const handleDarkMode = (val) => {
-    // console.log("called");
     setActiveDark(val);
   };
 

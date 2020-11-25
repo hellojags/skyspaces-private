@@ -24,6 +24,8 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutPerson } from "../../reducers/actions/sn.person.action";
+import { STORAGE_DARK_MODE_KEY } from "../../sn.constants";
+import { setDarkMode } from "../../reducers/actions/sn.dark-mode.action";
 
 const useStyles = makeStyles((theme) => ({
   menuTop: {
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   profilePicStyling: {
     // boxShadow: "0px 0px 5px 8px rgba(50, 50, 50, 0.14)",
     boxShadow: "0 0 10px rgba(0,0,0,.4)",
-    backgroundColor: "white",
+    backgroundColor: theme.palette.whiteBgColor,
     borderRadius: "50%",
     width: 90,
     height: 90,
@@ -78,8 +80,10 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 8,
     paddingBottom: 8,
     color: theme.palette.linksColor,
-    cursor: "pointer"
   },
+  menuBackGroundColor: {
+    backgroundColor: theme.palette.headerBgColor
+  }
 }));
 
 function UserMenu(props) {
@@ -89,6 +93,7 @@ function UserMenu(props) {
   const history = useHistory();
   const stPerson = useSelector((state) => state.person);
   const stUserSession = useSelector((state) => state.userSession);
+  const stDarkMode = useSelector(state => state.snDarkMode);
 
   const userMenuClose = () => {
     setUserMenu(null);
@@ -101,6 +106,12 @@ function UserMenu(props) {
   const showPublicKey = () => {
     userMenuClose();
     props.onShowSkyDbPublicKey();
+  };
+
+  const toggleDarkMode = (evt) => {
+    const darkMode = evt.target.checked;
+    localStorage.setItem(STORAGE_DARK_MODE_KEY, darkMode);
+    dispatch(setDarkMode(darkMode));
   };
 
   return (
@@ -122,7 +133,7 @@ function UserMenu(props) {
           paper: "py-8",
         }}
       >
-        <Box p={2}>
+        <Box p={2} className={classes.menuBackGroundColor}>
           <div
             className={classes.profilePicStyling}
             onClick={() => history.push("/profile")}
@@ -150,12 +161,12 @@ function UserMenu(props) {
                 </div>
               </div>
             </Link>
-            {/* <div className={classes.menuListContainers} onClick={userMenuClose}>
+            <div className={classes.menuListContainers} onClick={userMenuClose}>
               <BackupIcon style={{ fontSize: 18 }} />
               <div style={{ paddingLeft: 20 }}>
                 <Typography variant="span">Backup</Typography>
               </div>
-            </div> */}
+            </div>
             <Link to="/history">
               <div className={classes.menuListContainers} onClick={userMenuClose}>
                 <HistoryIcon style={{ fontSize: 18 }} />
@@ -177,6 +188,8 @@ function UserMenu(props) {
               <div style={{ marginLeft: 40 }}>
                 <Switch
                   name="checkedA"
+                  checked={stDarkMode}
+                  onChange={toggleDarkMode}
                   inputProps={{ "aria-label": "secondary checkbox" }}
                 />
               </div>
