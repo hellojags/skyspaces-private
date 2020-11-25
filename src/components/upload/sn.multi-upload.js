@@ -190,12 +190,13 @@ export default function SnMultiUpload(props) {
 
   return (
     <main className={matches ? classes.content : null}>
-      <div style={{ paddingTop: 40 }}>
+      <div style={{ paddingTop: 40,
+                    minHeight: "calc(100vh - 70px)", }}>
         <Grid container spacing={3} className={classes.most_main_grid_uc}>
           <Grid item xs={12} className={classes.main_grid_uc}>
             <Paper className={`${classes.paper} ${classes.MaintabsPaper_uc}`}>
-              <Paper className={classes.tabsPaper_uc}>
-                <Typography className={classes.uc_title}>Upload Content</Typography>
+            <Paper className={classes.tabsPaper_uc}>
+              <Typography className={classes.uc_title}>Upload Content</Typography>
                 <Grid container spacing={3} className={classes.tags_inpt_main_grid}>
                   <Grid
                     item

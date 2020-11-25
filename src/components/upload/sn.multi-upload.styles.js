@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 export default makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
+  },  
   content: {
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${295}px)`,
@@ -17,9 +17,6 @@ export default makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
-  formControl : {
-    width: "100%"
-  },
   most_main_grid_uc: {
     padding: "60px 0px 0px 0px",
     width: "100%",
@@ -28,7 +25,9 @@ export default makeStyles((theme) => ({
   main_grid_uc: {
     margin: "auto",
   },
+
   MaintabsPaper_uc: {
+    backgroundColor: theme.palette.headerBgColor,
     paddingTop: "25px",
     // paddingLeft: "35px",
     paddingRight: "35px",
@@ -41,9 +40,10 @@ export default makeStyles((theme) => ({
   tabsPaper_uc: {
     padding: "0px",
     boxShadow: "none",
+    backgroundColor: theme.palette.headerBgColor,
   },
   uc_title: {
-    color: theme.palette.primary.textColor,
+    color: theme.palette.linksColor,
     textAlign: "left",
     fontSize: "17px",
     fontWeight: "500",
@@ -58,7 +58,6 @@ export default makeStyles((theme) => ({
     width: "100%",
     marginTop: "25px",
     marginLeft: "15px",
-    marginRight: "15px",
     padding: "3px 10px !important",
     borderRadius: "5px",
     display: "flex",

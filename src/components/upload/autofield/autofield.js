@@ -5,6 +5,7 @@ import NoSsr from "@material-ui/core/NoSsr";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import styled from "styled-components";
+import { useTheme } from "@material-ui/core";
 
 const Label = styled("label")`
   padding: 0 0 4px;
@@ -50,35 +51,35 @@ const Tag = styled(({ label, onDelete, ...props }) => (
     <CloseIcon onClick={onDelete} />
   </div>
 ))`
-  display: flex;
-  align-items: center;
-  height: 24px;
-  margin: 2px;
-  line-height: 22px;
-  background-color: #fafafa;
-  border: 1px solid #e8e8e8;
-  border-radius: 2px;
-  box-sizing: content-box;
-  padding: 0 4px 0 10px;
-  outline: 0;
+display: flex;
+align-items: center;
+height: 24px;
+margin: 2px;
+line-height: 22px;
+background-color: #fafafa;
+border: 1px solid #e8e8e8;
+border-radius: 2px;
+box-sizing: content-box;
+padding: 0 4px 0 10px;
+outline: 0;
+overflow: hidden;
+
+&:focus {
+  border-color: #40a9ff;
+  background-color: #e6f7ff;
+}
+
+& span {
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
-  &:focus {
-    border-color: #40a9ff;
-    background-color: #e6f7ff;
-  }
-
-  & span {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  & svg {
-    font-size: 12px;
-    cursor: pointer;
-    padding: 4px;
-  }
+& svg {
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px;
+}
 `;
 
 const Listbox = styled("ul")`
@@ -134,6 +135,8 @@ props : {
 }
 */
 export default function AutoFieldsCustomizedHook(props) {
+  const theme = useTheme();
+
   const {
     getRootProps,
     getInputLabelProps,
@@ -166,7 +169,9 @@ export default function AutoFieldsCustomizedHook(props) {
           <InputWrapper
             ref={setAnchorEl}
             className={focused ? "focused" : ""}
-            style={{ borderRadius: "100px", padding: "5px 10px" }}
+            style={{ borderRadius: "100px", 
+                    padding: "5px 10px",
+                    backgroundColor: theme.palette.headerBgColor, }}
           >
             {value.map((option, index) => (
               <Tag
@@ -181,7 +186,10 @@ export default function AutoFieldsCustomizedHook(props) {
               />
             ))}
 
-            <input {...getInputProps()} style={{ borderRadius: "100px" }} />
+            <input {...getInputProps()} 
+              placeholder="Select Spaces"
+              style={{ borderRadius: "100px",
+                  backgroundColor: theme.palette.headerBgColor, }} />
           </InputWrapper>
         </div>
         {groupedOptions.length > 0 ? (
