@@ -257,7 +257,7 @@ class SnSkySpaceMenu extends React.Component {
                   </div>
 
                   <div style={{ paddingLeft: "20px", marginTop: "-5px" }}>
-                    <span style={{ fontSize: "12px" }}>{cliTruncate(userId, 20)}</span>
+                    <span style={{ fontSize: "12px" }} className={this.props.classes.sharedSpace_names}>{cliTruncate(userId, 20)}</span>
                     {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
                       <NavLink
                         activeClassName="active"
