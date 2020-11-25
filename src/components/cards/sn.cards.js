@@ -1,16 +1,25 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import useStyles from "./sn.cards.styles";
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import ShareOutlinedIcon from "@material-ui/icons/ShareOutlined";
+import GamesOutlinedIcon from "@material-ui/icons/GamesOutlined";
+import PlaylistAddOutlinedIcon from "@material-ui/icons/PlaylistAddOutlined";
+import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
 import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
+import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
+import DescriptionOutlinedIcon from "@material-ui/icons/DescriptionOutlined";
+import MoreVertOutlinedIcon from "@material-ui/icons/MoreVertOutlined";
+import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
+import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import DoneAllIcon from "@material-ui/icons/DoneAll";
 import Grid from "@material-ui/core/Grid";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import AppsIcon from "@material-ui/icons/Apps";
 import ReorderIcon from "@material-ui/icons/Reorder";
 import MenuItem from "@material-ui/core/MenuItem";
-import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
-import DescriptionOutlinedIcon from "@material-ui/icons/DescriptionOutlined";
-import MoreVertOutlinedIcon from "@material-ui/icons/MoreVertOutlined";
 import InputBase from "@material-ui/core/InputBase";
 import LowPriorityIcon from "@material-ui/icons/LowPriority";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
@@ -735,6 +744,130 @@ class SnCards extends React.Component {
                     </Typography>
                   ))}
               </Grid>
+              
+              {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && this.state.isSelect &&
+              <Grid container spacing={3} style={{ margin: "0px" }}>
+                <Grid
+                  item
+                  xs={12}
+                  className={classes.titleBar_onSelect_img_grid_gallery}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={() => this.setState({ arrSelectedAps: filteredApps })}
+                        startIcon={<DoneAllIcon style={{ color: "#1ed660" }} />}
+                        size="small"
+                        style={{
+                          background: "transparent",
+                          color: "#636f70",
+                          boxShadow: "none",
+                        }}
+                      >
+                        Select all
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        startIcon={
+                          <DeleteOutlineIcon style={{ color: "#ff3d3d" }} />
+                        }
+                        size="small"
+                        style={{
+                          background: "transparent",
+                          color: "#636f70",
+                          boxShadow: "none",
+                          marginLeft: "15px",
+                        }}
+                      >
+                        Delete
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={() => this.createSkylinkPublicShare()}
+                        startIcon={
+                          <ShareOutlinedIcon style={{ color: "#1ed660" }} />
+                        }
+                        size="small"
+                        style={{
+                          background: "transparent",
+                          color: "#636f70",
+                          boxShadow: "none",
+                          marginLeft: "15px",
+                        }}
+                      >
+                        Share
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        startIcon={
+                          <GamesOutlinedIcon style={{ color: "#1ed660" }} />
+                        }
+                        size="small"
+                        style={{
+                          background: "transparent",
+                          color: "#636f70",
+                          boxShadow: "none",
+                          marginLeft: "15px",
+                        }}
+                      >
+                        Move to
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        startIcon={
+                          <PlaylistAddOutlinedIcon
+                            style={{ color: "#1ed660" }}
+                          />
+                        }
+                        size="small"
+                        style={{
+                          background: "transparent",
+                          color: "#636f70",
+                          boxShadow: "none",
+                          marginLeft: "15px",
+                        }}
+                      >
+                        Add to
+                      </Button>
+                    </div>
+
+                    <div style={{ textAlign: "right" }}>
+                      {1} Selected
+                      <ClearOutlinedIcon
+                        onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
+                        style={{
+                          color: "#1ed660",
+                          fontSize: "18px",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </Grid>
+              </Grid>}
+
+
             </>}
             {this.isTrue ? null : (
               <>
@@ -900,42 +1033,6 @@ class SnCards extends React.Component {
                           Select
                         </Button>
                       }
-                      {this.state.isSelect && (
-                        <>
-                          <Button
-                            onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
-                            variant="contained"
-                            color="primary"
-                            className={classes.sharedSpaceButn}
-                          >
-                            Cancel
-                </Button>
-                          <Button
-                            onClick={() => this.setState({ arrSelectedAps: filteredApps })}
-                            variant="contained"
-                            color="primary"
-                            className={classes.sharedSpaceButn}
-                          >
-                            Select All
-              </Button>
-                          <Button
-                            onClick={() => this.setState({ arrSelectedAps: [] })}
-                            variant="contained"
-                            color="primary"
-                            className={classes.sharedSpaceButn}
-                          >
-                            De-Select All
-            </Button>
-                          <Button
-                            onClick={() => this.createSkylinkPublicShare()}
-                            variant="contained"
-                            color="primary"
-                            className={classes.sharedSpaceButn}
-                          >
-                            Public Share
-            </Button>
-                        </>
-                      )}
                     </>
                   )}
                 </Grid>

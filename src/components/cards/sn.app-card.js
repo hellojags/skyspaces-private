@@ -280,11 +280,11 @@ class SnAppCard extends React.Component {
                   {this.props.isSelect && (
                             <div style={{marginLeft: "auto"}}>
                               {this.props.arrSelectedAps.indexOf(app) === -1 && (
-                                <RadioButtonUncheckedIcon className="selection-radio"
+                                <RadioButtonUncheckedIcon className={classes.tagEditIcon}
                                   onClick={() => this.props.onSelection(app)} />
                               )}
                               {this.props.arrSelectedAps.indexOf(app) > -1 && (
-                                <RadioButtonCheckedIcon className="selection-radio"
+                                <RadioButtonCheckedIcon className={classes.tagEditIcon}
                                   onClick={() => this.props.onSelection(app, true)} />
                               )}
                             </div>
