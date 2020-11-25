@@ -41,6 +41,7 @@ import { authenticate } from "@blockstack/connect";
 import { ITEMS_PER_PAGE } from "../../sn.constants";
 import styles from "./sn.history.styles";
 import { Paper, Typography } from "@material-ui/core";
+import SnFooter from "../footer/sn.footer";
 
 const tableIcons = {
   Add: React.forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -273,6 +274,9 @@ class SnHistory extends React.Component {
           </Alert>
           </Snackbar>
         </div>
+        <div>
+        <SnFooter />
+      </div>
       </main>
     );
   }

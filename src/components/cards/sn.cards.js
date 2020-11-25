@@ -55,6 +55,7 @@ import Chip from '@material-ui/core/Chip';
 import UploadProgress from "../upload/UploadProgress/UploadProgress";
 import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
 import AudioPlayer from "../categories/audio/sn.audio-player";
+import SnFooter from "../footer/sn.footer";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -961,6 +962,9 @@ class SnCards extends React.Component {
           type="public-share"
           content={this.state.infoModalContent}
         />
+        <div>
+        <SnFooter />
+      </div>
       </main>
     );
 

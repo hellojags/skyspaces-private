@@ -58,9 +58,9 @@ const SnRouter = (props) => {
         <Route path="/imported-skyapps/:sender/:id" component={SnNew} />
         <Route component={SnMultiUpload} />
       </Switch>
-      <div>
+      {/* <div>
         <SnFooter />
-      </div>
+      </div> */}
     </Router>
   );
 }

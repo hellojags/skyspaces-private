@@ -7,15 +7,9 @@ const SnFooter = () => (
     <div className="container-fluid">
         <div className="row c4-row-div">
             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 image-logo_col-footer">
-                <img
-                    src={builtWithSiaLogo}
-                    alt="built-with-sia"
-                    height="50"
-                    width="50"
-                />
             </div>
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-8">
-                <div className="colm2-main-div">
+                <div className="ccolm2-main-div">
                     {/* donate */}
                     <Link rel="noopener noreferrer" href="https://github.com/skynethubio/skhub-appstore-ui#donation"
                         target="_blank"

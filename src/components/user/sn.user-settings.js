@@ -61,6 +61,7 @@ import {
 } from "../../blockstack/blockstack-api";
 import { connect } from "react-redux";
 import { DEFAULT_PORTAL, APP_BG_COLOR } from "../../sn.constants";
+import SnFooter from "../footer/sn.footer";
 
 const tableIcons = {
   Add: React.forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -579,6 +580,9 @@ class SnUserSettings extends React.Component {
               </Paper>
             </Grid>
           </Grid>
+          <div>
+        <SnFooter />
+      </div>
         </main>
 
 

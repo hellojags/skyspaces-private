@@ -50,6 +50,7 @@ import {
   bsGetSharedSkappListFromSender,
 } from "../../blockstack/blockstack-api";
 import { generateSkyhubId } from "../../blockstack/utils";
+import SnFooter from "../footer/sn.footer";
 
 let appId = "";
 
@@ -968,6 +969,9 @@ class SnNew extends React.Component {
                 </Grid>
               </Grid>
             </div>
+            <div>
+        <SnFooter />
+      </div>
           </main>
           <SnInfoModal
             open={this.state.snInfoModal.open}

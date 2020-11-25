@@ -43,6 +43,7 @@ import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
 import { fetchSkyspaceList } from "../../reducers/actions/sn.skyspace-list.action";
 import { Paper, Switch, Typography, useMediaQuery } from "@material-ui/core";
 import { DropzoneArea } from "material-ui-dropzone";
+import SnFooter from "../footer/sn.footer";
 
 
 function Alert(props) {
@@ -360,6 +361,9 @@ export default function SnMultiUpload(props) {
         onClose={() => setShowPublicToAccModal(false)}
         onSave={importPublicAppsToSpaces}
       />
+      <div>
+        <SnFooter />
+      </div>
     </main>
   );
 }
