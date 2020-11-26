@@ -174,7 +174,7 @@ class SnSkySpaceMenu extends React.Component {
         <div className={this.props.classes.spaceLinkStyle}>
           <span>
             <BiCoinStack className={this.props.classes.spaceIcon} />
-            <Typography variant="span">
+            <Typography variant="span" style={{ paddingLeft: "30px" }}>
               Spaces
               </Typography>
           </span>
@@ -227,7 +227,7 @@ class SnSkySpaceMenu extends React.Component {
         <div className={this.props.classes.spaceLinkStyle}>
           <span>
             <ImTree className={this.props.classes.iconStyling} />
-            <Typography variant="span">
+            <Typography variant="span" style={{ paddingLeft: "25px" }}>
               Shared Spaces
               </Typography>
           </span>
