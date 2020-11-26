@@ -189,7 +189,8 @@ export default function AutoFieldsCustomizedHook(props) {
             <input {...getInputProps()} 
               placeholder="Select Spaces"
               style={{ borderRadius: "100px",
-                  backgroundColor: theme.palette.headerBgColor, }} />
+                  backgroundColor: theme.palette.headerBgColor,
+                  color: theme.palette.linksColor }} />
           </InputWrapper>
         </div>
         {groupedOptions.length > 0 ? (
