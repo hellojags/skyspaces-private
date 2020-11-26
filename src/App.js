@@ -91,6 +91,22 @@ const App = () => {
     setActiveDark(val);
   };
 
+
+  /*
+
+  .MuiInput-underline::before {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: "\00a0";
+    position: absolute;
+    transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    pointer-events: none;
+    border-bottom: 2px solid #1ed660;
+
+    */
+
   const lightTheme = createMuiTheme({
     palette: {
       primary: {
@@ -118,6 +134,20 @@ const App = () => {
       MuiFormLabel: {
         root: {
           color: "#ffffff78"
+        }
+      },
+      MuiInput: {
+        underline: {
+          '&:before' : {
+            borderBottom: "2px solid #ffffff"
+          }
+        }
+      },
+      WAMuiChipInput: {
+        underline: {
+          '&:before' : {
+            borderBottom: "2px solid #ffffff"
+          }
         }
       },
       MuiInputBase: {
