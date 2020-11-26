@@ -114,6 +114,18 @@ const App = () => {
   });
 
   const darkTheme = createMuiTheme({
+    overrides: {
+      MuiFormLabel: {
+        root: {
+          color: "#ffffff78"
+        }
+      },
+      MuiFormHelperText: {
+        root: {
+          color: "#ffffff"
+        }
+      }
+    },
     palette: {
       primary: {
         main: "#1ed660",
