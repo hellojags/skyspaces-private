@@ -120,6 +120,11 @@ const App = () => {
           color: "#ffffff78"
         }
       },
+      MuiInputBase: {
+        input: {
+          color: "#ffffff"
+        }
+      },
       MuiFormHelperText: {
         root: {
           color: "#ffffff"
