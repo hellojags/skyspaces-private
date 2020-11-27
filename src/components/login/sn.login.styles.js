@@ -76,6 +76,7 @@ const styles = (theme) => ({
     background: `${theme.palette.primary.main}`,
     color: "white",
     fontWeight: "600",
+    fontSize: "17px",
     marginTop: "20px",
     marginBottom: "40px",
     "&&&:focus": {

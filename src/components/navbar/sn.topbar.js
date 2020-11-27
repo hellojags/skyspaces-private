@@ -376,7 +376,7 @@ class SnTopBar extends React.Component {
                 className="btn-icons-nvbr-div"
                 style={{ display: "flex", alignItems: "center" }}
               >
-                <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link>
+                {/* <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link> */}
                 <div className="butn-th-main-div">
                   <button className="btn th_btn_nvbar">
                     <AppsIcon

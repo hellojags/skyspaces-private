@@ -189,7 +189,7 @@ class SnSignin extends React.Component {
               onClick={this.userMenuClick}
               className={classes.avatar}
             >
-              {this.props.person.username.charAt(0).toUpperCase()}
+              {this.props.person?.username?.charAt(0).toUpperCase()}
             </div>
 
 

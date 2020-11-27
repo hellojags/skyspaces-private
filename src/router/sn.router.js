@@ -40,7 +40,7 @@ const SnRouter = (props) => {
       <SnLeftMenu />
       <Switch>
         <Route exact path="/">
-          <Redirect to="/public-upload" />
+          <Redirect to="/login" />
         </Route>
         <Route path="/upload" component={SnMultiUpload} />
         <Route path="/public-upload" component={SnLandingUpload} />

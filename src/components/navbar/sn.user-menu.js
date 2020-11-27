@@ -138,7 +138,7 @@ function UserMenu(props) {
             className={classes.profilePicStyling}
             onClick={() => history.push("/profile")}
           >
-            {stPerson.username.charAt(0).toUpperCase()}
+            {stPerson?.username?.charAt(0).toUpperCase()}
           </div>
           <div className={classes.camereIconContainer}>
             <CameraAltIcon style={{ fontSize: 13, color: "white" }} />

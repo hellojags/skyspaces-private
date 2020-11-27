@@ -18,9 +18,11 @@ class snLogin extends React.Component {
             value: 1,
             isTemp: true
         }
+        this.onSkyIdSuccess = this.onSkyIdSuccess.bind(this);
+        this.skyidEventCallback = this.skyidEventCallback.bind(this)
     }
-
     componentDidMount() {
+        this.initializeSkyId(opts);
         if (this.props.showDesktopMenu === false) {
             this.props.setDesktopMenuState(true);
         }
@@ -28,19 +30,64 @@ class snLogin extends React.Component {
             this.props.history.push("/upload");
         }
     }
-
     componentDidUpdate() {
         if (this.props.person) {
             this.props.history.push("/upload");
         }
     }
-
     handleSeedChange = (evt) => {
         this.setState({
             seed: evt.target.value
         });
     }
-
+    initializeSkyId = (opts) => {
+        this.setState({ skyid: new SkyID('SkySpaces', this.skyidEventCallback, opts) });
+    }
+    loginSkyID = async () => {
+        this.state.skyid.sessionStart();
+        this.props.setLoaderDisplay(true);
+    }
+    skyidEventCallback(message) {
+        switch (message) {
+            case 'login_fail':
+                console.log('Login failed')
+                break;
+            case 'login_success':
+                console.log('Login succeed!')
+                this.onSkyIdSuccess(message);
+                break;
+            case 'destroy':
+                console.log('Logout succeed!')
+                break;
+            default:
+                console.log(message)
+                break;
+        }
+    }
+    async onSkyIdSuccess(message) {
+        try
+        {
+        // create userSession Object
+        let userSession = { idp: ID_PROVIDER_SKYID, skyid: this.state.skyid };
+        const personObj = await bsGetSkyIDProfile(userSession);// dont proceed without pulling profile
+        userSession = { ...userSession, person: personObj };
+        this.props.setUserSession(userSession);
+        // For first time user only 
+        let isFirstTime = await firstTimeUserSetup(userSession);
+        if (!isFirstTime)//if not firsttime call data sync 
+        {
+            // call dataSync
+            await syncData(userSession);
+        }
+        this.props.setPersonGetOtherData(personObj);
+        this.props.setImportedSpace(await bsGetImportedSpacesObj(userSession));
+        this.props.setLoaderDisplay(false);
+        this.props.history.push("/upload" + this.props.location.search);
+        }
+        catch(error){
+            console.log("Error during login process. login failed");
+        }
+    }
     login = async () => {
         if (this.state.seed && this.state.seed.trim().length > 0) {
 
@@ -61,7 +108,6 @@ class snLogin extends React.Component {
             console.log("no seed");
         }
     }
-
     handleChange = (event, newValue) => {
         this.setState({ value: newValue });
     };
@@ -70,7 +116,7 @@ class snLogin extends React.Component {
         const { classes } = this.props;
         const { value } = this.state;
         return (
-            <div style={{ paddingTop: 50 }}>
+            <div style={{ paddingTop: 200 }}>
                 <Grid
                     container
                     spacing={3}
@@ -85,7 +131,7 @@ class snLogin extends React.Component {
                         className={classes.main_grid_auth}
                     >
                         <Paper className={`${classes.paper} ${classes.MaintabsPaper}`}>
-                            <Paper className={classes.tabsPaper}>
+                            {/* <Paper className={classes.tabsPaper}>
                                 <Tabs
                                     value={value}
                                     indicatorColor="primary"
@@ -109,7 +155,7 @@ class snLogin extends React.Component {
                                         }}
                                     />
                                 </Tabs>
-                            </Paper>
+                            </Paper> */}
                             {/* container for input username or email */}
                             <Grid container spacing={3} className="inpt-mail-pass-main-grid">
                                 {value === 0 ? (
@@ -153,7 +199,7 @@ class snLogin extends React.Component {
                                             className={classes.txt_span_frgt_pass}
                                         >
                                             Forgot Your Password?
-                        </Typography>
+                                        </Typography>
 
                                         <Grid container spacing={3}>
                                             <Grid item xs={8} style={{ margin: "auto" }}>
@@ -163,14 +209,14 @@ class snLogin extends React.Component {
                                                     onClick={() => console.log("history.push dashboard")}
                                                 >
                                                     Sign up
-                            </Button>
+                                            </Button>
                                             </Grid>
                                         </Grid>
                                     </Grid>
                                 ) : (
                                         <Grid item lg={12} className={classes.mail_inpt_grid}>
                                             <div>
-                                                <TextField
+                                                {/* <TextField
                                                     className={`${classes.margin} ${classes.mail_textfield}`}
                                                     id="input-with-icon-textfield"
                                                     placeholder="Seed"
@@ -183,10 +229,10 @@ class snLogin extends React.Component {
                                                     }}
                                                     onChange={this.handleSeedChange}
                                                     required
-                                                />
-
-                                                {/* password */}
-
+                                                /> */}
+                                                <span style={{ color: "#1DD65F", fontWeight: "600", fontSize: 30 }}>
+                                                    Own Your Space
+                                                </span>
                                                 <TextField
                                                     className={`${classes.margin} ${classes.password_textfield} d-none`}
                                                     id="input-with-icon-textfield"
@@ -209,45 +255,39 @@ class snLogin extends React.Component {
                                                 className={classes.txt_span_frgt_pass, "d-none"}
                                             >
                                                 Forgot Your Password?
-                        </Typography>
-
+                                            </Typography>
                                             <Grid container spacing={3}>
                                                 <Grid item xs={8} style={{ margin: "auto" }}>
                                                     <Button
                                                         variant="contained"
                                                         className={classes.butn_login}
-                                                        onClick={this.login}
+                                                        onClick={this.loginSkyID}
                                                     >
-                                                        Login
-                            </Button>
+                                                        Login using SkyID
+                                                    </Button>
                                                 </Grid>
                                             </Grid>
                                         </Grid>
                                     )}
                             </Grid>
                         </Paper>
-
                         <Grid container spacing={3}>
                             <Grid item xs={12} className={classes.description_auth}>
                                 Registring to SkySpaces,you accept our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
                                     Terms of use
-                    </span>{" "}
-                    and <br />
-                    our{" "}
+                                </span>{" "}and <br /> our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
                                     Privacy policy
-                    </span>
+                                </span>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
             </div>
         );
-
     }
 }
-
 export default withStyles(styles, { withTheme: true })
     (
         connect(mapStateToProps, matchDispatcherToProps)(snLogin)

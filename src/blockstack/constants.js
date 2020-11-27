@@ -11,8 +11,13 @@
 import { DEFAULT_PORTAL } from "../sn.constants";
 import { UserSession, AppConfig } from "blockstack";
 
-export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
+// profile Paths. Different for different Identity Provider
+export const SKYID_PROFILE_PATH = "profile";
 export const PROFILE_PATH = "skhub/profile.json";// this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
+
+
+export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
+
 export const FOLLOWING_PATH = "skhub/following.json"; // will contain array of public key[array of Users]. this key will be set by app specific pub key/User 
 export const FOLLOWER_PATH = "skhub/follower.json";// will contain array of public key[array of Users]. this key will be set by app specific pub key/User
 export const PUBLIC_KEY_PATH = "skhub/key/publicKey.json";
