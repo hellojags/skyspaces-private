@@ -75,7 +75,7 @@ const getPortal = () => {
 }
 
 export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, options) => {
-  if (pwa && (options?.skydb == undefined)) {
+  if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
     try {
       await setJSONinDB(fileKey, fileData);
       await setJSONinDB(IDB_IS_OUT_OF_SYNC, true);
@@ -125,7 +125,7 @@ export const snDeserializeSkydbPublicKey = (publicKeyStr) => publicKeyStr;
 
 export const getJSONFile = async (publicKey, fileKey, encrypted, options) => {
   try {
-    if (pwa && (options?.skydb == undefined)) {
+    if (pwa && (options?.skydb == undefined || options?.skydb == false)) {
       try {
         const result = await getJSONfromDB(fileKey);
         console.log("result" + result);

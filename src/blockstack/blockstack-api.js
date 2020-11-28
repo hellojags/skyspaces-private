@@ -848,11 +848,11 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
         switch (sessionType) {
             case ID_PROVIDER_SKYID:
                 //loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
-                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, session?.profile?.appPublicKey);
+                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, session?.person?.appPublicKey,{skydb:true});
                 break;
             case ID_PROVIDER_SKYDB:
                 loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
-                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, loggedInUserStorageId);
+                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, loggedInUserStorageId,{skydb:true});
                 break;
             case ID_PROVIDER_BLOCKSTACK:
             default:
@@ -945,7 +945,7 @@ export const getStorageIds = async (session, senderId) => {
     let senderStorage, loggedInUserStorageId, remoteUserStorage;
     switch (sessionType) {
         case ID_PROVIDER_SKYID:
-            loggedInUserStorageId = session?.profile?.appPublicKey;
+            loggedInUserStorageId = session?.person?.appPublicKey;
             senderStorage = senderId;
             remoteUserStorage = senderId;
             break;
@@ -1136,4 +1136,5 @@ export const bsShareSkyspace = async (session, skyspaceList, recipientId, shared
     await Promise.all(promises);
     // once all the files are shared with recipent, update loggedIn users shared list
     await bsSaveSharedWithObj(session, sharedWithObj);
+    // call data sync
 }
