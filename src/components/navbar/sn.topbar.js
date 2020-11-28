@@ -382,7 +382,7 @@ export default function SnTopBar(props) {
             {person != null && <IconButton
               id="toggle-menu-icon"
               className="menu-button-styling"
-              onClick={() => dispath(setMobileMenuDisplay(true))}>
+              onClick={() => dispatch(setMobileMenuDisplay(true))}>
               <MenuIcon />
             </IconButton>}
             {(person != null || snPublicHash) && (
