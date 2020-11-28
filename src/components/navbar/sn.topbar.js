@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from 'react-router-dom';
 import "./sn.topbar.css";
 import skyapplogo from "../../SkySpaces_g.png";
 import FormControl from '@material-ui/core/FormControl';
@@ -43,9 +44,33 @@ import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { getPublicApps, getSkylinkPublicShareFile } from "../../skynet/sn.api.skynet";
 import SnInfoModal from "../modals/sn.info.modal";
 import { Drawer } from "@material-ui/core";
+import {
+  syncData, firstTimeUserSetup
+} from "../../blockstack/blockstack-api";
+import SnDataSync from '../datasync/sn.datasync';
+import { SUCCESS } from '../../blockstack/constants';
+import { useSelector, useDispatch } from "react-redux";
+// Actions
+import {
+  setMobileMenuDisplay,
+  toggleMobileMenuDisplay
+} from "../../reducers/actions/sn.mobile-menu.action";
+import {
+  fetchBlockstackPerson,
+  logoutPerson, setPerson,
+  setPersonGetOtherData
+} from "../../reducers/actions/sn.person.action";
+import { setLoaderDisplay } from "../../reducers/actions/sn.loader.action";
+import { toggleDesktopMenuDisplay } from "../../reducers/actions/sn.desktop-menu.action";
+import { fetchPublicApps, setApps } from "../../reducers/actions/sn.apps.action";
+import { setUserSession } from "../../reducers/actions/sn.user-session.action"
+import { fetchAppsSuccess } from "../../reducers/actions/sn.apps.action";
+import { setImportedSpace } from "../../reducers/actions/sn.imported-space.action";
+import { makeStyles } from "@material-ui/core/styles";
+import useInterval from 'react-useinterval';
 
 const drawerWidth = 240;
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
@@ -89,69 +114,174 @@ const useStyles = (theme) => ({
     marginRight: 20,
   },
   toolbar: theme.mixins.toolbar,
-});
+}));
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-class SnTopBar extends React.Component {
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchStr: "",
-      invalidSkylink: false,
-      publicPortal: DEFAULT_PORTAL,
-      showInfoModal: false,
-      infoModalContent: "",
-      anchor: "",
-      isTrue: false,
-      activeDarkBck: false,
-      isMaxWidth950: window.matchMedia("(max-width:950px)").matches,
-      onInfoModalClose: () => this.setState({ showInfoModal: false })
-    };
+export default function SnTopBar(props) {
+  // static propTypes = {
+  //   match: PropTypes.object.isRequired,
+  //   location: PropTypes.object.isRequired,
+  //   history: PropTypes.object.isRequired,
+  // };
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  // local
+  const [searchStr, setSearchStr] = useState("");
+  const [invalidSkylink, setInvalidSkylink] = useState(false);
+  const [publicPortal, setPublicPortal] = useState(DEFAULT_PORTAL);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoModalContent, setInfoModalContent] = useState("");
+  const [syncStatus, setSyncStatus] = useState(null);
+  const [anchor, setAnchor] = useState("");
+  const [isTrue, setIsTrue] = useState(false);
+  const [activeDarkBck, setActiveDarkBck] = useState(false);
+
+  //isMaxWidth950: window.matchMedia("(max-width:950px)").matches;
+
+  const onInfoModalClose = () => {
+    setShowInfoModal(false);
   }
 
-  setActiveDarkBck = (val)=>this.setState({activeDarkBck: val});
+  // Store
+  const showMobileMenu = useSelector((state) => state.snShowMobileMenu);
+  const userSession = useSelector((state) => state.userSession);
+  const snPortalsList = useSelector((state) => state.snPortalsList);
+  const snApps = useSelector((state) => state.snApps);
+  const person = useSelector((state) => state.person);
+  const triggerSignIn = useSelector((state) => state.snTriggerSignin);
+  const snUserSetting = useSelector((state) => state.snUserSetting);
+  const snTopbarDisplay = useSelector((state) => state.snTopbarDisplay);
+  const snShowDesktopMenu = useSelector((state) => state.snShowDesktopMenu);
+  const snPublicHash = useSelector((state) => state.snPublicHash);
+  const snPublicInMemory = useSelector((state) => state.snPublicInMemory);
 
-  componentDidMount(){
+  // useInterval(() => {
+  //   // Your custom logic here
+  //   postSync()
+  // }, 30000);
+
+  const postSync = async () => {
+    setSyncStatus('synced');
+    let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+    //let status = await firstTimeUserSetup(userSession, null, null);
+    alert("Success " + status);
+    if (status == SUCCESS) {
+      setSyncStatus('synced');
+    }
+    // alert("postSync clicked !!");
+    // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
+
+    // const status = await navigator.permissions.query({
+    //   name: 'periodic-background-sync',
+    // });
+    // if (status.state === 'granted') {
+    //   // Periodic background sync can be used.
+    //   alert("periodic sync can be used !!");
+    // } else {
+    //   // Periodic background sync cannot be used.
+    //   alert("periodic sync can NOT be used !!");
+    //   navigator.serviceWorker.ready.then(function(registration) {
+    //     registration.periodicSync.permissionState().then(function(state) {
+    //       if (state == 'prompt') 
+    //       alert("showSyncRegisterUI here for permission");
+    //     });
+    //   });
+    // }
+
+    // Periodic Sync Check
+    // https://web.dev/periodic-background-sync/
+    // https://github.com/WICG/background-sync/tree/master/explainers
+    // const registration = await navigator.serviceWorker.ready;
+    // if ('periodicSync' in registration) {
+    //   try {
+    //     await registration.periodicSync.register('content-sync', {
+    //       // An interval of one day.
+    //       // minInterval: 24 * 60 * 60 * 1000,
+    //       minInterval: 30000,
+    //     });
+    //     alert("content Synched");
+    //   } catch (error) {
+    //     // Periodic background sync cannot be used.
+    //     alert("Error Synching content" + error);
+    //   }
+    // }
+
+    // Periodic Sync Registration
+    // navigator.serviceWorker.ready.then(function (registration) {
+    //   registration.periodicSync.register({
+    //     tag: 'post-data-periodic',         // default: ''
+    //     minPeriod: 12 * 60 * 60 * 1000, // default: 0
+    //     powerState: 'avoid-draining',   // default: 'auto'
+    //     networkState: 'avoid-cellular'  // default: 'online'
+    //   }).then(function (periodicSyncReg) {
+    //     alert("periodicSync success");
+    //   }, function () {
+    //     // failure
+    //     alert("periodicSync failure");
+    //   })
+    // });
+
+    // // Example: unregister all periodic syncs, except "get-latest-news":
+    // navigator.serviceWorker.ready.then(function (registration) {
+    //   registration.periodicSync.getRegistrations().then(function (syncRegs) {
+    //     syncRegs.filter(function (reg) {
+    //       return reg.tag != 'post-data-periodic';
+    //     }).forEach(function (reg) {
+    //       reg.unregister();
+    //     });
+    //   });
+    // });
+
+    // getting pending sync details
+    // navigator.serviceWorker.ready.then(function(registration) {
+    //   registration.periodicSync.getRegistrations().then(function(syncRegs) {
+    //     syncRegs.filter(function(reg) {
+    //       return reg.tag != 'get-latest-news';
+    //     }).forEach(function(reg) {
+    //       reg.unregister();
+    //     });
+    //   });
+    // });
+  }
+
+  useEffect(() => {
     let getMode = localStorage.getItem("darkMode");
     if (getMode === "true") {
-      this.setActiveDarkBck(true);
+      setActiveDarkBck(true);
     } else {
-      this.setActiveDarkBck(false);
+      setActiveDarkBck(false);
     }
-  }
+  }, []);
 
-  getSkylinkIdxObject = (evt) => {
+  const getSkylinkIdxObject = (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
-    getSkylinkIdxObject(this.props.userSession).then((skyLinkIdxObject) => {
-      getSkylink(this.props.userSession, skyLinkIdxObject.skhubIdList[1]);
+    getSkylinkIdxObject(userSession).then((skyLinkIdxObject) => {
+      getSkylink(userSession, skyLinkIdxObject.skhubIdList[1]);
     });
   };
 
-  triggerSearch = async (evt) => {
+  const triggerSearch = async (evt) => {
     console.log("on trigger search");
 
     evt.preventDefault();
     evt.stopPropagation();
-    if (this.props.snPublicHash != null) {
-      if (this.state.searchStr == null || this.state.searchStr.trim() === "") {
-        const allPublicApps = await getPublicApps(this.props.snPublicHash);
-        this.props.setApps(getAllPublicApps(allPublicApps.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps));
+    if (snPublicHash != null) {
+      if (searchStr == null || searchStr.trim() === "") {
+        const allPublicApps = await getPublicApps(snPublicHash);
+        dispatch(setApps(getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)));
 
       } else {
-        this.props.setLoaderDisplay(true);
-        const allPublicApps = await getPublicApps(this.props.snPublicHash);
-        const filteredApps = getAllPublicApps(allPublicApps.data, this.props.snPublicInMemory.addedSkapps, this.props.snPublicInMemory.deletedSkapps)
+        dispatch(setLoaderDisplay(true));
+        const allPublicApps = await getPublicApps(snPublicHash);
+        const filteredApps = getAllPublicApps(allPublicApps.data, snPublicInMemory.addedSkapps, snPublicInMemory.deletedSkapps)
           .filter((app) => {
-            if (this.state.searchStr && this.state.searchStr.trim() !== "") {
+            if (searchStr && searchStr.trim() !== "") {
               for (const skyAppKey in app) {
                 if (
                   app.hasOwnProperty(skyAppKey) &&
@@ -160,7 +290,7 @@ class SnTopBar extends React.Component {
                   app[skyAppKey]
                     .toString()
                     .toLowerCase()
-                    .indexOf(this.state.searchStr.toLowerCase()) > -1
+                    .indexOf(searchStr.toLowerCase()) > -1
                 ) {
                   return app;
                 }
@@ -170,43 +300,44 @@ class SnTopBar extends React.Component {
             }
             return "";
           });
-        this.props.fetchAppsSuccess(filteredApps);
+        dispatch(fetchAppsSuccess(filteredApps));
       }
     } else {
-      this.props.history.push(
-        "/skylinks?query=" + encodeURIComponent(this.state.searchStr)
+      history.push(
+        "/skylinks?query=" + encodeURIComponent(searchStr)
       );
     }
   };
-  onDownload = () => {
+
+  const onDownload = () => {
     console.log("ondownload");
     try {
-      let skylink = parseSkylink(this.state.searchStr)
+      let skylink = parseSkylink(searchStr)
       //alert("skylink" + skylink)
-      launchSkyLink(skylink, this.props.snUserSetting);
+      launchSkyLink(skylink, snUserSetting);
     }
     catch (e) {
-      this.setState({ invalidSkylink: true })
+      setInvalidSkylink(true);
     }
   };
 
-  changePublicPortal = (portal) => {
+  const changePublicPortal = (portal) => {
     document.location.href = document.location.href.replace(
       document.location.origin,
       (new URL(portal)).origin
     );
   }
 
-  handleLogoClick = (evt) => {
-    this.props.snPublicHash && evt.preventDefault();
+  const handleLogoClick = (evt) => {
+    snPublicHash && evt.preventDefault();
   }
 
-  renderChangePortal = (value) => <FormControl className={this.props.classes.portalFormControl}>
+  const renderChangePortal = (value) => <FormControl className={classes.portalFormControl}>
     <Select
       labelId="demo-simple-select-label"
       id="pulic-share-portal"
       value={value}
-      onChange={(evt) => this.changePublicPortal(evt.target.value)}
+      onChange={(evt) => changePublicPortal(evt.target.value)}
     >
       <MenuItem className="d-none" value={value}>
         Change Portal
@@ -216,8 +347,8 @@ class SnTopBar extends React.Component {
           {document.location.origin}
         </MenuItem>
       )}
-      {this.props.snPortalsList &&
-        this.props.snPortalsList.portals.map((obj, index) => (
+      {snPortalsList &&
+        snPortalsList.portals.map((obj, index) => (
           <MenuItem key={index} value={obj.url}>
             {obj.name}
           </MenuItem>
@@ -225,92 +356,100 @@ class SnTopBar extends React.Component {
     </Select>
   </FormControl>
 
-  render() {
-    const { classes } = this.props;
-    return (
-      <>
-        {this.props.snTopbarDisplay && <div>
-          <div className="container-fluid main-container">
-            <nav className={`navbar navbar-light hdr-nvbr-main ${classes.headerBgColorSet}`}>
-              {this.props.person != null && (
-                <Drawer anchor={"left"} open={this.props.showMobileMenu} onClose={()=>this.props.setMobileMenuDisplay(false)} >
-                    <SnLeftMenu />
-                </Drawer>
-              )}
 
-              {this.props.person!=null && <IconButton
-                id="toggle-menu-icon"
-                className="menu-button-styling"
-                onClick={()=>this.props.setMobileMenuDisplay(true)}
+  return (
+    <>
+      {snTopbarDisplay && <div>
+        <div className="container-fluid main-container">
+          <nav className={`navbar navbar-light hdr-nvbr-main ${classes.headerBgColorSet}`}>
+            {person != null && (
+              <Drawer anchor={"left"} open={showMobileMenu} onClose={()=> setMobileMenuDisplay(false)} >
+              <SnLeftMenu />
+              </Drawer>
+            )}
+
+            {/* {person!=null && <button
+                className="navbar-toggler togl-btn-navbr"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
               >
-                <MenuIcon />
-              </IconButton>}
+                <span className="navbar-toggler-icon"></span>
+              </button>} */}
+                {person!=null && <IconButton
+                 id="toggle-menu-icon"
+                 className="menu-button-styling"
+                 onClick={()=>setMobileMenuDisplay(true)}>
+                 <MenuIcon />
+                 </IconButton>}
+  
 
-              <a
-                className={`${"navbar-brand"} ${
-                  this.props.person==null ? "auth-navi-brand" : "navi-brnd"
-              } ${this.props.person==null && "logoAlignMent"}`}
-              >
-                {/* logo */}
-                <img
-                  style={{ cursor: "pointer" }}
-                  onClick={this.handleLogoClick}
-                  src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
-                  width="30"
-                  height="30"
-                  className="d-inline-block align-top"
-                  alt=""
-                  loading="lazy"
-                  height="40"
-                  width="170"
-                />
+            <a
+              className={`${"navbar-brand"} ${person == null ? "auth-navi-brand" : "navi-brnd"
+                } ${person == null && "logoAlignMent"}`}
+            >
+              {/* logo */}
+              <img
+                style={{ cursor: "pointer" }}
+                onClick={handleLogoClick}
+                src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+                alt=""
+                loading="lazy"
+                height="40"
+                width="170"
+              />
 
-                {/* search input */}
-                {(this.props.person != null || this.props.snPublicHash) && (
-                  <>
-                    <form onSubmit={this.triggerSearch} className={classes.searchBarForm}>
-                      <div className="search_main_div" style={{marginLeft: "auto"}}>
-                        <span>
-                          <i className="fas fa-search srch-icon-inside-field-input"></i>
-                        </span>
+              {/* search input */}
+              {(person != null || snPublicHash) && (
+                <>
+                  <form onSubmit={triggerSearch} className={classes.searchBarForm}>
+                    <div className="search_main_div" style={{ marginLeft: "auto" }}>
+                      <span>
+                        <i className="fas fa-search srch-icon-inside-field-input"></i>
+                      </span>
 
-                        <input
-                          className={`form-control mr-sm-2 srch_inpt ${classes.searchBarBg}`}
-                          style={{
-                            border: `${
-                              this.state.activeDarkBck === true
-                                ? "none"
-                                : "1px solid lightgray"
+                      <input
+                        className={`form-control mr-sm-2 srch_inpt ${classes.searchBarBg}`}
+                        style={{
+                          border: `${activeDarkBck === true
+                              ? "none"
+                              : "1px solid lightgray"
                             }`,
-                          }}
-                          type="search"
-                          placeholder="Search in SkySpaces or download Skylink"
-                          aria-label="Search"
-                          onChange={(evt) =>
-                            this.setState({ searchStr: evt.target.value })
-                          }
-                        />
+                        }}
+                        type="search"
+                        placeholder="Search in SkySpaces or download Skylink"
+                        aria-label="Search"
+                        onChange={(evt) =>
+                          setSearchStr(evt.target.value)
+                        }
+                      />
                       {/* search inside nav-brand */}
                       <div className="srch_btn_main_div">
-                        <button className="btn srch_btn_nvbar" type="button" onClick={this.onDownload}>
+                        <button className="btn srch_btn_nvbar" type="button" onClick={onDownload}>
                           <label for="hidden-search-inpt">
                             <i className="fa fa-download icon_download_nvbar"></i>
                           </label>
                         </button>
                         <input type="file" id="hidden-search-inpt" />
                       </div>
-                      </div>
+                    </div>
 
-                    </form>
-                  </>
-                )}
-              </a>
+                  </form>
+                </>
+              )}
+            </a>
 
-              <a className="small_logo_nvbrnd">
+            <a className="small_logo_nvbrnd">
               {/* small logo */}
               <img
                 style={{ cursor: "pointer" }}
-                onClick={this.handleLogoClick}
+                onClick={handleLogoClick}
                 src={SmallLogo}
                 width="30"
                 height="30"
@@ -322,7 +461,7 @@ class SnTopBar extends React.Component {
               />
             </a>
 
-            {this.props.person!=null && (
+            {person != null && (
               <div className="srch_btn_out_main_div">
                 <button className="btn srch_btn_nvbar">
                   <label for="hidden-search-inpt">
@@ -332,12 +471,12 @@ class SnTopBar extends React.Component {
                 <input type="file" id="hidden-search-inpt" />
               </div>
             )}
-            
-              {/*(this.props.person != null || this.props.snPublicHash) && (
+
+            {/*(person != null || snPublicHash) && (
                 <>
                   <Grid item xs={7} sm={7} className="topbar-srch-grid">
                     <div className="float-center">
-                      <form onSubmit={this.triggerSearch}>
+                      <form onSubmit={triggerSearch}>
                         <TextField
                           id="filled-secondary"
                           name="searchKey"
@@ -346,7 +485,7 @@ class SnTopBar extends React.Component {
                           className="topbar-search-field"
                           placeholder="Search in Spaces or Download Skylink"
                           onChange={(evt) =>
-                            this.setState({ searchStr: evt.target.value })
+                            setState({ searchStr: evt.target.value })
                           }
                           InputProps={{
                             startAdornment: (
@@ -359,82 +498,89 @@ class SnTopBar extends React.Component {
                       </form>
                     </div>
                   </Grid>
-                  <Grid item xs={this.props.snPublicHash ? 2 : 1} sm={this.props.snPublicHash ? 2 : 1}>
+                  <Grid item xs={snPublicHash ? 2 : 1} sm={snPublicHash ? 2 : 1}>
                     <Tooltip title="Download Skylink Content" arrow>
-                      <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 35, cursor: 'pointer' }} onClick={this.onDownload} />
+                      <CloudDownloadOutlinedIcon style={{ color: APP_BG_COLOR, fontSize: 35, cursor: 'pointer' }} onClick={onDownload} />
                     </Tooltip>
                   </Grid>
                 </>
                         )*/}
 
-              {/* <Grid
+            {/* <Grid
                 item
-                sm={this.props.person != null ? 2 : (this.props.snPublicHash != null ? 1 : 10)}
+                sm={person != null ? 2 : (snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-              <div
-                className="btn-icons-nvbr-div"
-                style={{ display: "flex", alignItems: "center" }}
+              {/* <Grid item>
+              <SnDataSync syncStatus={syncStatus}></SnDataSync>
+            </Grid> */}
+              <div className="signUp-butn-main-out-div">
+              <button
+                /* onClick={this.doSignUp} */
+                style={{ border: "1px solid #1ed660" }}
+                type="button"
+                class="btn  btn-sm butn-out-signup"
+                onClick={postSync}
               >
-                {/* <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link> */}
-                <div className="butn-th-main-div">
-                  <button className="btn th_btn_nvbar">
-                    <AppsIcon
-                      className={this.props.classes.appLogo}
-                    />
-                  </button>
-                </div>
-                {this.props.snPublicHash && (
-                  this.renderChangePortal("Change Portal")
-                )}
-                {this.props.snShowDesktopMenu && this.props.snPublicHash==null && (
-                  // TODO: need to create a reducer for signin component display
-                  <SnSignin />
-                )}
+                 Sync Now
+            </button>
+            </div>
+            <div
+              className="btn-icons-nvbr-div"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              {/* <Link justify="center" rel="noopener noreferrer" target="_blank" href="https://blog.sia.tech/own-your-space-eae33a2dbbbc" style={{ color: APP_BG_COLOR }}>Blog</Link> */}
+              <div className="butn-th-main-div">
+                <button className="btn th_btn_nvbar">
+                  <AppsIcon
+                    className={classes.appLogo}
+                  />
+                </button>
               </div>
-              {/* </Grid> */}
-              {/* <Grid
+              {snPublicHash && (
+                renderChangePortal("Change Portal")
+              )}
+              {snShowDesktopMenu && snPublicHash == null && (
+                // TODO: need to create a reducer for signin component display
+                <SnSignin />
+              )}
+            </div>
+            {/* </Grid> */}
+            {/* <Grid
                 item
-                xs={(this.props.person != null || this.props.snPublicHash != null) ? 2 : 10}
+                xs={(person != null || snPublicHash != null) ? 2 : 10}
                 className="hidden-sm-up"
               >
                 <div className="top-icon-container float-right">
-                  {this.props.snShowDesktopMenu && this.props.snPublicHash==null && (
+                  {snShowDesktopMenu && snPublicHash==null && (
                     // TODO: need to create a reducer for signin component display
                     <SnSignin />
                   )}
-                  {this.props.snPublicHash && this.renderChangePortal("")}
+                  {snPublicHash && renderChangePortal("")}
                 </div>
               </Grid> */}
-            </nav>
-          </div>
+          </nav>
         </div>
-        }
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={this.state.invalidSkylink}
-          autoHideDuration={3000}
-          onClose={() => this.setState({ invalidSkylink: false })}
-          TransitionComponent={"Fade"}
-        >
-          <Alert onClose={() => this.setState({ invalidSkylink: false })} severity="error">
-            Invalid Skylink ! Please enter valid 46 character skylink to Download.
+      </div>
+      }
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={invalidSkylink}
+        autoHideDuration={3000}
+        onClose={() => setInvalidSkylink(false)}
+        TransitionComponent={"Fade"}
+      >
+        <Alert onClose={() => setInvalidSkylink(false)} severity="error">
+          Invalid Skylink ! Please enter valid 46 character skylink to Download.
       </Alert>
-        </Snackbar>
-        <SnInfoModal
-          open={this.state.showInfoModal}
-          onClose={this.state.onInfoModalClose}
-          title="Public Share Link"
-          type="public-share"
-          content={this.state.infoModalContent}
-        />
-      </>
-    );
-  }
-}
-
-export default withRouter(
-  withStyles(useStyles)(
-    connect(mapStateToProps, matchDispatcherToProps)(SnTopBar)
-  )
-);
+      </Snackbar>
+      <SnInfoModal
+        open={showInfoModal}
+        onClose={() => onInfoModalClose()}
+        title="Public Share Link"
+        type="public-share"
+        content={infoModalContent}
+      />
+    </>
+  );
+};

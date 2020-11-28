@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
 import {
   faEnvelope,
   faFan,
