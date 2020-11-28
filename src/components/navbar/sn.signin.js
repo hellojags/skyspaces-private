@@ -167,7 +167,7 @@ class SnSignin extends React.Component {
               <button
                 onClick={this.gotoSkydbLogin}
                 type="button"
-                class="btn btn-sm butn-out-login-nvbr"
+                class="btn btn-sm butn-out-login-nvbr d-none"
               >
                 Login
             </button>
@@ -177,7 +177,7 @@ class SnSignin extends React.Component {
                 /* onClick={this.doSignUp} */
                 style={{ border: "1px solid #1ed660" }}
                 type="button"
-                class="btn  btn-sm butn-out-signup"
+                class="btn  btn-sm butn-out-signup d-none"
               >
                 Sign up
             </button>

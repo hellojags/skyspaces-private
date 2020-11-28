@@ -12,11 +12,11 @@ import { bsGetImportedSpacesObj,bsGetSkyIDProfile,syncData , firstTimeUserSetup 
 import SkyID from "skyid";
 import {ID_PROVIDER_SKYID} from "../../sn.constants";
 
-let devMode = true;
+let devMode = false;
 if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
      devMode = true
 } else {
-     devMode = true
+     devMode = false
 }
 class snLogin extends React.Component {
     constructor(props) {
@@ -126,7 +126,7 @@ class snLogin extends React.Component {
         const { classes } = this.props;
         const { value } = this.state;
         return (
-            <div style={{ paddingTop: 200 }}>
+            <div style={{ paddingTop: 150 }}>
                 <Grid
                     container
                     spacing={3}
@@ -281,6 +281,15 @@ class snLogin extends React.Component {
                                     )}
                             </Grid>
                         </Paper>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} className={classes.description_auth}>
+                            <span style={{ fontWeight: "400" }}>
+                            Note: This update of SkySpaces introduces breaking changes,<br/>  
+                            existing users can login using - <a src="https://skyspaces.io"  class="cursor-pointer">https://skyspaces.io</a> <br/> 
+                            We will provide in-app data migration option soon...<br/> 
+                            </span> 
+                            </Grid>
+                        </Grid>
                         <Grid container spacing={3}>
                             <Grid item xs={12} className={classes.description_auth}>
                                 Registring to SkySpaces,you accept our{" "}

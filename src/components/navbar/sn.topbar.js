@@ -6,7 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
 import AppsIcon from "@material-ui/icons/Apps";
 import SmallLogo from "./images/smLogo.png";
-import SnLeftMenu from "./sn.left-menu"; 
+import SnLeftMenu from "./sn.left-menu";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -379,14 +379,16 @@ export default function SnTopBar(props) {
               >
                 <span className="navbar-toggler-icon"></span>
               </button>} */}
-                {person!=null && <IconButton
-                 id="toggle-menu-icon"
-                 className="menu-button-styling"
-                 onClick={()=>dispatch(setMobileMenuDisplay(true))}>
-                 <MenuIcon />
-                 </IconButton>}
-  
-
+            {person != null && <IconButton
+              id="toggle-menu-icon"
+              className="menu-button-styling"
+              onClick={() => dispath(setMobileMenuDisplay(true))}>
+              <MenuIcon />
+            </IconButton>}
+            {(person != null || snPublicHash) && (
+              <div className="ribbon"><span>BETA</span></div>
+            )}
+            { (person == null) ? <div className="ribbonMiddle"><span>BETA</span></div>: "" }
             <a
               className={`${"navbar-brand"} ${person == null ? "auth-navi-brand" : "navi-brnd"
                 } ${person == null && "logoAlignMent"}`}
@@ -418,8 +420,8 @@ export default function SnTopBar(props) {
                         className={`form-control mr-sm-2 srch_inpt ${classes.searchBarBg}`}
                         style={{
                           border: `${activeDarkBck === true
-                              ? "none"
-                              : "1px solid lightgray"
+                            ? "none"
+                            : "1px solid lightgray"
                             }`,
                         }}
                         type="search"
@@ -511,20 +513,21 @@ export default function SnTopBar(props) {
                 sm={person != null ? 2 : (snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-              {/* <Grid item>
+            {/* <Grid item>
               <SnDataSync syncStatus={syncStatus}></SnDataSync>
             </Grid> */}
+            {(person != null || snPublicHash) && (
               <div className="signUp-butn-main-out-div">
-              <button
-                /* onClick={this.doSignUp} */
-                style={{ border: "1px solid #1ed660" }}
-                type="button"
-                class="btn  btn-sm butn-out-signup"
-                onClick={postSync}
-              >
-                 Sync Now
+                <button
+                  /* onClick={this.doSignUp} */
+                  style={{ border: "1px solid #1ed660" }}
+                  type="button"
+                  class="btn  btn-sm butn-out-signup"
+                  onClick={postSync}
+                >
+                  Sync Now
             </button>
-            </div>
+              </div>)}
             <div
               className="btn-icons-nvbr-div"
               style={{ display: "flex", alignItems: "center" }}

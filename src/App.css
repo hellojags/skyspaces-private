@@ -17,10 +17,12 @@
   border: none !important;
   content: none;
 }
+
 .inpt-mail-pass-main-grid .MuiInput-underline::after {
   border: none !important;
   content: none;
 }
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -31,6 +33,7 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
 .App-link {
   color: #61dafb;
 }
@@ -54,6 +57,7 @@
 .AF_main_div .MnZkq svg {
   font-size: 20px !important;
 }
+
 .AF_main_div .fiuEEX svg {
   font-size: 20px;
 }
@@ -61,10 +65,12 @@
 .AF_main_div .fCsvmY {
   width: 100% !important;
 }
+
 .lable_skylink_inpt_settings_div .MuiInput-input {
   color: #c5c5c5;
   font-size: 14px;
 }
+
 .most_main_grid_gallery .gallery_title_head_image_text:hover {
   background-color: #dafde7 !important;
   cursor: pointer;
@@ -78,24 +84,30 @@
 .most_main_grid_gallery .inner_image_icons {
   display: none;
 }
+
 .most_main_grid_gallery .image_grid_gallery:hover .inner_image_icons {
   display: block;
 }
+
 .most_main_grid_auth .MuiTab-root {
   max-width: 100% !important;
 }
+
 @media only screen and (max-width: 1425px) {
   .lable_skylink_inpt_settings_div .save_btn_settings {
     margin-top: 20px;
     margin-left: 0px !important;
   }
+
   .lable_skylink_inpt_settings_div .skynetPortal_inpt {
     width: 100% !important;
   }
 }
+
 .drpZone_main_grid .MuiDropzoneArea-icon {
   color: #c5c5c5 !important;
 }
+
 .drpZone_main_grid .MuiDropzoneArea-root {
   min-height: unset !important;
   border-radius: 10px !important;
@@ -119,9 +131,11 @@
   /* position: relative; */
   /* right: 10px; */
 }
+
 .PrivateTabIndicator-colorPrimary-22 {
   background-color: unset !important;
 }
+
 .slick-next:before,
 .slick-prev:before {
   color: #1ed660;
@@ -144,15 +158,18 @@
     display: block !important;
   }
 }
+
 @media only screen and (max-width: 767px) {
   .navi-brnd {
     display: none !important;
     /* width: auto !important; */
   }
+
   .icon_download_nvbar {
     display: none !important;
   }
 }
+
 @media only screen and (max-width: 598px) {
   .gallery_title_head_Alltext {
     margin-top: 10px !important;
@@ -162,18 +179,22 @@
   .menu_icon_top {
     margin-top: 10px !important;
   }
+
   .most_main_grid_gallery_style {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
   }
+
   .cenetr_prfl_grid {
     padding: 0px !important;
   }
+
   .main_crad_prfl_grid {
     padding: 0px !important;
   }
 }
+
 .most_main_grid_auth .MuiTabs-indicator {
   display: none;
 }
@@ -182,24 +203,28 @@
   .cenetr_prfl_grid {
     padding: 0px !important;
   }
+
   .main_crad_prfl_grid {
     padding: 12px 0px 12px 0px !important;
   }
+
   .cenetr_prfl_grid .tabsName {
     padding-right: unset !important;
   }
+
   .stngTopFollowingbtn {
     display: flex;
     justify-content: center !important;
     width: 100%;
   }
+
   .followingButton {
     width: 80% !important;
   }
 }
 
 @media (min-width: 576px) {
-  .hidden-sm-up{
+  .hidden-sm-up {
     display: none !important;
   }
 }
@@ -213,39 +238,47 @@
   opacity: 1 !important;
 }
 
-.MuiSwitch-colorPrimary.Mui-checked + .MuiSwitch-track {
+.MuiSwitch-colorPrimary.Mui-checked+.MuiSwitch-track {
   background-color: #1ed660 !important;
 }
 
 .jFXjlY svg {
   font-size: 20px !important;
 }
+
 @media only screen and (max-width: 599px) {
   .audioIConsOnSmall {
     display: block !important;
     margin-left: 0px !important;
   }
+
   .nowHudioIConsOnSmall {
     display: none;
   }
+
   .sliderPlusPlayIcons {
     display: flex;
     justify-content: space-between;
   }
+
   .wrapAudioIConsOnSmall {
     width: 100%;
     display: flex;
     justify-content: space-between;
   }
+
   .audioInnerDivIons1 {
     display: flex;
   }
+
   .setInnerRepIconMargin {
     padding-left: 30px;
   }
+
   .volUpIcons_audioComp_main_div {
     display: flex;
   }
+
   .crossIcon_audio_comp_div {
     padding-left: 30px !important;
   }
@@ -254,3 +287,122 @@
 .MuiChip-root.active {
   background-color: #1ed660;
 }
+
+/* .ribbon {
+  background-color: rgba(14, 224, 42, 0.475);
+  left: 2em;
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(0deg);
+  overflow: hidden;
+  position: absolute;
+  top: 250px;
+  white-space: nowrap;
+  width: -50em;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.ribbon.a {
+  font-size: medium;
+  color: blue;
+  display: block;
+  font-weight: 600;
+  margin: 1px 0;
+  padding: 8px 50px;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 0 5px rgb(9, 66, 223);
+  pointer-events: none;
+} */
+
+.ribbon {
+  position: absolute;
+  left: 105px;
+  top: 0px;
+  z-index: 1;
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  background-color: transparent !important;
+}
+
+.ribbon span {
+  font-size: 10px;
+  font-weight: bold;
+  color: #FFF;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 13px;
+  transform: rotate(0deg);
+  -webkit-transform: rotate(0deg);
+  width: 80px;
+  display: block;
+  background: linear-gradient(darkgray 0%,darkgray 100%);
+  box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 50px;
+  left: -5px;
+}
+
+.ribbonMiddle {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  z-index: 1;
+  overflow: hidden;
+  width: 75px;
+  height: 75px;
+  text-align: center;
+  background-color: transparent !important;
+}
+
+.ribbonMiddle span {
+  font-size: 10px;
+  font-weight: bold;
+  color: #FFF;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 20px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  width: 100px;
+  display: block;
+  background: linear-gradient(darkgray 0%,darkgray 100%);
+  box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 19px;
+  left: -21px;
+}
+
+/* .ribbon span::before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 100%;
+  z-index: -1;
+  border-left: 3px solid #79A70A;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #79A70A;
+}
+
+.ribbon span::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: 100%;
+  z-index: -1;
+  border-left: 3px solid transparent;
+  border-right: 3px solid #79A70A;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #79A70A;
+} */
+
+/* .hidden-xs-dn{
+  display: none !important;
+} */

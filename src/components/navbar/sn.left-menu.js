@@ -81,7 +81,7 @@ class SnLeftMenu extends React.Component {
       <React.Fragment>
         <div className={this.props.classes.toolbar}>
           <div className="banner-text hidden-sm-up">
-            <div className="ribbon"><span>BETA</span></div>
+            <div className="ribbon  hidden-xs-dn"><span>BETA</span></div>
             <img
               src={skyapplogo}
               alt="SkySpaces"

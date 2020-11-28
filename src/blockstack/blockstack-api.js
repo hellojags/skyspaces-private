@@ -820,7 +820,7 @@ export const bsSavePublicKey = async (session) => {
         console.log(err);
     }
 }
-
+// Get the file that contains all existing List of users with whom spaces are shared so far.
 export const bsGetSharedWithObj = async (session) => {
     try {
         return getFile(session, SHARED_WITH_FILE_PATH);
@@ -1061,7 +1061,7 @@ export const bsUnshareSpaceFromRecipientLst = async (session, recipientIdStrgLst
 }
 
 //const getBlockStackIdList = (sharedWithObjKeyLst) => sharedWithObjKeyLst.map(sharedWithObjKey=> props.sharedWithObj[sharedWithObjKey].userid);
-
+// This method is getting called from share-skyspace.Modal
 export const bsShareSkyspace = async (session, skyspaceList, recipientId, sharedWithObj) => {
     //let recipientId;
     let key;
@@ -1134,6 +1134,6 @@ export const bsShareSkyspace = async (session, skyspaceList, recipientId, shared
             .then((encSkylink) => putFileForShared(session, SHARED_SKYLINK_PATH, encSkylink)));
     });
     await Promise.all(promises);
-
+    // once all the files are shared with recipent, update loggedIn users shared list
     await bsSaveSharedWithObj(session, sharedWithObj);
 }
