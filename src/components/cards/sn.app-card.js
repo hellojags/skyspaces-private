@@ -290,7 +290,7 @@ class SnAppCard extends React.Component {
                             </div>
                           )}
                 </div>
-                <div style={{ paddingLeft: 62 }} className={classes.createAtTime}>
+                <div className={classes.createAtTime, classes.skylink}>
                   {app.skylink} <Tooltip title="Copy Skylink to clipboard" arrow>
                     <FileCopyOutlinedIcon
                       onClick={this.copyToClipboard}
