@@ -133,6 +133,7 @@
   .small_logo_nvbrnd {
     display: block;
     width: 54%;
+    margin-left: -10px;
   }
   .search_main_div {
     display: none;

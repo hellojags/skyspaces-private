@@ -1,6 +1,7 @@
 import React from "react";
 import leftMenuStyles from "./sn.left-menu.styles";
 import { AiOutlineUpload } from "react-icons/ai";
+import clsx from "clsx";
 import editDocIcon from "./images/writing.png";
 import { BiCoinStack } from "react-icons/bi";
 import { ImTree } from "react-icons/im";
@@ -197,14 +198,21 @@ class SnLeftMenu extends React.Component {
 
     <>
       {/* <Header /> */}
-      <div className="main-example">
-        <div className={this.props.classes.sideNavContainer}>
+      {/* <div className="main-example">
+        <div className={this.props.classes.sideNavContainer}> */}
           {/* for section one */}
+          {this.props.showMobileMenu &&<div>
+            <img
+              src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
+              style={{ width: 200, height: 50, marginBottom: 15 }}
+            />
+          </div>}
 
           <div className={this.props.classes.linksStyles}>
             <AiOutlineUpload className={this.props.classes.iconStyling} />
             <NavLink to="/upload"
               activeClassName="active"
+              onClick={()=>this.props.setMobileMenuDisplay(false)}
               className={this.props.classes.linkName}>
               <Typography variant="span">
                 Upload
@@ -216,6 +224,7 @@ class SnLeftMenu extends React.Component {
             <AddBoxOutlinedIcon className={this.props.classes.iconStyling} />
             <NavLink to="/register"
               activeClassName="active"
+              onClick={()=>this.props.setMobileMenuDisplay(false)}
               className={this.props.classes.linkName}>
               <Typography variant="span">
                 New
@@ -238,7 +247,7 @@ class SnLeftMenu extends React.Component {
             {this.props.person != null && (
               <SnSkySpaceMenu
                 // isMobile={isMobile}
-                toggleMobileMenuDisplay={this.toggleMobileMenuDisplay}
+                toggleMobileMenuDisplay={this.props.toggleMobileMenuDisplay}
               />
             )}
           </>
@@ -252,8 +261,8 @@ class SnLeftMenu extends React.Component {
               />
             </div>
           </div>
-        </div>
-      </div>
+        {/* </div>
+      </div> */}
     </>
   );
 
@@ -273,10 +282,28 @@ class SnLeftMenu extends React.Component {
               variant="permanent"
               open
             >
-              {this.drawer()}
+              <div className="main-example">
+                <div className={this.props.classes.sideNavContainer}>
+                  {this.drawer()}
+                </div>
+              </div>
             </Drawer>
           </Hidden>
         ) : null}
+        <Hidden smUp implementation="css">
+          {this.props.showMobileMenu && <div
+            className={classes.list}
+            role="presentation"
+            // onClick={toggleDrawer(anchor, false)}
+            // onKeyDown={toggleDrawer(anchor, false)}
+          >
+            <div id="mobile-menu" className={`main-example ${classes.mainExampleDrawer}`}>
+              <div className={classes.sideNavContainerForDrawer}>
+                {this.drawer()}
+              </div>
+            </div>
+          </div>}
+        </Hidden>
       </nav>
 
     );

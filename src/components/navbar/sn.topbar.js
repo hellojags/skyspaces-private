@@ -5,6 +5,7 @@ import FormControl from '@material-ui/core/FormControl';
 import skyapplogo_only from "../../SkySpaces_logo_transparent_small.png";
 import AppsIcon from "@material-ui/icons/Apps";
 import SmallLogo from "./images/smLogo.png";
+import SnLeftMenu from "./sn.left-menu"; 
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -111,6 +112,7 @@ class SnTopBar extends React.Component {
       anchor: "",
       isTrue: false,
       activeDarkBck: false,
+      isMaxWidth950: window.matchMedia("(max-width:950px)").matches,
       onInfoModalClose: () => this.setState({ showInfoModal: false })
     };
   }
@@ -231,20 +233,18 @@ class SnTopBar extends React.Component {
           <div className="container-fluid main-container">
             <nav className={`navbar navbar-light hdr-nvbr-main ${classes.headerBgColorSet}`}>
               {this.props.person != null && (
-                <Drawer anchor={this.state.anchor} isTrue={this.state.isTrue} setIsTrue={(evt) => this.setState({ isTrue: evt })} />
+                <Drawer anchor={"left"} open={this.props.showMobileMenu} onClose={()=>this.props.setMobileMenuDisplay(false)} >
+                    <SnLeftMenu />
+                </Drawer>
               )}
 
-              {/* {this.props.person!=null && <button
-                className="navbar-toggler togl-btn-navbr"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
+              {this.props.person!=null && <IconButton
+                id="toggle-menu-icon"
+                className="menu-button-styling"
+                onClick={()=>this.props.setMobileMenuDisplay(true)}
               >
-                <span className="navbar-toggler-icon"></span>
-              </button>} */}
+                <MenuIcon />
+              </IconButton>}
 
               <a
                 className={`${"navbar-brand"} ${

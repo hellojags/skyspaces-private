@@ -65,6 +65,7 @@ import UploadProgress from "../upload/UploadProgress/UploadProgress";
 import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
 import AudioPlayer from "../categories/audio/sn.audio-player";
 import SnFooter from "../footer/sn.footer";
+import SnViewMore from "../tools/sn.view-more";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -743,6 +744,25 @@ class SnCards extends React.Component {
                       </Typography>
                     </Typography>
                   ))}
+                <div className={`${classes.menuverticalIcon_div} ${"menu_icon_top"}`}>
+                  <SnViewMore
+                    onItemClick={key => this.updateTagFilterList([key])}
+                    itemLabel={key => getCategoryObjWithoutAll()[key].heading}
+                    showCount={true}
+                  >
+
+                      <Typography
+                        //   onClick={() => setActiveStep(0)}
+                        variant="span"
+                        className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext_menu}`}
+                      >
+                        Other
+                      <Typography variant="span" className={classes.innerValue_All}>
+                        34
+                      </Typography>
+                    </Typography>
+                  </SnViewMore>
+                </div>
               </Grid>
 
               {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && this.state.isSelect &&

@@ -198,7 +198,7 @@ export default function SnImagesDefault(props) {
 
   return (
     <>
-      <div className={clsx({
+      <div id="image-gallery" className={clsx({
         "d-none": !showCarousal,
       })}
       >
