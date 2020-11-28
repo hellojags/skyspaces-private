@@ -10,7 +10,7 @@ const useStyles = (theme) => ({
             marginLeft: 295,
         },
         backgroundColor: theme.palette.whiteBgColor,
-        padding: theme.spacing(3),
+        // padding: theme.spacing(3),
     },
     input: {
         color: theme.palette.linksColor,
