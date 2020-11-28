@@ -727,7 +727,7 @@ class SnCards extends React.Component {
                 </Typography>
                 {Object.keys(getCategoryObjWithoutAll())
                   .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
-                  .map((key, idx) => (
+                  .map((key, idx) => idx < 3 && (
                     <Typography
                       onClick={() => this.updateTagFilterList([key])}
                       variant="span"
@@ -751,16 +751,31 @@ class SnCards extends React.Component {
                     showCount={true}
                   >
 
-                      <Typography
-                        //   onClick={() => setActiveStep(0)}
-                        variant="span"
-                        className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext_menu}`}
-                      >
-                        Other
-                      <Typography variant="span" className={classes.innerValue_All}>
-                        34
-                      </Typography>
-                    </Typography>
+                    {Object.keys(getCategoryObjWithoutAll())
+                      .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
+                      .map((key, idx) => idx >= 3 && (
+                        <div
+                          style={{
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Typography
+                            onClick={() => this.updateTagFilterList([key])}
+                            variant="span"
+                            className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext_menu}`}
+                          >
+                            {getCategoryObjWithoutAll()[key].heading}
+                            <Typography variant="span" className={classes.innerValue_All}>
+                              {categoryWiseCount[key]
+                                ? categoryWiseCount[key]
+                                : 0}
+                            </Typography>
+                          </Typography>
+                        </div>
+
+                      ))}
                   </SnViewMore>
                 </div>
               </Grid>

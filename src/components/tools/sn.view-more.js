@@ -13,7 +13,7 @@ import useStyles from "./sn.view-more.styles";
 //   },
 // }));
 
-export default function SnViewMore() {
+export default function SnViewMore(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -51,24 +51,7 @@ export default function SnViewMore() {
           horizontal: "center",
         }}
       >
-        <div
-          style={{
-            paddingTop: 10,
-            paddingBottom: 10,
-            cursor: "pointer",
-          }}
-        >
-          <Typography
-            //   onClick={() => setActiveStep(0)}
-            variant="span"
-            className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext_menu}`}
-          >
-            Other
-            <Typography variant="span" className={classes.innerValue_All}>
-              34
-            </Typography>
-          </Typography>
-        </div>
+        {props.children}
       </Popover>
     </div>
   );
