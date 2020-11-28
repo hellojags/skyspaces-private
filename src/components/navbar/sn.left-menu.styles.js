@@ -46,6 +46,9 @@ const leftMenuStyles = (theme) => ({
     },
     list: {
       width: 295,
+      [theme.breakpoints.up('sm')]: {
+        display: "none !important"
+      }
     },
     fullList: {
       width: "auto",

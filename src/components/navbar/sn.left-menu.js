@@ -194,14 +194,14 @@ class SnLeftMenu extends React.Component {
     );
   }
 
-  drawer = () => (
+  drawer = (isMobile) => (
 
     <>
       {/* <Header /> */}
       {/* <div className="main-example">
         <div className={this.props.classes.sideNavContainer}> */}
           {/* for section one */}
-          {this.props.showMobileMenu &&<div>
+          {isMobile && this.props.showMobileMenu &&<div>
             <img
               src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
               style={{ width: 200, height: 50, marginBottom: 15 }}
@@ -212,7 +212,7 @@ class SnLeftMenu extends React.Component {
             <AiOutlineUpload className={this.props.classes.iconStyling} />
             <NavLink to="/upload"
               activeClassName="active"
-              onClick={()=>this.props.setMobileMenuDisplay(false)}
+              onClick={()=>isMobile && this.props.setMobileMenuDisplay(false)}
               className={this.props.classes.linkName}>
               <Typography variant="span">
                 Upload
@@ -224,7 +224,7 @@ class SnLeftMenu extends React.Component {
             <AddBoxOutlinedIcon className={this.props.classes.iconStyling} />
             <NavLink to="/register"
               activeClassName="active"
-              onClick={()=>this.props.setMobileMenuDisplay(false)}
+              onClick={()=>isMobile && this.props.setMobileMenuDisplay(false)}
               className={this.props.classes.linkName}>
               <Typography variant="span">
                 New
@@ -246,7 +246,7 @@ class SnLeftMenu extends React.Component {
           <>
             {this.props.person != null && (
               <SnSkySpaceMenu
-                // isMobile={isMobile}
+                isMobile={isMobile}
                 toggleMobileMenuDisplay={this.props.toggleMobileMenuDisplay}
               />
             )}
@@ -299,7 +299,7 @@ class SnLeftMenu extends React.Component {
           >
             <div id="mobile-menu" className={`main-example ${classes.mainExampleDrawer}`}>
               <div className={classes.sideNavContainerForDrawer}>
-                {this.drawer()}
+                {this.drawer(true)}
               </div>
             </div>
           </div>}
