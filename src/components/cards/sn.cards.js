@@ -734,7 +734,7 @@ class SnCards extends React.Component {
                       className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text}`}
                     >
                       {/* <CameraAltOutlinedIcon style={{ fontSize: "20px" }} /> */}
-                        <span style={{ fontSize: "20px" }}>{CATEGORY_OBJ[key].getLogo(classes.categoryFilterLogo)}</span>
+                      <span style={{ fontSize: "20px" }}>{CATEGORY_OBJ[key].getLogo(classes.categoryFilterLogo)}</span>
                         &nbsp; {getCategoryObjWithoutAll()[key].heading}
                       <Typography variant="span" className={classes.innerValue_All}>
                         {categoryWiseCount[key]
@@ -744,128 +744,128 @@ class SnCards extends React.Component {
                     </Typography>
                   ))}
               </Grid>
-              
+
               {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && this.state.isSelect &&
-              <Grid container spacing={3} style={{ margin: "0px" }}>
-                <Grid
-                  item
-                  xs={12}
-                  className={classes.titleBar_onSelect_img_grid_gallery}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      justifyContent: "space-between",
-                    }}
+                <Grid container spacing={3} style={{ margin: "0px" }}>
+                  <Grid
+                    item
+                    xs={12}
+                    className={classes.titleBar_onSelect_img_grid_gallery}
                   >
-                    <div>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        onClick={() => this.setState({ arrSelectedAps: filteredApps })}
-                        startIcon={<DoneAllIcon style={{ color: "#1ed660" }} />}
-                        size="small"
-                        style={{
-                          background: "transparent",
-                          color: "#636f70",
-                          boxShadow: "none",
-                        }}
-                      >
-                        Select all
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          onClick={() => this.setState({ arrSelectedAps: filteredApps })}
+                          startIcon={<DoneAllIcon style={{ color: "#1ed660" }} />}
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                          }}
+                        >
+                          Select all
                       </Button>
 
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        startIcon={
-                          <DeleteOutlineIcon style={{ color: "#ff3d3d" }} />
-                        }
-                        size="small"
-                        style={{
-                          background: "transparent",
-                          color: "#636f70",
-                          boxShadow: "none",
-                          marginLeft: "15px",
-                        }}
-                      >
-                        Delete
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          startIcon={
+                            <DeleteOutlineIcon style={{ color: "#ff3d3d" }} />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Delete
                       </Button>
 
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        onClick={() => this.createSkylinkPublicShare()}
-                        startIcon={
-                          <ShareOutlinedIcon style={{ color: "#1ed660" }} />
-                        }
-                        size="small"
-                        style={{
-                          background: "transparent",
-                          color: "#636f70",
-                          boxShadow: "none",
-                          marginLeft: "15px",
-                        }}
-                      >
-                        Share
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          onClick={() => this.createSkylinkPublicShare()}
+                          startIcon={
+                            <ShareOutlinedIcon style={{ color: "#1ed660" }} />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Share
                       </Button>
 
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        startIcon={
-                          <GamesOutlinedIcon style={{ color: "#1ed660" }} />
-                        }
-                        size="small"
-                        style={{
-                          background: "transparent",
-                          color: "#636f70",
-                          boxShadow: "none",
-                          marginLeft: "15px",
-                        }}
-                      >
-                        Move to
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          startIcon={
+                            <GamesOutlinedIcon style={{ color: "#1ed660" }} />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Move to
                       </Button>
 
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        startIcon={
-                          <PlaylistAddOutlinedIcon
-                            style={{ color: "#1ed660" }}
-                          />
-                        }
-                        size="small"
-                        style={{
-                          background: "transparent",
-                          color: "#636f70",
-                          boxShadow: "none",
-                          marginLeft: "15px",
-                        }}
-                      >
-                        Add to
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          startIcon={
+                            <PlaylistAddOutlinedIcon
+                              style={{ color: "#1ed660" }}
+                            />
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Add to
                       </Button>
-                    </div>
+                      </div>
 
-                    <div style={{ textAlign: "right" }}>
-                      {1} Selected
+                      <div style={{ textAlign: "right" }}>
+                        {this.state.arrSelectedAps.length} Selected
                       <ClearOutlinedIcon
-                        onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
-                        style={{
-                          color: "#1ed660",
-                          fontSize: "18px",
-                          cursor: "pointer",
-                        }}
-                      />
+                          onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
+                          style={{
+                            color: "#1ed660",
+                            fontSize: "18px",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Grid>
-              </Grid>}
+                  </Grid>
+                </Grid>}
 
 
             </>}
@@ -944,7 +944,7 @@ class SnCards extends React.Component {
                 </Button>
                         <Button
                           variant="contained"
-                          onClick={(evt)=>this.selectPublicAll(evt, filteredApps)}
+                          onClick={(evt) => this.selectPublicAll(evt, filteredApps)}
                           color="primary"
                           type="button"
                           style={{ color: "white", borderRadius: 10 }}
@@ -1060,8 +1060,8 @@ class SnCards extends React.Component {
           content={this.state.infoModalContent}
         />
         <div>
-        <SnFooter />
-      </div>
+          <SnFooter />
+        </div>
       </main>
     );
 
