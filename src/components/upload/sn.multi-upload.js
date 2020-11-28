@@ -189,7 +189,7 @@ export default function SnMultiUpload(props) {
   };
 
   return (
-    <main className={matches ? classes.content : null}>
+    <main className={matches ? classes.content : classes.contentBgColor}>
       <div style={{ paddingTop: 40,
                     minHeight: "calc(100vh - 70px)", }}>
         <Grid container spacing={3} className={classes.most_main_grid_uc}>
