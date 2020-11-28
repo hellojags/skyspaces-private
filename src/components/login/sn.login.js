@@ -8,21 +8,30 @@ import {
     matchDispatcherToProps,
 } from "./sn.login.container";
 import { connect } from "react-redux";
-import { bsGetImportedSpacesObj } from '../../blockstack/blockstack-api';
+import { bsGetImportedSpacesObj,bsGetSkyIDProfile,syncData , firstTimeUserSetup } from '../../blockstack/blockstack-api';
+import SkyID from "skyid";
+import {ID_PROVIDER_SKYID} from "../../sn.constants";
 
+let devMode = true;
+if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
+     devMode = true
+} else {
+     devMode = true
+}
 class snLogin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             seed: null,
             value: 1,
-            isTemp: true
+            isTemp: true,
+            skyid: null,
         }
         this.onSkyIdSuccess = this.onSkyIdSuccess.bind(this);
         this.skyidEventCallback = this.skyidEventCallback.bind(this)
     }
     componentDidMount() {
-        this.initializeSkyId(opts);
+        this.initializeSkyId({devMode : true});
         if (this.props.showDesktopMenu === false) {
             this.props.setDesktopMenuState(true);
         }
@@ -86,6 +95,7 @@ class snLogin extends React.Component {
         }
         catch(error){
             console.log("Error during login process. login failed");
+            this.props.setLoaderDisplay(false);
         }
     }
     login = async () => {

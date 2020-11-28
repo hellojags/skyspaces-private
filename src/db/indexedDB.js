@@ -110,13 +110,13 @@ export const getAllItemsFromIDB = async (storeName) => {
     return {recordCount, keys, result};
 }
 
-export const clearAllfromDB = async () => {
-    let value = null;
-    try {
-        await IndexedDB4SkyDB.clear();
-    }catch (err) {
-        // This code runs if there were any errors.
+export const clearAllfromDB = () => {
+    IndexedDB4SkyDB.clear().then(function() {
+        // Run this code once the database has been entirely deleted.
+        console.log('Database is now empty.');
+    }).catch(function(err) {
+        // This code runs if there were any errors
         console.log(err);
-    }
-    return value;
+    });
+   
 }

@@ -57,7 +57,8 @@ import {
   bsSetPortalsList,
   bsGetBackupObjFile,
   retrieveBackupObj,
-  restoreBackup
+  restoreBackup,
+  bsGetDataSyncPrefList
 } from "../../blockstack/blockstack-api";
 import { connect } from "react-redux";
 import { DEFAULT_PORTAL, APP_BG_COLOR } from "../../sn.constants";
@@ -129,6 +130,7 @@ class SnUserSettings extends React.Component {
       showInfoModal: false,
       backupRowData: null,
       alertMessage: null,
+      dataSyncPrefList: bsGetDataSyncPrefList(),
       columns: [
         { title: "Portal Name", field: "name" },
         { title: "Portal URL", field: "url" },
@@ -202,10 +204,10 @@ class SnUserSettings extends React.Component {
   };
 
   handlePortalURLChange = async (updatedPortalURL) => {
+    this.props.setLoaderDisplay(true);
     const { userSetting } = this.state;
     userSetting.setting["portal"] = updatedPortalURL;
     this.setState({ userSetting });
-    this.props.setLoaderDisplay(true);
     await bsSetUserSetting(this.props.userSession, this.state.userSetting);
     this.props.setUserSettingAction(this.state.userSetting);
     this.props.setLoaderDisplay(false);
@@ -219,6 +221,14 @@ class SnUserSettings extends React.Component {
     this.setState({ userSetting });
   };
 
+  handleDataSyncPrefChange = (evt) => {
+    console.log(evt.target.type);
+    const { userSetting } = this.state;
+    //const fieldName = evt.target.name;
+    userSetting.setting["dataSyncPref"] = evt.target.value;
+    this.setState({ userSetting });
+  };
+
   handleSave = async (opt) => {
     this.props.setLoaderDisplay(true);
     await bsSetUserSetting(this.props.userSession, this.state.userSetting);
@@ -229,10 +239,13 @@ class SnUserSettings extends React.Component {
     }
   };
 
+
   componentDidMount() {
     this.props.setLoaderDisplay(true);
+    this.setState({dataSyncPrefList : bsGetDataSyncPrefList()});
     this.loadUserSetting()
       .then(() => this.props.setLoaderDisplay(false));
+    console.log("dataSyncPrefList = "+this.state.dataSyncPrefList);
   }
 
   loadUserSetting = async () => {
@@ -346,11 +359,12 @@ class SnUserSettings extends React.Component {
 
   render() {
     const { classes, snPortalsList } = this.props;
-    let { userSetting, columns } = this.state;
+    let { userSetting, columns,dataSyncPrefList } = this.state;
+    console.log("dataSyncPrefList"+dataSyncPrefList.length);
     return (
       <MuiThemeProvider theme={MuiTheme}>
         <main className={classes.content}>
-          <Grid container spacing={3} className={classes.most_main_grid_settings}>
+          <Grid container spacing={3} className={classes.most_main_grid_settings} style={{ paddingTop: "50px" }}>
             <Grid item xs={12} className={classes.main_grid_settings}>
               <Paper className={`${classes.paper} ${classes.MaintabsPaper_settings}`}>
                 <Paper className={classes.tabsPaper_settings}>
@@ -362,16 +376,53 @@ class SnUserSettings extends React.Component {
                     </Grid>
                     <Grid item xs={10} className="select-grid">
                       <FormControl className={classes.formControl}>
+                        <InputLabel id="datasyncpref-label">
+                          Select Data Sync Preference
+                        </InputLabel>
+                        {userSetting != null && (
+                          <Select
+                            labelId="datasyncpref-label"
+                            id="datasyncprefList"
+                            fullWidth
+                            name="datasyncprefList"
+                            value={userSetting.setting?.dataSyncPref}
+                            onChange={this.handleDataSyncPrefChange}
+                          >
+                            {dataSyncPrefList &&
+                              dataSyncPrefList.map((obj, index) => (
+                                <MenuItem key={index} value={obj.name}>
+                                  {obj.name}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        )}
+                        <FormHelperText></FormHelperText>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={2} sm={2}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className="btn-register-pg float-center"
+                        type="button"
+                        onClick={this.handleSave}
+                        startIcon={<SaveIcon />}
+                      >
+                        Save
+                    </Button>
+                    </Grid>
+                    <Grid item xs={10} className="select-grid">
+                      <FormControl className={classes.formControl}>
                         <InputLabel id="portal-label">
                           Select a default Skynet portal
-                </InputLabel>
+                        </InputLabel>
                         {userSetting != null && (
                           <Select
                             labelId="portal-label"
                             id="portalList"
                             fullWidth
                             name="portalList"
-                            value={userSetting.setting.portal}
+                            value={userSetting.setting?.portal}
                             onChange={this.handlePortalChange}
                           >
                             {snPortalsList &&
@@ -395,7 +446,7 @@ class SnUserSettings extends React.Component {
                         startIcon={<SaveIcon />}
                       >
                         Save
-              </Button>
+                    </Button>
                     </Grid>
                     <Grid item xs={12}>
                       <MaterialTable

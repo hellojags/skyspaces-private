@@ -11,13 +11,9 @@
 import { DEFAULT_PORTAL } from "../sn.constants";
 import { UserSession, AppConfig } from "blockstack";
 
-// profile Paths. Different for different Identity Provider
+export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
 export const SKYID_PROFILE_PATH = "profile";
 export const PROFILE_PATH = "skhub/profile.json";// this will be added by "Master Key/Seed" from ID Page. each master key will derive 1 or more child seeds (Pub/Private key).
-
-
-export const GAIA_HUB_URL = "https://gaia.blockstack.org/hub";
-
 export const FOLLOWING_PATH = "skhub/following.json"; // will contain array of public key[array of Users]. this key will be set by app specific pub key/User 
 export const FOLLOWER_PATH = "skhub/follower.json";// will contain array of public key[array of Users]. this key will be set by app specific pub key/User
 export const PUBLIC_KEY_PATH = "skhub/key/publicKey.json";
@@ -33,9 +29,26 @@ export const HISTORY_FILEPATH = "skhub/history/history.json";
 export const USERSETTINGS_FILEPATH = "skhub/settings/usersetting.json";
 export const SKYNET_PORTALS_FILEPATH = "skhub/settings/portals/portals.json";
 export const SUBSCRIBED_IDX_FILEPATH = "skhub/subscribed.json";
+
+// IndexedDB specific fields
+export const IDB_NAME = "SkyDB";
+export const IDB_STORE_NAME = "SkySpaces";
+
+//IndexedDB metadataKey to maintain local state (not required in SkyDB)
+export const IDB_LAST_SYNC_REVISION_NO = "skhub/skyspaces/idb/lastSyncRevNo";
+export const IDB_IS_OUT_OF_SYNC = "skhub/skyspaces/idb/isOutOfSync";
+
+// add skyDB datakey name must be prefixed with DK_
+export const DK_IDB_SKYSPACES = "skhub/skyspaces/idb";
+export const DK_IDB_SYNC_HISTORY = "skhub/skyspaces/idb";
+
+// ** Start : AppStore Specific keys
+export const APP_STORE_PROVIDER_FILEPATH = "skyx/skapp/appstoreprovider";
+// ** End : AppStore Specific keys
 export const EXPLORER_URL = "https://explorer.blockstack.org";
 export const SUCCESS = "success";
 export const FAILED = "failed";
+export const CONFLICT = "conflict";
 export const FAILED_DECRYPT_ERR = "FailedDecryptionError";
 export const ID_PROVIDER = "BLOCKSTACK";
 export const avatarFallbackImage =
@@ -61,7 +74,7 @@ export const createPersonObject = () => {
   };
 };
 
-export const createHistoryObject = () => {}
+export const createHistoryObject = () => { }
 
 // skylinkIdx.json file will have array of SkylinkIdxObj
 export const createSkylinkIdxObject = () => {
@@ -94,13 +107,70 @@ export const createSkySpaceObject = () => {
 
 export const INITIAL_SETTINGS_OBJ = () => {
   return {
+    version: "v1",
+    createTS: new Date(),
+    lastUpdateTS: new Date(),
+    setting: {
+      portal: DEFAULT_PORTAL,
+      backupList: [],
+      dataSyncPref: "10 Minutes",
+    }
+  };
+};
+
+export const INITIAL_SKYDB_OBJ = () => {
+  return {
+    version: "v1",
+    prevSkylink: "",
+    recordCount: 0,
+    createTS: new Date(),
+    lastUpdateTS: new Date(),
+    db: [],
+    keys: []
+  };
+};
+
+export const INITIAL_DATASYNC_PREF_OBJ = {
   version: "v1",
   createTS: new Date(),
   lastUpdateTS: new Date(),
-  setting: {
-    portal: DEFAULT_PORTAL,
-    backupList: []
-  }};
+  dataSyncPrefList: [
+    {
+      name: "5 Minutes",
+      value: 5,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "10 Minutes",
+      value: 10,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "15 Minutes",
+      value: 15,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "20 Minutes",
+      value: 20,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "25 Minutes",
+      value: 25,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "30 Minutes",
+      value: 30,
+      desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
+    },
+    {
+      name: "RealTimeSync",
+      value: 0,
+      desc: "Update SkySpaces metadata realtime on SkyDB as local changes are happening. This will cost you more since every change in SkySpace metadata will result in SkyDB write.",
+    },
+  ],
 };
 
 export const INITIAL_PORTALS_OBJ = {

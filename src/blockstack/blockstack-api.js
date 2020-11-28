@@ -10,13 +10,21 @@ import {
     createSkylinkIdxObject,
     INITIAL_SETTINGS_OBJ,
     INITIAL_PORTALS_OBJ,
+    INITIAL_DATASYNC_PREF_OBJ,
     HISTORY_FILEPATH,
     USERSETTINGS_FILEPATH, SKYNET_PORTALS_FILEPATH, SUCCESS, FAILED, createSkySpaceObject,
     FAILED_DECRYPT_ERR,
     IGNORE_PATH_IN_BACKUP,
     PUBLIC_KEY_PATH,
     SHARED_PATH_PREFIX,
-    GAIA_HUB_URL
+    GAIA_HUB_URL,
+    SKYID_PROFILE_PATH,
+    DK_IDB_SKYSPACES,
+    INITIAL_SKYDB_OBJ,
+    CONFLICT,
+    IDB_STORE_NAME,
+    IDB_LAST_SYNC_REVISION_NO,
+    IDB_IS_OUT_OF_SYNC
 } from './constants'
 import { lookupProfile } from "blockstack";
 import {
@@ -29,10 +37,121 @@ import {
     decryptContent,
     putFileForShared,
     getFileUsingPublicKeyStr
-} from './utils'
-import { BLOCKSTACK_CORE_NAMES, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB } from '../sn.constants';
+} from './utils';
+import { BLOCKSTACK_CORE_NAMES, ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID } from '../sn.constants';
 import { getUserSessionType } from '../sn.util';
-import { snKeyPairFromSeed, snSerializeSkydbPublicKey } from '../skynet/sn.api.skynet';
+import { snKeyPairFromSeed, snSerializeSkydbPublicKey, getRegistry } from '../skynet/sn.api.skynet';
+import { getAllItemsFromIDB, getJSONfromDB, setJSONinDB, setAllinDB } from "../db/indexedDB";
+import { getInitialDataJSON } from '../db/data/masterdata';
+
+export const firstTimeUserSetup = async (session) => {
+    try {
+        // (check IndexedDB and registry for any data, if no data that means firsttime user) -->
+        let idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO);
+        if (idbLastRegistryEntry && idbLastRegistryEntry != null) // if entry is present in IndexedDB user is existing user.
+        {
+            return false;// not firsttime user
+        }
+        else {
+            let skydbEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKYSPACES);
+            
+            if (skydbEntry && skydbEntry != 'undefined') {
+                return false;// not firsttime user
+            }
+            else // first time user
+            {
+
+                let dataJSON = JSON.parse(getInitialDataJSON);
+                // 1.
+                // 2. 
+                // create Inital sample data (esp in case of SkySpaces) - Images, video, Audio files...etc 
+                // user check
+                // add here initial load of Skapps
+                // read space data from initialData folder and load it for user. 
+                // TODO: Ideally we shall fetch it from Skapp dataKey. "skhub/skapp/initialdata.json"
+                // call dataSync
+               
+                // Step1: load Initial data from InitialData.json to IndexedDB.  Metadata files (appstore, myapps, hosting)
+                await setAllinDB(dataJSON.data);
+                // Step2: Metadata File for "Provider" 
+                
+                // Step3: update revision number to 1
+                await setJSONinDB(IDB_LAST_SYNC_REVISION_NO,{revision:"1"});
+                // Sync Data with SkyDB
+                await syncData(session);
+                return true;// Yes, firsttime user
+            }
+        }
+    }
+    catch (error) {
+        console.log("error"+error);
+    }
+}
+
+export const syncData = async (session, skyDBdataKey, idbStoreName) => {
+    try {
+        // fetch registryEntry
+        let registryEntry = await getRegistry(session?.person?.appPublicKey, DK_IDB_SKYSPACES);
+
+        // check revision number 
+        let skyDBRevisionNo = (registryEntry && registryEntry != 'undefined') ? registryEntry.revision : 0;
+        let idbLastRegistryEntry = await getJSONfromDB(IDB_LAST_SYNC_REVISION_NO);
+        let isOutofSync = await getJSONfromDB(IDB_IS_OUT_OF_SYNC); 
+        let idbRevisionNo = idbLastRegistryEntry ? idbLastRegistryEntry.revision : 0;
+
+        // IndexedDB Out-of-Sync Scenario: If revision number is larger in SkyDB, Fetch data from SkyDB and update IndexDB
+        // This is possible issue scenario where data is updated using another device or browser instance. what if you have local change? prompt user?
+        if (parseInt(skyDBRevisionNo) > parseInt(idbRevisionNo)) {
+            // give prompt to user to make decision (data conflict status on UI)
+            // OR Just make decision for them to update SkyDB, not good idea but for now lets keep it like this. (TODO: update this logic after Beta)
+            //1. Fetch data from SkyDB
+            let skydbJSON = await getFile(session, DK_IDB_SKYSPACES, { skydb: true });
+            if (skydbJSON && skydbJSON != 'undefined' && skydbJSON.db) {
+                await skydbJSON.db.forEach((item) => {
+                    let key =  Object.keys(item)[0];
+                    let value = item[key];
+                    //2. update IndexedDB Store
+                    setJSONinDB(key,value);
+                });
+                await setJSONinDB(IDB_LAST_SYNC_REVISION_NO, skyDBRevisionNo);
+            }
+            else {
+                return FAILED;
+            }
+            // or status = CONFLICT;
+            // This must be last step
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false); 
+        }
+        // SkyDB Out-of-Sync Scenario: If revision number is larger in IndexedDB, fetch data from IndexedDB and update SkyDB
+        else if (isOutofSync || (parseInt(skyDBRevisionNo) < parseInt(idbRevisionNo))) {
+            // Get all IndexedDB data
+            const { recordCount, keys, result } = await getAllItemsFromIDB(IDB_STORE_NAME);
+            // create SkyDB JSON
+            let skydbJSON = INITIAL_SKYDB_OBJ();
+            skydbJSON['db'] = result;
+            skydbJSON['keys'] = keys;
+            skydbJSON['recordCount'] = recordCount;
+            //update SkyDB
+            if (registryEntry && registryEntry != 'undefined') {
+                await putFile(session, DK_IDB_SKYSPACES, skydbJSON, { skydb: true, historyflag: true });
+            }
+            else {
+                await putFile(session, DK_IDB_SKYSPACES, skydbJSON, { skydb: true }); // no history flag since its first time call.
+            }
+            // update IndexedDB with revision number
+            await setJSONinDB(IDB_LAST_SYNC_REVISION_NO,{revision: (skyDBRevisionNo +1) }); //we are doing plus one since we uploaded file to Skynet and revision is incremented.
+            // This must be last step
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false);
+        }
+        else {
+            console.log("Data is already in sync");
+        }
+    }
+    catch (error) {
+        return FAILED;
+    }
+    return SUCCESS;;
+}
 
 //Add OR Update skylink Object
 export const bsAddSkylinkOnly = async (session, skylinkObj, person) => {
@@ -41,7 +160,7 @@ export const bsAddSkylinkOnly = async (session, skylinkObj, person) => {
     }
     let skhubId = skylinkObj.skhubId;
     if (skylinkObj && (skylinkObj.skhubId == null || skylinkObj.skhubId === "")) {
-        skhubId = generateSkyhubId(ID_PROVIDER + ":" + person.profile.decentralizedID + ":" + skylinkObj.skylink)
+        skhubId = generateSkyhubId(ID_PROVIDER + ":" + person.profile.did + ":" + skylinkObj.skylink)
         skylinkObj.skhubId = skhubId;
     }
     const SKYLINK_FILEPATH = SKYLINK_PATH + skhubId + ".json"
@@ -62,13 +181,14 @@ export const bsAddSkhubListToSkylinkIdx = async (session, skhubIdList) => {
 };
 
 export const bsAddSkylink = async (session, skylinkObj, person) => {
+    //console.log("person", person)
     // check if skhubId is present. If new Object, this value will be empty
     if (person == null) {
         return;
     }
     let skhubId = skylinkObj.skhubId;
     if (skylinkObj && (skylinkObj.skhubId == null || skylinkObj.skhubId === "")) {
-        skhubId = generateSkyhubId(ID_PROVIDER + ":" + person.profile.decentralizedID + ":" + skylinkObj.skylink)
+        skhubId = generateSkyhubId(ID_PROVIDER + ":" + person.profile.did + ":" + skylinkObj.skylink)
         skylinkObj.skhubId = skhubId;
     }
     const SKYLINK_FILEPATH = SKYLINK_PATH + skhubId + ".json"
@@ -298,7 +418,7 @@ export const bsRenameSkySpace = (session, oldSkyspaceName, newSkyspaceName) => {
         });
 
 }
-
+// fetches all SkySpaces names. this method gets called during login
 export const bsGetAllSkySpaceNames = (session) => {
     return getFile(session, SKYSPACE_IDX_FILEPATH).then((skyspaceIdxObj) => {
         if (skyspaceIdxObj && skyspaceIdxObj.skyspaceList) {
@@ -545,10 +665,37 @@ export const bsGetUserSetting = async (session) => {
     const userSetting = await getFile(session, USERSETTINGS_FILEPATH);
     return userSetting ? userSetting : INITIAL_SETTINGS_OBJ();
 }
-
 export const bsSetUserSetting = async (session, userSettingObj) => {
     await putFile(session, USERSETTINGS_FILEPATH, userSettingObj);
     return;
+}
+export const bsGetSkyIDProfile = async (session) => {
+    //let profileJSON = await getFile(session, SKYID_PROFILE_PATH);
+    let personObj = null;
+    const response = await getFile(session, SKYID_PROFILE_PATH, { publicKey: session.skyid.userId, skydb: true });
+    if (response == '') { // file not found
+        console.log('Profile not found;, please check your connection and retry')
+    } else { // success
+        var skyIdProfileObj = JSON.parse(response)
+        const { publicKey, privateKey } = snKeyPairFromSeed(session.skyid.seed);
+        personObj = {
+            masterPublicKey: session.skyid.userId,//public key derived from "master seed". we pull profile using this public key
+            appSeed: session.skyid.seed, // App specific seed derived from "Master Seed"
+            appId: session.skyid.appId,
+            appImg: session.skyid.appImg,
+            appPublicKey: publicKey,
+            appPrivateKey: privateKey,
+            profile: {
+                username: skyIdProfileObj.username, // user name is associated with master Key
+                did: skyIdProfileObj.username, // this is place holder for Decentralized Id (DID)
+                aboutme: skyIdProfileObj.aboutMe,
+                location: skyIdProfileObj.location,
+                avatar: skyIdProfileObj.avatar,
+                profilePicture: skyIdProfileObj.profilePicture
+            }
+        }
+    }
+    return personObj;
 }
 
 export const bsGetPortalsList = async (session) => {
@@ -560,6 +707,12 @@ export const bsGetPortalsList = async (session) => {
         portalsJSON.portals = INITIAL_PORTALS_OBJ.portals;
     }
     return portalsJSON;
+}
+
+export const bsGetDataSyncPrefList = (session) => {
+    // we may need to add more logic here in future
+    let dataSyncPrefJSON= INITIAL_DATASYNC_PREF_OBJ
+    return dataSyncPrefJSON.dataSyncPrefList;
 }
 
 export const bsSetPortalsList = async (session, portalsObj) => {
@@ -651,7 +804,7 @@ export const restoreBackup = async (session, backupObj) => {
 export const bsClearStorage = async (session) => {
     const promises = [];
     await listFiles(session)
-    .then(filePathList=>filePathList.forEach(path=>promises.push(deleteFile(session, path))));
+        .then(filePathList => filePathList.forEach(path => promises.push(deleteFile(session, path))));
     await Promise.all(promises);
 }
 
@@ -677,7 +830,7 @@ export const bsGetSharedWithObj = async (session) => {
 export const bsSaveSharedWithObj = async (session, sharedWithObj) => {
     return putFile(session, SHARED_WITH_FILE_PATH, sharedWithObj);
 }
-// This method is getting called from Modal to import user spaces.
+// This method is getting called from Modal to import user spaces. This is coming from sn.import-shared-space-modal (input)
 export const importSpaceFromUserList = async (session, senderIdList) => bsGetSpacesFromUserList(session, senderIdList, { isImport: true });
 
 //TODO: This method pulls ALL shared spaces by ALL senders. Its using senders (sender's storage path) / (in case of skyDB sender's public key) to pull this data
@@ -685,12 +838,18 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
     const promises = [];
     const senderListWithNoShare = [];
     // get existing shared spaces data. senderList and sender-space mapping
+    // if "sharedByUserObj" present, that means its getting loaded during login ELSE its call is from sn.import-shared-space-modal
     const sharedByUserObj = opt.sharedByUserObj || (await bsGetSharedByUser(session));
-    let { senderToSpacesMap={}, sharedByUserList=[] } = sharedByUserObj || {};
+    // sharedByUserObj
+    let { senderToSpacesMap = {}, sharedByUserList = [] } = sharedByUserObj || {};
     senderIdList && senderIdList.forEach(async senderId => {
         const sessionType = getUserSessionType(session);
         let loggedInUserStorageId, sharedSpaceIdxPromise;
-        switch(sessionType){
+        switch (sessionType) {
+            case ID_PROVIDER_SKYID:
+                //loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
+                sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, session?.profile?.appPublicKey);
+                break;
             case ID_PROVIDER_SKYDB:
                 loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
                 sharedSpaceIdxPromise = bsGetShrdSkyspaceIdxFromSender(session, senderId, loggedInUserStorageId);
@@ -700,12 +859,12 @@ export const bsGetSpacesFromUserList = async (session, senderIdList, opt) => {
                 const loggedInUserProfile = JSON.parse(localStorage.getItem('blockstack-session')).userData?.profile;
                 loggedInUserStorageId = bsGetProfileInfo(loggedInUserProfile).storageId;
                 sharedSpaceIdxPromise = lookupProfile(senderId, BLOCKSTACK_CORE_NAMES)
-                .then(senderProfile => {
-                    // get sender's storage location
-                    const senderStorage = bsGetProfileInfo(senderProfile).storage;
-                    // get SkyspacesIDX object from senders storage location. in case of SkyDB. storageId is basically PublicKey, and path is DataKey
-                    return bsGetShrdSkyspaceIdxFromSender(session, senderStorage, loggedInUserStorageId);
-                });
+                    .then(senderProfile => {
+                        // get sender's storage location
+                        const senderStorage = bsGetProfileInfo(senderProfile).storage;
+                        // get SkyspacesIDX object from senders storage location. in case of SkyDB. storageId is basically PublicKey, and path is DataKey
+                        return bsGetShrdSkyspaceIdxFromSender(session, senderStorage, loggedInUserStorageId);
+                    });
         }
         const promise = sharedSpaceIdxPromise
             .then(sharedSpaceIdxObj => {
@@ -746,7 +905,7 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     //     call skyDbGetSharedSpaceAppList()
     // }else
     // { below
-    let {senderStorage, loggedInUserStorageId} = await getStorageIds(session, senderId);
+    let { senderStorage, loggedInUserStorageId } = await getStorageIds(session, senderId);
     const SHARED_SKYSPACE_FILEPATH = SHARED_PATH_PREFIX + loggedInUserStorageId + "/" + SKYSPACE_PATH + skyspace + '.json';
     const encSkyspaceObj = await getEncDataFromSenderStorage(session, SHARED_SKYSPACE_FILEPATH, senderStorage);//await fetch(`${senderStorage}${SHARED_SKYSPACE_FILEPATH}`).then(res => res.json());
     const skyspaceObj = JSON.parse(await decryptContent(session, JSON.stringify(encSkyspaceObj)));
@@ -754,7 +913,7 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     const skylinkArr = [];
     const loop = skyspaceObj?.skhubIdList.map(skhubId => {
         const SHARED_SKYLINK_FILE_PATH = SHARED_PATH_PREFIX + loggedInUserStorageId + "/" + SKYLINK_PATH + skhubId + ".json";
-        promises.push( getEncDataFromSenderStorage(session, SHARED_SKYLINK_FILE_PATH, senderStorage) 
+        promises.push(getEncDataFromSenderStorage(session, SHARED_SKYLINK_FILE_PATH, senderStorage)
             .then(encSkylinkObj => decryptContent(session, JSON.stringify(encSkylinkObj)))
             .then(skylinkObjStr => {
                 skylinkArr.push(JSON.parse(skylinkObjStr))
@@ -764,12 +923,15 @@ export const bsGetSharedSpaceAppList = async (session, senderId, skyspace) => {
     return skylinkArr;
 }
 
-export const getEncDataFromSenderStorage = async (session, filePath, senderStorage)=> {
+export const getEncDataFromSenderStorage = async (session, filePath, senderStorage) => {
     const sessionType = getUserSessionType(session);
     let encSharedSkyspaceIdx;
     switch (sessionType) {
+        case ID_PROVIDER_SKYID:
+            encSharedSkyspaceIdx = await getFileUsingPublicKeyStr(senderStorage, filePath);
+            break;
         case ID_PROVIDER_SKYDB:
-            encSharedSkyspaceIdx = await getFileUsingPublicKeyStr(senderStorage,filePath);
+            encSharedSkyspaceIdx = await getFileUsingPublicKeyStr(senderStorage, filePath);
             break;
         case ID_PROVIDER_BLOCKSTACK:
         default:
@@ -782,10 +944,15 @@ export const getStorageIds = async (session, senderId) => {
     const sessionType = getUserSessionType(session);
     let senderStorage, loggedInUserStorageId, remoteUserStorage;
     switch (sessionType) {
+        case ID_PROVIDER_SKYID:
+            loggedInUserStorageId = session?.profile?.appPublicKey;
+            senderStorage = senderId;
+            remoteUserStorage = senderId;
+            break;
         case ID_PROVIDER_SKYDB:
             loggedInUserStorageId = snSerializeSkydbPublicKey(snKeyPairFromSeed(session.skydbseed).publicKey);
             senderStorage = senderId;
-            remoteUserStorage =  senderId;
+            remoteUserStorage = senderId;
             break;
         case ID_PROVIDER_BLOCKSTACK:
         default:
@@ -804,7 +971,7 @@ export const getStorageIds = async (session, senderId) => {
 }
 
 // get {senderToSpacesMap={}, sharedByUserList=[]} in sharedByUserObj
-export const bsGetImportedSpacesObj = async (session, opt={}) => {
+export const bsGetImportedSpacesObj = async (session, opt = {}) => {
     // reading a file containing shared spaces information. senders information.
     // can we now directly read all data from below method? do we need to call bsGetSpacesFromUserList ?? 
     const sharedByUserObj = await bsGetSharedByUser(session);
@@ -824,8 +991,9 @@ export const bsGetShrdSkyspaceIdxFromSender = async (session, senderStorage, log
     return JSON.parse(sharedSkyspaceIdx);
 }
 
+// do we need this method?
 export const bsGetSharedSkappListFromSender = async (session, senderId, skhubIdList) => {
-    let {senderStorage, loggedInUserStorageId} = await getStorageIds(session, senderId);
+    let { senderStorage, loggedInUserStorageId } = await getStorageIds(session, senderId);
     const skappList = [];
     const promises = [];
     skhubIdList.forEach(skhubId => {
@@ -846,7 +1014,10 @@ export const bsSetSharedSkylinkIdx = async (session, recipientId, skylinkList, s
     const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";
     let publicKey;
     const sessionType = getUserSessionType(session);
-    switch(sessionType){
+    switch (sessionType) {
+        case ID_PROVIDER_SKYID:
+            publicKey = recipientId;
+            break;
         case ID_PROVIDER_SKYDB:
             publicKey = recipientId;
             break;
@@ -873,17 +1044,17 @@ export const bsGetProfileInfo = (profile) => {
     };
 }
 
-export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLst, skyspaceName, sharedWithObj ) => {
+export const bsUnshareSpaceFromRecipientLst = async (session, recipientIdStrgLst, skyspaceName, sharedWithObj) => {
     const promises = []
     const rslt = recipientIdStrgLst?.map(recipientIdStrg => {
         promises.push(getStorageIds(session, sharedWithObj[recipientIdStrg].userid)
-            .then(storageObj=>storageObj.remoteUserStorage)
-            .then(recipientStorage=>{
+            .then(storageObj => storageObj.remoteUserStorage)
+            .then(recipientStorage => {
                 const recipientPathPrefix = SHARED_PATH_PREFIX + recipientStorage + "/";
                 const SHARED_SKYSPACE_FILEPATH = recipientPathPrefix + SKYSPACE_PATH + skyspaceName + '.json';
                 return deleteFile(session, SHARED_SKYSPACE_FILEPATH)
-        })
-        .then(()=>bsShareSkyspace(session, sharedWithObj[recipientIdStrg]["spaces"], sharedWithObj[recipientIdStrgLst].userid), sharedWithObj)
+            })
+            .then(() => bsShareSkyspace(session, sharedWithObj[recipientIdStrg]["spaces"], sharedWithObj[recipientIdStrgLst].userid), sharedWithObj)
         );
     });
     await Promise.all(promises);
@@ -891,19 +1062,24 @@ export const bsUnshareSpaceFromRecipientLst = async ( session, recipientIdStrgLs
 
 //const getBlockStackIdList = (sharedWithObjKeyLst) => sharedWithObjKeyLst.map(sharedWithObjKey=> props.sharedWithObj[sharedWithObjKey].userid);
 
-export const bsShareSkyspace = async (session, skyspaceList, blockstackId, sharedWithObj) => {
-    let recipientId;
+export const bsShareSkyspace = async (session, skyspaceList, recipientId, sharedWithObj) => {
+    //let recipientId;
     let key;
     const sessionType = getUserSessionType(session);
-    switch(sessionType){
+    switch (sessionType) {
+        // in case of SkyDB and SkyID, recipientId is publick Key. In case of blockstack its UserID 
+        case ID_PROVIDER_SKYID:
+            //recipientId = blockstackId;
+            key = recipientId;
+            break;
         case ID_PROVIDER_SKYDB:
-            recipientId = blockstackId;
-            key = blockstackId;
+            //recipientId = blockstackId;
+            key = recipientId;
             break;
         case ID_PROVIDER_BLOCKSTACK:
         default:
             // blockstackId='block_antares_va.id.blockstack';
-            const profile = await lookupProfile(blockstackId, BLOCKSTACK_CORE_NAMES);
+            const profile = await lookupProfile(recipientId, BLOCKSTACK_CORE_NAMES);
             // const key = await fetch(`${GAIA_HUB_URL}/${recipientId}/${PUBLIC_KEY_PATH}`).then(res=>res.json());
             key = profile?.appsMeta?.[document.location.origin]?.publicKey;
             const recipientIdStr = (profile?.appsMeta?.[document.location.origin]?.storage?.replace(GAIA_HUB_URL, ""))?.replace("/", "");
@@ -917,7 +1093,7 @@ export const bsShareSkyspace = async (session, skyspaceList, blockstackId, share
         sharedWithObj = (await bsGetSharedWithObj(session)) || {};
     }
     sharedWithObj[recipientId] = sharedWithObj[recipientId] ?? {};
-    sharedWithObj[recipientId]["userid"] = blockstackId;
+    sharedWithObj[recipientId]["userid"] = recipientId;
     sharedWithObj[recipientId]["spaces"] = sharedWithObj[recipientId]["spaces"] ?? [];
     sharedWithObj[recipientId]["skylinks"] = sharedWithObj[recipientId]["skylinks"] ?? [];
     const recipientPathPrefix = SHARED_PATH_PREFIX + recipientId + "/";

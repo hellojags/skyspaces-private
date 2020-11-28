@@ -24,7 +24,13 @@
             "request": "launch",
             "reAttach": true,
             "url": "http://localhost:3000/",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}",
+            "pathMappings": [
+                {
+                    "url": "file:///Users/freya/MySpace/git/github/skynethubio/skyspaces-private/src",
+                    "path": "${workspaceFolder}/src"
+                }
+            ]
         },
         {
             "name": "Attach",

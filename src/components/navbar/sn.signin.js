@@ -147,7 +147,8 @@ class SnSignin extends React.Component {
     this.handleClick();
     this.setState({
       showInfoModal: true,
-      infoModalContent: snSerializeSkydbPublicKey(snKeyPairFromSeed(this.props.userSession.skydbseed).publicKey)
+      //infoModalContent: snSerializeSkydbPublicKey(snKeyPairFromSeed(this.props.userSession.skydbseed).publicKey)
+      infoModalContent: this.props.person.appPublicKey
     });
   };
 
@@ -189,7 +190,7 @@ class SnSignin extends React.Component {
               onClick={this.userMenuClick}
               className={classes.avatar}
             >
-              {this.props.person?.username?.charAt(0).toUpperCase()}
+              {this.props.person?.profile?.username?.charAt(0).toUpperCase()}
             </div>
 
 

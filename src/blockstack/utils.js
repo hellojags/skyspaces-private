@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import {getJSONFile,setJSONFile, snDeserializeSkydbPublicKey, snKeyPairFromSeed} from "../skynet/sn.api.skynet";
 import { SkynetClient } from "skynet-js";
 import { getUserSessionType } from '../sn.util';
-import { ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB } from '../sn.constants';
+import { ID_PROVIDER_BLOCKSTACK, ID_PROVIDER_SKYDB, ID_PROVIDER_SKYID} from '../sn.constants';
 
 export function generateSkyhubId(inputStr) {
   return crypto.createHash('sha256').update(inputStr + (new Date())).digest('base64').replace("/", "+");
@@ -19,6 +19,11 @@ export async function encryptContent(session, content, options) {
   let promise;
   const sessionType = getUserSessionType(session);
   switch(sessionType){
+    case ID_PROVIDER_SKYID:
+      promise = new Promise((resolve, reject) => {
+                  resolve(content);
+                });
+      break;
     case ID_PROVIDER_SKYDB:
       promise = new Promise((resolve, reject) => {
                   resolve(content);
@@ -34,6 +39,11 @@ export async function decryptContent(session, content, options) {
   let promise;
   const sessionType = getUserSessionType(session);
   switch(sessionType){
+    case ID_PROVIDER_SKYID:
+      promise = new Promise((resolve, reject) => {
+                  resolve(content);
+                });
+      break;
     case ID_PROVIDER_SKYDB:
       promise = new Promise((resolve, reject) => {
                   resolve(content);
@@ -54,6 +64,29 @@ export function getFile(session, FILE_PATH, param) {
   let promise;
   const sessionType = getUserSessionType(session);
   switch(sessionType){
+    case ID_PROVIDER_SKYID:
+      if(param?.publicKey) //if we need to use any other public key
+      {
+        // pull profile using master public Key
+        promise = getJSONFile(param.publicKey,FILE_PATH,null,param)
+        .then((content) => {
+          if (content) {
+            //return JSON.parse(content);
+            return content;
+          }
+        })
+      }
+      else
+      {
+        promise = getJSONFile(session?.person?.appPublicKey,FILE_PATH,null,param)
+        .then((content) => {
+          if (content) {
+            //return JSON.parse(content);
+            return content;
+          }
+        })
+      };
+      break;
     case ID_PROVIDER_SKYDB:
       const { publicKey } =   snKeyPairFromSeed(session.skydbseed);
       promise = getJSONFile(publicKey,FILE_PATH,null,{})
@@ -87,9 +120,13 @@ export function putFile(session, FILE_PATH, content, param) {
   }
   const sessionType = getUserSessionType(session);
   switch(sessionType){
+    case ID_PROVIDER_SKYID:
+      //const { publicKey: appPublicKey, privateKey: appPrivateKey } =  snKeyPairFromSeed(session.skydbseed);
+      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,content,param);
+      break;
     case ID_PROVIDER_SKYDB:
       const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(publicKey,privateKey,FILE_PATH,content,false,false,{});
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,content,param);
       break;
     case ID_PROVIDER_BLOCKSTACK:
     default:
@@ -108,9 +145,13 @@ export async function putFileForShared(session, FILE_PATH, encryptedContent) {
   const sessionType = getUserSessionType(session);
   let promise;
   switch(sessionType){
+    case ID_PROVIDER_SKYID:
+      //const { publicKey: appPublicKey, privateKey: appPrivateKey } =  snKeyPairFromSeed(session.skydbseed);
+      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,encryptedContent,{});
+      break;
     case ID_PROVIDER_SKYDB:
       const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(publicKey,privateKey,FILE_PATH,encryptedContent,false,false,{});
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,encryptedContent,{});
       break;
     case ID_PROVIDER_BLOCKSTACK:
     default:
@@ -133,9 +174,13 @@ export function deleteFile(session, FILE_PATH) {
   let promise;
 
   switch(sessionType){
+    case ID_PROVIDER_SKYID:
+      //const { publicKey: appPublicKey, privateKey: appPrivateKey } =  snKeyPairFromSeed(session.skydbseed);
+      promise = setJSONFile(session?.person?.appPublicKey,session?.person?.appPrivateKey,FILE_PATH,null,{});
+      break;
     case ID_PROVIDER_SKYDB:
       const { publicKey, privateKey } =  snKeyPairFromSeed(session.skydbseed);
-      promise = setJSONFile(publicKey,privateKey,FILE_PATH,null,false,false,{});
+      promise = setJSONFile(publicKey,privateKey,FILE_PATH,null,{});
       break;
     case ID_PROVIDER_BLOCKSTACK:
     default:

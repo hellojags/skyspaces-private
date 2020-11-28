@@ -138,16 +138,16 @@ function UserMenu(props) {
             className={classes.profilePicStyling}
             onClick={() => history.push("/profile")}
           >
-            {stPerson?.username?.charAt(0).toUpperCase()}
+            {stPerson?.profile?.username?.charAt(0).toUpperCase()}
           </div>
           <div className={classes.camereIconContainer}>
             <CameraAltIcon style={{ fontSize: 13, color: "white" }} />
           </div>
           <div style={{ textAlign: "center" }}>
-            <Typography className={classes.userIdStyle}>User ID</Typography>
+            <Typography className={classes.userIdStyle}>Welcome</Typography>
             <div>
               <Typography className={classes.userNameStyle}>
-                {stPerson.username}
+              {stPerson?.profile?.username}
               </Typography>
             </div>
           </div>
@@ -198,7 +198,7 @@ function UserMenu(props) {
               onClick={showPublicKey}>
               <VisibilityIcon style={{ fontSize: 18 }} />
               <div style={{ paddingLeft: 20 }}>
-                <Typography variant="span">Show Skydb Public Key</Typography>
+                <Typography variant="span">Show App Public Key</Typography>
               </div>
             </div>
             <div className={classes.menuListContainers}
