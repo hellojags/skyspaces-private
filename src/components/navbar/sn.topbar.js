@@ -363,7 +363,7 @@ export default function SnTopBar(props) {
         <div className="container-fluid main-container">
           <nav className={`navbar navbar-light hdr-nvbr-main ${classes.headerBgColorSet}`}>
             {person != null && (
-              <Drawer anchor={"left"} open={showMobileMenu} onClose={()=> setMobileMenuDisplay(false)} >
+              <Drawer anchor={"left"} open={showMobileMenu} onClose={()=> dispatch(setMobileMenuDisplay(false))} >
               <SnLeftMenu />
               </Drawer>
             )}
@@ -382,7 +382,7 @@ export default function SnTopBar(props) {
                 {person!=null && <IconButton
                  id="toggle-menu-icon"
                  className="menu-button-styling"
-                 onClick={()=>setMobileMenuDisplay(true)}>
+                 onClick={()=>dispatch(setMobileMenuDisplay(true))}>
                  <MenuIcon />
                  </IconButton>}
   
