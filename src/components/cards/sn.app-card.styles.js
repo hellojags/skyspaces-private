@@ -10,6 +10,12 @@ const useStyles = (theme) => ({
         color: theme.palette.primary.main,
         fontWeight: 500,
     },
+    skylink: {
+        paddingLeft : "62px",
+        [theme.breakpoints.down('xs')]: {
+            paddingLeft: "0px !important"
+        }
+    },
     createAtTime: {
         color: theme.palette.mediumGray,
         fontSize: 13,
