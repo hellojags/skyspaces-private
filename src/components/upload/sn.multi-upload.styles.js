@@ -25,7 +25,9 @@ export default makeStyles((theme) => ({
   main_grid_uc: {
     margin: "auto",
   },
-
+  contentBgColor: {
+    backgroundColor: theme.palette.whiteBgColor,
+  },
   MaintabsPaper_uc: {
     backgroundColor: theme.palette.headerBgColor,
     paddingTop: "25px",
