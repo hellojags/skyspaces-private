@@ -113,7 +113,7 @@ export const INITIAL_SETTINGS_OBJ = () => {
     setting: {
       portal: DEFAULT_PORTAL,
       backupList: [],
-      dataSyncPref: "10 Minutes",
+      dataSyncPref: "Every 10 Minutes",
     }
   };
 };
@@ -136,32 +136,32 @@ export const INITIAL_DATASYNC_PREF_OBJ = {
   lastUpdateTS: new Date(),
   dataSyncPrefList: [
     {
-      name: "5 Minutes",
+      name: "Every 5 Minutes",
       value: 5,
       desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
     },
     {
-      name: "10 Minutes",
+      name: "Every 10 Minutes",
       value: 10,
       desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
     },
     {
-      name: "15 Minutes",
+      name: "Every 15 Minutes",
       value: 15,
       desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
     },
     {
-      name: "20 Minutes",
+      name: "Every 20 Minutes",
       value: 20,
       desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
     },
     {
-      name: "25 Minutes",
+      name: "Every 25 Minutes",
       value: 25,
       desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
     },
     {
-      name: "30 Minutes",
+      name: "Every 30 Minutes",
       value: 30,
       desc: "Every 5 minutes Sync data with SkyDB (one read and write)",
     },

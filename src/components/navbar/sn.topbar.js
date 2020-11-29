@@ -136,7 +136,7 @@ export default function SnTopBar(props) {
   const [publicPortal, setPublicPortal] = useState(DEFAULT_PORTAL);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoModalContent, setInfoModalContent] = useState("");
-  const [syncStatus, setSyncStatus] = useState(null);
+  const [syncStatus1, setSyncStatus1] = useState("synced");
   const [anchor, setAnchor] = useState("");
   const [isTrue, setIsTrue] = useState(false);
   const [activeDarkBck, setActiveDarkBck] = useState(false);
@@ -166,12 +166,12 @@ export default function SnTopBar(props) {
   // }, 30000);
 
   const postSync = async () => {
-    setSyncStatus('synced');
+    setSyncStatus1("synced");
     let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
     //let status = await firstTimeUserSetup(userSession, null, null);
     alert("Success " + status);
     if (status == SUCCESS) {
-      setSyncStatus('synced');
+      setSyncStatus1("synced");
     }
     // alert("postSync clicked !!");
     // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
@@ -386,9 +386,9 @@ export default function SnTopBar(props) {
               <MenuIcon />
             </IconButton>}
             {(person != null || snPublicHash) && (
-              <div className="ribbon"><span>BETA</span></div>
+              <div className="ribbon"><span>ALPHA</span></div>
             )}
-            { (person == null) ? <div className="ribbonMiddle"><span>BETA</span></div>: "" }
+            { (person == null) ? <div className="ribbonMiddle"><span>ALPHA</span></div>: "" }
             <a
               className={`${"navbar-brand"} ${person == null ? "auth-navi-brand" : "navi-brnd"
                 } ${person == null && "logoAlignMent"}`}
@@ -513,9 +513,9 @@ export default function SnTopBar(props) {
                 sm={person != null ? 2 : (snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-            {/* <Grid item>
-              <SnDataSync syncStatus={syncStatus}></SnDataSync>
-            </Grid> */}
+            <Grid item>
+              <SnDataSync syncStatus1={syncStatus1}></SnDataSync>
+            </Grid>
             {(person != null || snPublicHash) && (
               <div className="signUp-butn-main-out-div">
                 <button

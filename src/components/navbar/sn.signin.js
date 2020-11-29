@@ -58,50 +58,51 @@ class SnSignin extends React.Component {
     this.props.history.push("/login" + queryParam);
   }
 
-  doSignIn = () => {
-    const publicHash = this.getPublicToAccHash();
-    if (publicHash) {
-      const queryParam = "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + publicHash;
-      this.props.history.push("/upload" + queryParam);
-    }
-    const authOptions = {
-      redirectTo: "/",
-      manifestPath: '/manifest.json',
-      authOrigin,
-      userSession,
-      sendToSignIn: true,
-      finished: async ({ userSession }) => {
-        this.props.setUserSession(userSession);
-        bsSavePublicKey(userSession);
-        const importedSpace = await bsGetImportedSpacesObj(userSession, { isImport: true });
-        // set shared spaces object to list all imported spaces {senderToSpacesMap={}, sharedByUserList=[]}
-        this.props.setImportedSpace(importedSpace);
-        this.props.setPersonGetOtherData(userSession.loadUserData());
-      },
-      appDetails: appDetails,
-    };
-    //this.props.userSession.redirectToSignIn();
-    authenticate(authOptions);
-  };
-  doSignUp = () => {
-    const publicHash = this.getPublicToAccHash();
-    if (publicHash) {
-      const queryParam = "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + publicHash;
-      this.props.history.push("/upload" + queryParam);
-    }
-    const authOptions = {
-      redirectTo: "/",
-      manifestPath: '/manifest.json',
-      authOrigin,
-      userSession,
-      finished: ({ userSession }) => {
-        this.props.setUserSession(userSession);
-        this.props.setPersonGetOtherData(userSession.loadUserData());
-      },
-      appDetails: appDetails,
-    };
-    showBlockstackConnect(authOptions);
-  };
+  // doSignIn = () => {
+  //   const publicHash = this.getPublicToAccHash();
+  //   if (publicHash) {
+  //     const queryParam = "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + publicHash;
+  //     this.props.history.push("/upload" + queryParam);
+  //   }
+  //   const authOptions = {
+  //     redirectTo: "/",
+  //     manifestPath: '/manifest.json',
+  //     authOrigin,
+  //     userSession,
+  //     sendToSignIn: true,
+  //     finished: async ({ userSession }) => {
+  //       this.props.setUserSession(userSession);
+  //       bsSavePublicKey(userSession);
+  //       const importedSpace = await bsGetImportedSpacesObj(userSession, { isImport: true });
+  //       // set shared spaces object to list all imported spaces {senderToSpacesMap={}, sharedByUserList=[]}
+  //       this.props.setImportedSpace(importedSpace);
+  //       this.props.setPersonGetOtherData(userSession.loadUserData());
+  //     },
+  //     appDetails: appDetails,
+  //   };
+  //   //this.props.userSession.redirectToSignIn();
+  //   authenticate(authOptions);
+  // };
+  
+  // doSignUp = () => {
+  //   const publicHash = this.getPublicToAccHash();
+  //   if (publicHash) {
+  //     const queryParam = "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + publicHash;
+  //     this.props.history.push("/upload" + queryParam);
+  //   }
+  //   const authOptions = {
+  //     redirectTo: "/",
+  //     manifestPath: '/manifest.json',
+  //     authOrigin,
+  //     userSession,
+  //     finished: ({ userSession }) => {
+  //       this.props.setUserSession(userSession);
+  //       this.props.setPersonGetOtherData(userSession.loadUserData());
+  //     },
+  //     appDetails: appDetails,
+  //   };
+  //   showBlockstackConnect(authOptions);
+  // };
   async componentDidMount() {
     if (this.props.person == null) {
       if (this.props.userSession.isSignInPending && this.props.userSession.isSignInPending()) {

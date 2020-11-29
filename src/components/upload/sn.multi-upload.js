@@ -216,7 +216,7 @@ export default function SnMultiUpload(props) {
                     <FormControl className={classes.formControl} error={errorObj.tags}>
                       <ChipInput defaultValue={skyapp.tags} onChange={setTags}
                       />
-                      <FormHelperText>Please select tags.</FormHelperText>
+                      <FormHelperText>Add Tags</FormHelperText>
                     </FormControl>
                   </Grid>)}
                   <Grid item xs={2}>

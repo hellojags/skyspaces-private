@@ -65,22 +65,22 @@ const tableIcons = {
 
 const useStyles = styles;
 
-const doSignIn = () => {
-  const authOptions = {
-    redirectTo: "/",
-    manifestPath: '/manifest.json',
-    authOrigin,
-    userSession,
-    sendToSignIn: true,
-    finished: ({ userSession }) => {
-      this.props.setUserSession(userSession);
-      this.props.setPersonGetOtherData(userSession.loadUserData());
-    },
-    appDetails: appDetails,
-  };
-  //this.props.userSession.redirectToSignIn();
-  authenticate(authOptions);
-};
+// const doSignIn = () => {
+//   const authOptions = {
+//     redirectTo: "/",
+//     manifestPath: '/manifest.json',
+//     authOrigin,
+//     userSession,
+//     sendToSignIn: true,
+//     finished: ({ userSession }) => {
+//       this.props.setUserSession(userSession);
+//       this.props.setPersonGetOtherData(userSession.loadUserData());
+//     },
+//     appDetails: appDetails,
+//   };
+//   //this.props.userSession.redirectToSignIn();
+//   authenticate(authOptions);
+// };
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -141,7 +141,7 @@ class SnHistory extends React.Component {
         STORAGE_SKYAPP_DETAIL_KEY,
         JSON.stringify(this.props.skyapp)
       );
-      doSignIn();
+      //doSignIn();
     } else {
       this.setState({
         saveToSkyspace: true,

@@ -200,7 +200,7 @@ class SnSkySpaceMenu extends React.Component {
                 <span>
                   <BookmarkIcon className={this.props.classes.spaceBookIcon} />
                   <Typography variant="span" className={this.props.classes.spacelinkName}>
-                    {cliTruncate(skyspace, 10)}
+                    {cliTruncate(skyspace, 20)}
                     <span className={this.props.classes.spacesNumber}>
                       ({this.props.snSkyspaceAppCount && this.props.snSkyspaceAppCount[skyspace]})
                 </span>
@@ -242,7 +242,6 @@ class SnSkySpaceMenu extends React.Component {
             ?.filter(userId => this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.length > 0)
             .map((userId) => (
               <>
-
                 <div className={this.props.classes.innerSideProf_div} key={userId}>
                   <div className={this.props.classes.icon_side_inner_div}>
                     {/* <img
@@ -251,31 +250,30 @@ class SnSkySpaceMenu extends React.Component {
                     width: "25px",
                     borderRadius: "100%",
                     height: "25px",
-                  }}
-                /> */}
+                  }}/>  */}
                     <AccountCircleIcon className={this.props.classes.spaceIcon} />
                   </div>
 
                   <div style={{ paddingLeft: "20px", marginTop: "-5px" }}>
-                    <span style={{ fontSize: "12px" }} className={this.props.classes.sharedSpace_names}>{cliTruncate(userId, 20)}</span>
+                    <span style={{ fontSize: "12px" }} className={this.props.classes.sharedSpace_names}>{cliTruncate(userId, 18)}</span>
                     {this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.map(skyspace => (
-                      <NavLink
-                        activeClassName="active"
-                        key={skyspace}
-                        className="imported-space-nav-link"
-                        onClick={() =>
-                          this.props.isMobile && this.props.toggleMobileMenuDisplay()
-                        }
-                        to={"/imported-spaces/" + encodeURIComponent(userId) + "/" + skyspace}
-                      >
-                        <div className={this.props.classes.icon_sub_title_div} >
-                          {cliTruncate(skyspace, 10)}
-                          {/* <span style={{ color: "#1ed660", paddingLeft: "7px" }}>
-                    (13)
-                  </span> */}
-                        </div>
-                      </NavLink>
-                    ))}
+                          <NavLink
+                            activeClassName="active"
+                            key={skyspace}
+                            className="imported-space-nav-link"
+                            onClick={() =>
+                              this.props.isMobile && this.props.toggleMobileMenuDisplay()
+                            }
+                            to={"/imported-spaces/" + encodeURIComponent(userId) + "/" + skyspace}
+                          >
+                            <div className={this.props.classes.icon_sub_title_div} >
+                            # {cliTruncate(skyspace, 20)}
+                              {/* <span style={{ color: "#1ed660", paddingLeft: "7px" }}>
+                          (13)
+                        </span> */}
+                            </div>
+                          </NavLink>
+                        ))}
                   </div>
                 </div>
               </>
@@ -309,7 +307,7 @@ class SnSkySpaceMenu extends React.Component {
           skyspaceName={this.state.skyspaceToShare}
           userSession={this.props.userSession}
           onNo={() => this.setState({ showShareSkyspaceModal: false })}
-          title={`Share Skyspace: ${this.state.skyspaceToShare}`}
+          title={`Share Space: ${this.state.skyspaceToShare}`}
           content={this.state.confModalDescription}
           sharedWithObj={this.state.sharedWithObj}
         />
@@ -321,7 +319,7 @@ class SnSkySpaceMenu extends React.Component {
           }}
           userSession={this.props.userSession}
           onNo={() => this.setState({ showImportSkyspaceModal: false })}
-          title={`Import Shared Space`}
+          title={`Add Shared Space`}
         />
       </>
     );

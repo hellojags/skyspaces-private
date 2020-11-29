@@ -240,9 +240,9 @@ class snLogin extends React.Component {
                                                     onChange={this.handleSeedChange}
                                                     required
                                                 /> */}
-                                                <span style={{ color: "#1DD65F", fontWeight: "600", fontSize: 30 }}>
+                                                <Typography style={{ color: "#1DD65F", fontWeight: "600", fontSize: 30 }}>
                                                     Own Your Space
-                                                </span>
+                                                </Typography>
                                                 <TextField
                                                     className={`${classes.margin} ${classes.password_textfield} d-none`}
                                                     id="input-with-icon-textfield"
@@ -285,7 +285,7 @@ class snLogin extends React.Component {
                             <Grid item xs={12} className={classes.description_auth}>
                             <span style={{ fontWeight: "400" }}>
                             Note: This update of SkySpaces introduces breaking changes,<br/>  
-                            existing users can login using - <a src="https://skyspaces.io"  class="cursor-pointer">https://skyspaces.io</a> <br/> 
+                            Old version of app is available at - <a src="https://skyspaces.io"  class="cursor-pointer">https://skyspaces.io</a> <br/> 
                             We will provide in-app data migration option soon...<br/> 
                             </span> 
                             </Grid>

@@ -121,8 +121,8 @@ const leftMenuStyles = (theme) => ({
       },
     },
     sideProf_div: {
-      marginTop: "20px",
-      height: "120px",
+      marginTop: "10px",
+      height: "180px",
       background: "white",
       overflowY: "scroll",
       paddingBottom: "20px",
@@ -137,9 +137,9 @@ const leftMenuStyles = (theme) => ({
       padding: "0px 20px 0px 20px",
     },
     icon_sub_title_div: {
-      fontSize: "11px",
+      fontSize: "12px",
       padding: "3px 0px 0px 20px",
-      color: `${theme.palette.secondary.textColor}`,
+      color: `${theme.palette.primary.textColor}`,
     },
     sharedSpace_names: {
       color: theme.palette.linksColor,
