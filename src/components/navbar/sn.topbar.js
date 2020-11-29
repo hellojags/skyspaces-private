@@ -513,9 +513,9 @@ export default function SnTopBar(props) {
                 sm={person != null ? 2 : (snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-            <Grid item>
+            {/* <Grid item>
               <SnDataSync syncStatus1={syncStatus1}></SnDataSync>
-            </Grid>
+            </Grid> */}
             {(person != null || snPublicHash) && (
               <div className="signUp-butn-main-out-div">
                 <button
