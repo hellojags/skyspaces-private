@@ -1078,13 +1078,18 @@ class SnCards extends React.Component {
           {/* {this.GridUi ? this.getStepContent(this.state.activeStep) : this.getStepContentForList(this.state.activeStep)} */}
           {this.renderCards(filteredApps, page, cardCount, skyspace)}
           <Grid item xs={12} style={{display: "flex"}}>
-            {filterCriteria === 'audio' ?
+            {false && filterCriteria === 'audio' ?
               <AudioPlayer /> :
               <SnPagination
                 page={page}
                 totalCount={filteredApps.length}
                 onChange={this.udpdatePage}
               />}
+          </Grid>
+          <Grid item xs={12} style={{display: "flex"}}>
+            {filterCriteria === 'audio' && 
+              <AudioPlayer /> 
+            }
           </Grid>
         </div>
         <SnInfoModal

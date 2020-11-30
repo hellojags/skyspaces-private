@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useStyles from "./sn.audio.styles";
+import AudioPlayer from "./sn.audio-player";
 import Typography from "@material-ui/core/Typography";
 import ImageIcon from "@material-ui/icons/Image";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
@@ -43,6 +44,7 @@ import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Box from '@material-ui/core/Box';
 import { CATEGORY_OBJ } from "../../../sn.category-constants";
 import { Chip } from "@material-ui/core";
+
 
 
 export default function SnAudioDefault(props) {
@@ -280,6 +282,7 @@ export default function SnAudioDefault(props) {
             </Grid>
           </Grid>
         </Paper>
+        {/* <AudioPlayer />  */}
       </Grid>
                 </>
               );
