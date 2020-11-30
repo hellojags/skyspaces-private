@@ -79,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     paddingTop: 8,
     paddingBottom: 8,
+    cursor: "pointer",
     color: theme.palette.linksColor,
   },
   menuBackGroundColor: {
