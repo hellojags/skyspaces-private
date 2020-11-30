@@ -31,7 +31,7 @@ class snLogin extends React.Component {
         this.skyidEventCallback = this.skyidEventCallback.bind(this)
     }
     componentDidMount() {
-        this.initializeSkyId({devMode : true});
+        this.initializeSkyId({devMode : false});
         if (this.props.showDesktopMenu === false) {
             this.props.setDesktopMenuState(true);
         }

@@ -160,7 +160,7 @@ export default function SnTopBar(props) {
   const snShowDesktopMenu = useSelector((state) => state.snShowDesktopMenu);
   const snPublicHash = useSelector((state) => state.snPublicHash);
   const snPublicInMemory = useSelector((state) => state.snPublicInMemory);
-  const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
+  //const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
 
 
   // useInterval(async () => {

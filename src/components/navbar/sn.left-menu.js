@@ -71,7 +71,7 @@ export default function SnLeftMenu(props) {
   const theme = useTheme();
 
   // local state
-  const [uiSyncStatus, setUiSyncStatus] = useState("synced");
+  const [uiSyncStatus, setUiSyncStatus] = useState(null);
 
   // redux store state
   const showMobileMenu = useSelector((state) => state.snShowMobileMenu);
@@ -82,17 +82,17 @@ export default function SnLeftMenu(props) {
   const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
   
   useEffect(() => {
-    //alert("snIsDataOutOfSync"+snIsDataOutOfSync);
+    //alert("snIsDataOutOfSync "+snIsDataOutOfSync);
     if(snIsDataOutOfSync == true) // data is out of sync and update UI status to re-render
     {
       setUiSyncStatus(null);//UI STatus -> 'Sync Now'
     }
+    else
+    {
+      setUiSyncStatus('synced');//UI STatus -> 'Sync Now'
+    }
   }, [snIsDataOutOfSync]);
   
-  useEffect(() => {
-    
-  },[]); 
-
   useInterval(async () => {
     // Your custom logic here
     if (snIsDataOutOfSync) {
