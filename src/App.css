@@ -379,6 +379,14 @@
   left: -21px;
 }
 
+.MuiSvgIcon-root {
+  cursor: pointer;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /* .ribbon span::before {
   content: "";
   position: absolute;
