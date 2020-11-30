@@ -7,8 +7,8 @@ import { APP_SKYDB_SEED, DEFAULT_PORTAL, SKYDB_SERIALIZATION_SEPERATOR } from ".
 import {IDB_IS_OUT_OF_SYNC} from "../blockstack/constants"
 import { getAllPublicApps } from '../sn.util';
 import store from "../reducers";
-import { getJSONfromDB, setJSONinDB } from "../db/indexedDB"
-
+import { getJSONfromDB, setJSONinDB } from "../db/indexedDB";
+import {setIsDataOutOfSync} from "../reducers/actions/sn.isDataOutOfSync.action";
 const pwa = true;
 
 export const getSkylinkHeader = (skylinkUrl) => ajax({
@@ -79,6 +79,7 @@ export const setJSONFile = async (publicKey, privateKey, fileKey, fileData, opti
     try {
       await setJSONinDB(fileKey, fileData);
       await setJSONinDB(IDB_IS_OUT_OF_SYNC, true);
+      store.dispatch(setIsDataOutOfSync(true)); // set value is store
       return true;
     }
     catch (error) {

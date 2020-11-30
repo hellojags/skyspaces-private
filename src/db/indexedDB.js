@@ -1,7 +1,9 @@
 import localforage from 'localforage';
 import { extendPrototype } from 'localforage-setitems';
 import { STORAGE_USER_SESSION_KEY} from "../sn.constants";
-import {IDB_NAME,IDB_STORE_NAME,IDB_IS_OUT_OF_SYNC } from "../blockstack/constants"
+import {IDB_NAME,IDB_STORE_NAME,IDB_IS_OUT_OF_SYNC } from "../blockstack/constants";
+import store from "../reducers";
+import {setIsDataOutOfSync} from "../reducers/actions/sn.isDataOutOfSync.action";
 //const IndexedDB4SkyDB = BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY) ? BROWSER_STORAGE.getItem(STORAGE_USER_SESSION_KEY)?.IndexedDB4SkyDB : null;
 // var IndexedDB4SkyDB = localforage.createInstance();
 
@@ -72,6 +74,7 @@ export const removeJSONfromDB = async (key) => {
     try {
         await IndexedDB4SkyDB.removeItem(key);
         await setJSONinDB(IDB_IS_OUT_OF_SYNC, true);
+        store.dispatch(setIsDataOutOfSync(true));// yes data is out of sync
     }catch (err) {
         // This code runs if there were any errors.
         console.log(err);

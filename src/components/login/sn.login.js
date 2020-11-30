@@ -60,6 +60,7 @@ class snLogin extends React.Component {
         switch (message) {
             case 'login_fail':
                 console.log('Login failed')
+                this.props.setLoaderDisplay(false);
                 break;
             case 'login_success':
                 console.log('Login succeed!')
@@ -67,9 +68,11 @@ class snLogin extends React.Component {
                 break;
             case 'destroy':
                 console.log('Logout succeed!')
+                this.props.setLoaderDisplay(false);
                 break;
             default:
                 console.log(message)
+                this.props.setLoaderDisplay(false);
                 break;
         }
     }

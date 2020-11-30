@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import leftMenuStyles from "./sn.left-menu.styles";
 import { AiOutlineUpload } from "react-icons/ai";
 import clsx from "clsx";
@@ -16,12 +17,13 @@ import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import ScreenShareIcon from "@material-ui/icons/ScreenShare";
 import WifiIcon from "@material-ui/icons/Wifi";
 import Hidden from "@material-ui/core/Hidden";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles, useTheme} from "@material-ui/core/styles";
 import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
 import Drawer from "@material-ui/core/Drawer";
 import { DEFAULT_PORTAL } from "../../sn.constants";
 import Link from "@material-ui/core/Link";
 import List from "@material-ui/core/List";
+import Grid from "@material-ui/core/Grid";
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import ListItem from "@material-ui/core/ListItem";
 import HistoryOutlinedIcon from "@material-ui/icons/HistoryOutlined";
@@ -40,46 +42,168 @@ import {
 } from "./sn.left-menu.container";
 import { Typography } from "@material-ui/core";
 import InnerIcon from "./images/icon.jpeg";
-
+import { setMobileMenuDisplay,
+  toggleMobileMenuDisplay 
+  } from "../../reducers/actions/sn.mobile-menu.action";
+import { fetchSkyspaceList } from "../../reducers/actions/sn.skyspace-list.action";
+import { toggleDesktopMenuDisplay } from "../../reducers/actions/sn.desktop-menu.action";
+import { useSelector, useDispatch } from "react-redux";
+import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
+import "./sn.topbar.css";
+import {setIsDataOutOfSync} from "../../reducers/actions/sn.isDataOutOfSync.action";
+import {
+  syncData, firstTimeUserSetup
+} from "../../blockstack/blockstack-api";
+import SnDataSync from '../datasync/sn.datasync';
+import { SUCCESS } from '../../blockstack/constants';
+import useInterval from 'react-useinterval';
 
 const drawerWidth = 300;
-const useStyles = (theme) => ({
-  root: {
-    display: "flex",
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-  toolbar: theme.mixins.toolbar,
-});
 
-class SnLeftMenu extends React.Component {
-  constructor(props) {
-    super(props);
-    this.menuBar = this.menuBar.bind(this);
+const useStyles = makeStyles(leftMenuStyles);
+
+export default function SnLeftMenu(props) {
+
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const theme = useTheme();
+
+  // local state
+  const [uiSyncStatus, setUiSyncStatus] = useState("synced");
+
+  // redux store state
+  const showMobileMenu = useSelector((state) => state.snShowMobileMenu);
+  const showDesktopMenu = useSelector((state) => state.snShowDesktopMenu);
+  const userSession = useSelector((state) => state.userSession);
+  const skyspaceList = useSelector((state) => state.snSkyspaceList);
+  const person = useSelector((state) => state.person);
+  const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
+  
+  useEffect(() => {
+    //alert("snIsDataOutOfSync"+snIsDataOutOfSync);
+    if(snIsDataOutOfSync == true) // data is out of sync and update UI status to re-render
+    {
+      setUiSyncStatus(null);//UI STatus -> 'Sync Now'
+    }
+  }, [snIsDataOutOfSync]);
+  
+  useEffect(() => {
+    
+  },[]); 
+
+  useInterval(async () => {
+    // Your custom logic here
+    if (snIsDataOutOfSync) {
+      setUiSyncStatus("syncing");
+      let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+      //let status = await firstTimeUserSetup(userSession, null, null);
+      //alert("Success " + status);
+      //alert("wait")
+      if (status == SUCCESS) {
+        setUiSyncStatus("synced"); // Data is in sync. Update State so that components show correct status on UI
+        dispatch(setIsDataOutOfSync(false));// Data is in sync. set flag in store.
+      }
+      else {
+        setUiSyncStatus(null);
+        dispatch(setIsDataOutOfSync(true));
+      }
+    }
+  }, 30000);
+
+  const postSync = async () => {
+    dispatch(setIsDataOutOfSync(true)); // Data is out of sync. Update "State" so that components show correct status on UI
+    // setSyncStatus("syncing");
+    // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+    // //let status = await firstTimeUserSetup(userSession, null, null);
+    // //alert("Success " + status);
+    // if (status == SUCCESS) {
+    //   setSyncStatus("synced");
+    // }
+    // else {
+    //   setSyncStatus(null);
+    // }
+    // alert("postSync clicked !!");
+    // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
+
+    // const status = await navigator.permissions.query({
+    //   name: 'periodic-background-sync',
+    // });
+    // if (status.state === 'granted') {
+    //   // Periodic background sync can be used.
+    //   alert("periodic sync can be used !!");
+    // } else {
+    //   // Periodic background sync cannot be used.
+    //   alert("periodic sync can NOT be used !!");
+    //   navigator.serviceWorker.ready.then(function(registration) {
+    //     registration.periodicSync.permissionState().then(function(state) {
+    //       if (state == 'prompt') 
+    //       alert("showSyncRegisterUI here for permission");
+    //     });
+    //   });
+    // }
+
+    // Periodic Sync Check
+    // https://web.dev/periodic-background-sync/
+    // https://github.com/WICG/background-sync/tree/master/explainers
+    // const registration = await navigator.serviceWorker.ready;
+    // if ('periodicSync' in registration) {
+    //   try {
+    //     await registration.periodicSync.register('content-sync', {
+    //       // An interval of one day.
+    //       // minInterval: 24 * 60 * 60 * 1000,
+    //       minInterval: 30000,
+    //     });
+    //     alert("content Synched");
+    //   } catch (error) {
+    //     // Periodic background sync cannot be used.
+    //     alert("Error Synching content" + error);
+    //   }
+    // }
+
+    // Periodic Sync Registration
+    // navigator.serviceWorker.ready.then(function (registration) {
+    //   registration.periodicSync.register({
+    //     tag: 'post-data-periodic',         // default: ''
+    //     minPeriod: 12 * 60 * 60 * 1000, // default: 0
+    //     powerState: 'avoid-draining',   // default: 'auto'
+    //     networkState: 'avoid-cellular'  // default: 'online'
+    //   }).then(function (periodicSyncReg) {
+    //     alert("periodicSync success");
+    //   }, function () {
+    //     // failure
+    //     alert("periodicSync failure");
+    //   })
+    // });
+
+    // // Example: unregister all periodic syncs, except "get-latest-news":
+    // navigator.serviceWorker.ready.then(function (registration) {
+    //   registration.periodicSync.getRegistrations().then(function (syncRegs) {
+    //     syncRegs.filter(function (reg) {
+    //       return reg.tag != 'post-data-periodic';
+    //     }).forEach(function (reg) {
+    //       reg.unregister();
+    //     });
+    //   });
+    // });
+
+    // getting pending sync details
+    // navigator.serviceWorker.ready.then(function(registration) {
+    //   registration.periodicSync.getRegistrations().then(function(syncRegs) {
+    //     syncRegs.filter(function(reg) {
+    //       return reg.tag != 'get-latest-news';
+    //     }).forEach(function(reg) {
+    //       reg.unregister();
+    //     });
+    //   });
+    // });
   }
-
-  menuBar(classes, isMobile) {
+  
+  const menuBar = (isMobile) => {
     return (
       <React.Fragment>
-        <div className={this.props.classes.toolbar}>
+        <div className={classes.toolbar}>
           <div className="banner-text hidden-sm-up">
             <div className="ribbon  hidden-xs-dn"><span>ALPHA</span></div>
             <img
@@ -101,7 +225,7 @@ class SnLeftMenu extends React.Component {
             button
             className="appstore-mobile-link hidden-sm-up"
             onClick={() => {
-              this.props.toggleMobileMenuDisplay();
+              dispatch(toggleMobileMenuDisplay());
               window.open("https://skyapps.hns.siasky.net");
             }}
           >
@@ -113,12 +237,15 @@ class SnLeftMenu extends React.Component {
               primary="SkyApps"
             />
           </ListItem>
-          {this.props.person != null && (
+          
+          {person != null && (
+            // Mobile Left Menu
             <>
+           
               <NavLink
                 activeClassName="active"
                 className="nav-link"
-                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
+                onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
                 to="/upload"
               >
                 <ListItem button>
@@ -134,7 +261,7 @@ class SnLeftMenu extends React.Component {
               <NavLink
                 activeClassName="active"
                 className="nav-link"
-                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
+                onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
                 to="/register"
               >
                 <ListItem button>
@@ -150,7 +277,7 @@ class SnLeftMenu extends React.Component {
               <NavLink
                 activeClassName="active"
                 className="nav-link"
-                onClick={() => isMobile && this.props.toggleMobileMenuDisplay()}
+                onClick={() => isMobile && dispatch(toggleMobileMenuDisplay())}
                 to="/history"
               >
                 <ListItem button>
@@ -166,17 +293,16 @@ class SnLeftMenu extends React.Component {
             </>
           )}
           <>
-            {this.props.person != null && (
+            {person != null && (
               <SnSkySpaceMenu
                 isMobile={isMobile}
-                toggleMobileMenuDisplay={this.toggleMobileMenuDisplay}
+                toggleMobileMenuDisplay={() => dispatch(toggleMobileMenuDisplay())}
               />
             )}
           </>
-        </List>
-
+        </List> 
         <div className="fixfooter">
-          <div className={this.props.classes.FooterText}>
+          <div className={classes.FooterText}>
             &copy; 2020 SkySpaces
                             {/* <a 
                             href="https://github.com/skynethubio/SkySpaces" 
@@ -194,66 +320,78 @@ class SnLeftMenu extends React.Component {
     );
   }
 
-  drawer = (isMobile) => (
-
-    <>
+  const drawer = (isMobile) => {
+    return (
+      <>
       {/* <Header /> */}
       {/* <div className="main-example">
-        <div className={this.props.classes.sideNavContainer}> */}
+        <div className={classes.sideNavContainer}> */}
           {/* for section one */}
-          {isMobile && this.props.showMobileMenu &&<div>
+            {isMobile && showMobileMenu &&<div>
             <img
               src="https://skyspaces.io/static/media/SkySpaces_g.531bd028.png"
               style={{ width: 200, height: 50, marginBottom: 15 }}
             />
           </div>}
-
-          <div className={this.props.classes.linksStyles}>
-            <AiOutlineUpload className={this.props.classes.iconStyling} />
+          <Typography variant="span">
+                AutoSync Check Every 30 Seconds
+          </Typography>
+          <Grid container>
+              <SnDataSync syncStatus={uiSyncStatus}></SnDataSync>
+                {/* <button
+                  style={{ border: "1px solid #1ed660" }}
+                  type="button"
+                  class="btn  btn-sm butn-out-signup"
+                  onClick={() => postSync()}
+                >
+                  Sync Now - {"" + snIsDataOutOfSync}
+                </button> */}
+            </Grid>
+          <div className={classes.linksStyles}>
+            <AiOutlineUpload className={classes.iconStyling} />
             <NavLink to="/upload"
               activeClassName="active"
-              onClick={()=>isMobile && this.props.setMobileMenuDisplay(false)}
-              className={this.props.classes.linkName}>
+              onClick={()=>isMobile && setMobileMenuDisplay(false)}
+              className={classes.linkName}>
               <Typography variant="span">
                 Upload
             </Typography>
             </NavLink>
           </div>
 
-          <div className={this.props.classes.linksStyles}>
-            <AddBoxOutlinedIcon className={this.props.classes.iconStyling} />
+          <div className={classes.linksStyles}>
+            <AddBoxOutlinedIcon className={classes.iconStyling} />
             <NavLink to="/register"
               activeClassName="active"
-              onClick={()=>isMobile && this.props.setMobileMenuDisplay(false)}
-              className={this.props.classes.linkName}>
+              onClick={()=>isMobile && setMobileMenuDisplay(false)}
+              className={classes.linkName}>
               <Typography variant="span">
                 New
             </Typography>
             </NavLink>
           </div>
 
-          {/*  <div className={this.props.classes.linksStyles}>
+          {/*  <div className={classes.linksStyles}>
             <img
               src={editDocIcon}
-              className={this.props.classes.iconStyling}
+              className={classes.iconStyling}
               style={{ height: "20px" }}
             />
-            <Typography variant="span" className={this.props.classes.linkName}>
+            <Typography variant="span" className={classes.linkName}>
               Register
             </Typography>
           </div> */}
 
           <>
-            {this.props.person != null && (
+            {person != null && (
               <SnSkySpaceMenu
                 isMobile={isMobile}
-                toggleMobileMenuDisplay={this.props.toggleMobileMenuDisplay}
+                toggleMobileMenuDisplay={() => dispatch(toggleMobileMenuDisplay())}
               />
             )}
           </>
-
-          <div style={{ paddingTop: "30px" }}>
-            <div className={this.props.classes.image_logo_sideBarfooter}>
+          <div style={{ paddingTop: "40px" }}>
+            <div className={classes.image_logo_sideBarfooter}>
               <img
                 src="https://skyspaces.io/static/media/Sia.7dd07c88.svg"
                 height="60"
@@ -264,15 +402,11 @@ class SnLeftMenu extends React.Component {
         {/* </div>
       </div> */}
     </>
-  );
-
-  render() {
-    const { classes } = this.props;
+  )};
 
     return (
-
-      this.props.showDesktopMenu && this.props.person &&
-      <nav className={this.props.classes.drawer} aria-label="mailbox folders">
+      showDesktopMenu && person &&
+      <nav className={classes.drawer} aria-label="mailbox folders">
         {/* matches */true ? (
           <Hidden xsDown implementation="css">
             <Drawer
@@ -283,15 +417,15 @@ class SnLeftMenu extends React.Component {
               open
             >
               <div className="main-example">
-                <div className={this.props.classes.sideNavContainer}>
-                  {this.drawer()}
+                <div className={classes.sideNavContainer}>
+                  {drawer()}
                 </div>
               </div>
             </Drawer>
           </Hidden>
         ) : null}
         <Hidden smUp implementation="css">
-          {this.props.showMobileMenu && <div
+          {showMobileMenu && <div
             className={classes.list}
             role="presentation"
             // onClick={toggleDrawer(anchor, false)}
@@ -299,55 +433,52 @@ class SnLeftMenu extends React.Component {
           >
             <div id="mobile-menu" className={`main-example ${classes.mainExampleDrawer}`}>
               <div className={classes.sideNavContainerForDrawer}>
-                {this.drawer(true)}
+                {drawer(true)}
               </div>
             </div>
           </div>}
         </Hidden>
       </nav>
-
     );
 
+    // return (
+    //   <React.Fragment>
+    //     <Hidden smUp={true} implementation="css">
+    //       <Drawer
+    //         variant="temporary"
+    //         anchor={theme.direction === "rtl" ? "right" : "left"}
+    //         open={showMobileMenu}
+    //         onClose={() => toggleMobileMenuDisplay()}
+    //         classes={{
+    //           paper: classes.drawerPaper,
+    //         }}
+    //         ModalProps={{
+    //           keepMounted: true, // Better open performance on mobile.
+    //         }}
+    //       >
+    //         {menuBar(classes, true)}
+    //       </Drawer>
+    //     </Hidden>
+    //     {showDesktopMenu && (
 
-    return (
-      <React.Fragment>
-        <Hidden smUp={true} implementation="css">
-          <Drawer
-            variant="temporary"
-            anchor={this.props.theme.direction === "rtl" ? "right" : "left"}
-            open={this.props.showMobileMenu}
-            onClose={this.props.toggleMobileMenuDisplay}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            {this.menuBar(classes, true)}
-          </Drawer>
-        </Hidden>
-        {this.props.showDesktopMenu && (
+    //       <Hidden xsDown implementation="css">
+    //         <Drawer
+    //           className={classes.drawer}
+    //           variant="persistent"
+    //           anchor="left"
+    //           open={showDesktopMenu}
+    //           classes={{
+    //             paper: classes.drawerPaper,
+    //           }}
+    //         >
+    //           {menuBar(classes)}
+    //         </Drawer>
+    //       </Hidden>
+    //     )}
+    //   </React.Fragment>
+    // );
+};
 
-          <Hidden xsDown implementation="css">
-            <Drawer
-              className={this.props.classes.drawer}
-              variant="persistent"
-              anchor="left"
-              open={this.props.showDesktopMenu}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              {this.menuBar(classes)}
-            </Drawer>
-          </Hidden>
-        )}
-      </React.Fragment>
-    );
-  }
-}
-
-export default withStyles(leftMenuStyles, { withTheme: true })(
-  connect(mapStateToProps, matchDispatcherToProps)(SnLeftMenu)
-);
+// export default withStyles(leftMenuStyles, { withTheme: true })(
+//   connect(mapStateToProps, matchDispatcherToProps)(SnLeftMenu)
+// );

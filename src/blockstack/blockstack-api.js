@@ -43,6 +43,8 @@ import { getUserSessionType } from '../sn.util';
 import { snKeyPairFromSeed, snSerializeSkydbPublicKey, getRegistry } from '../skynet/sn.api.skynet';
 import { getAllItemsFromIDB, getJSONfromDB, setJSONinDB, setAllinDB } from "../db/indexedDB";
 import { getInitialDataJSON } from '../db/data/masterdata';
+import store from "../reducers";
+import {setIsDataOutOfSync} from "../reducers/actions/sn.isDataOutOfSync.action";
 
 export const firstTimeUserSetup = async (session) => {
     try {
@@ -120,7 +122,9 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
             }
             // or status = CONFLICT;
             // This must be last step
-            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false); 
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false); // Data is in sync. set flag in Indexed DB.
+            store.dispatch(setIsDataOutOfSync(false)); // Data is in sync. set flag in store.
+            
         }
         // SkyDB Out-of-Sync Scenario: If revision number is larger in IndexedDB, fetch data from IndexedDB and update SkyDB
         else if (isOutofSync || (parseInt(skyDBRevisionNo) < parseInt(idbRevisionNo))) {
@@ -141,7 +145,8 @@ export const syncData = async (session, skyDBdataKey, idbStoreName) => {
             // update IndexedDB with revision number
             await setJSONinDB(IDB_LAST_SYNC_REVISION_NO,{revision: (skyDBRevisionNo +1) }); //we are doing plus one since we uploaded file to Skynet and revision is incremented.
             // This must be last step
-            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false);
+            await setJSONinDB(IDB_IS_OUT_OF_SYNC, false);// Data is in sync. set flag in IDB.
+            store.dispatch(setIsDataOutOfSync(false));// Data is in sync. set flag in store.
         }
         else {
             console.log("Data is already in sync");

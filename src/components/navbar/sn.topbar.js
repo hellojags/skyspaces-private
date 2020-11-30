@@ -40,7 +40,6 @@ import {
 } from "../../blockstack/blockstack-api";
 import SnSignin from "./sn.signin";
 import { connect } from "react-redux";
-import { mapStateToProps, matchDispatcherToProps } from "./sn.topbar.container";
 import { getPublicApps, getSkylinkPublicShareFile } from "../../skynet/sn.api.skynet";
 import SnInfoModal from "../modals/sn.info.modal";
 import { Drawer } from "@material-ui/core";
@@ -55,6 +54,7 @@ import {
   setMobileMenuDisplay,
   toggleMobileMenuDisplay
 } from "../../reducers/actions/sn.mobile-menu.action";
+//import {setIsDataOutOfSync} from "../../reducers/actions/sn.isDataOutOfSync.action";
 import {
   fetchBlockstackPerson,
   logoutPerson, setPerson,
@@ -68,6 +68,7 @@ import { fetchAppsSuccess } from "../../reducers/actions/sn.apps.action";
 import { setImportedSpace } from "../../reducers/actions/sn.imported-space.action";
 import { makeStyles } from "@material-ui/core/styles";
 import useInterval from 'react-useinterval';
+import { getJSONfromDB } from "../../db/indexedDB";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -136,7 +137,7 @@ export default function SnTopBar(props) {
   const [publicPortal, setPublicPortal] = useState(DEFAULT_PORTAL);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoModalContent, setInfoModalContent] = useState("");
-  const [syncStatus1, setSyncStatus1] = useState("synced");
+  //const [uiSyncStatus, setUiSyncStatus] = useState(null);
   const [anchor, setAnchor] = useState("");
   const [isTrue, setIsTrue] = useState(false);
   const [activeDarkBck, setActiveDarkBck] = useState(false);
@@ -159,20 +160,42 @@ export default function SnTopBar(props) {
   const snShowDesktopMenu = useSelector((state) => state.snShowDesktopMenu);
   const snPublicHash = useSelector((state) => state.snPublicHash);
   const snPublicInMemory = useSelector((state) => state.snPublicInMemory);
+  const snIsDataOutOfSync = useSelector((state) => state.snIsDataOutOfSync);
 
-  // useInterval(() => {
+
+  // useInterval(async () => {
   //   // Your custom logic here
-  //   postSync()
+  //   if (snIsDataOutOfSync) {
+  //     setUiSyncStatus("syncing");
+  //     let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+  //     //let status = await firstTimeUserSetup(userSession, null, null);
+  //     //alert("Success " + status);
+  //     if (status == SUCCESS) {
+  //       setUiSyncStatus("synced"); // Data is in sync. Update State so that components show correct status on UI
+  //       dispatch(setIsDataOutOfSync(false));// Data is in sync. set flag in store.
+  //     }
+  //     else {
+  //       setUiSyncStatus(null);
+  //       dispatch(setIsDataOutOfSync(true));
+  //     }
+  //   }
   // }, 30000);
 
-  const postSync = async () => {
-    setSyncStatus1("synced");
-    let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
-    //let status = await firstTimeUserSetup(userSession, null, null);
-    alert("Success " + status);
-    if (status == SUCCESS) {
-      setSyncStatus1("synced");
-    }
+  
+  // const postSync = async () => {
+  //   dispatch(setIsDataOutOfSync(true)); 
+  // }
+    // Data is out of sync. Update "State" so that components show correct status on UI
+    // setSyncStatus("syncing");
+    // let status = await syncData(userSession, null, null);// for now skydb datakey and idb StoreName is abstracted 
+    // //let status = await firstTimeUserSetup(userSession, null, null);
+    // //alert("Success " + status);
+    // if (status == SUCCESS) {
+    //   setSyncStatus("synced");
+    // }
+    // else {
+    //   setSyncStatus(null);
+    // }
     // alert("postSync clicked !!");
     // navigator.serviceWorker.ready.then((swRegistration) => swRegistration.sync.register('post-data')).catch(console.log);
 
@@ -247,7 +270,13 @@ export default function SnTopBar(props) {
     //     });
     //   });
     // });
-  }
+
+  // useEffect(() => {
+  //   if(snIsDataOutOfSync == true) // data is out of sync and update UI status to re-render
+  //   {
+  //     setUiSyncStatus(null);//UI STatus -> 'Sync Now'
+  //   }
+  // }, [snIsDataOutOfSync]);
 
   useEffect(() => {
     let getMode = localStorage.getItem("darkMode");
@@ -363,8 +392,8 @@ export default function SnTopBar(props) {
         <div className="container-fluid main-container">
           <nav className={`navbar navbar-light hdr-nvbr-main ${classes.headerBgColorSet}`}>
             {person != null && (
-              <Drawer anchor={"left"} open={showMobileMenu} onClose={()=> dispatch(setMobileMenuDisplay(false))} >
-              <SnLeftMenu />
+              <Drawer anchor={"left"} open={showMobileMenu} onClose={() => dispatch(setMobileMenuDisplay(false))} >
+                <SnLeftMenu />
               </Drawer>
             )}
 
@@ -388,7 +417,7 @@ export default function SnTopBar(props) {
             {(person != null || snPublicHash) && (
               <div className="ribbon"><span>ALPHA</span></div>
             )}
-            { (person == null) ? <div className="ribbonMiddle"><span>ALPHA</span></div>: "" }
+            {(person == null) ? <div className="ribbonMiddle"><span>ALPHA</span></div> : ""}
             <a
               className={`${"navbar-brand"} ${person == null ? "auth-navi-brand" : "navi-brnd"
                 } ${person == null && "logoAlignMent"}`}
@@ -513,21 +542,20 @@ export default function SnTopBar(props) {
                 sm={person != null ? 2 : (snPublicHash != null ? 1 : 10)}
                 className="hidden-xs-dn"
               > */}
-            {/* <Grid item>
-              <SnDataSync syncStatus1={syncStatus1}></SnDataSync>
-            </Grid> */}
-            {(person != null || snPublicHash) && (
+            {/* {(person != null || snPublicHash) && (
               <div className="signUp-butn-main-out-div">
+                <Grid item>
+                  <SnDataSync syncStatus={uiSyncStatus}></SnDataSync>
+                </Grid>
                 <button
-                  /* onClick={this.doSignUp} */
                   style={{ border: "1px solid #1ed660" }}
                   type="button"
                   class="btn  btn-sm butn-out-signup"
-                  onClick={postSync}
+                  onClick={() => postSync()}
                 >
-                  Sync Now
-            </button>
-              </div>)}
+                  Sync Now - {"" + snIsDataOutOfSync}
+                </button>
+              </div>)} */}
             <div
               className="btn-icons-nvbr-div"
               style={{ display: "flex", alignItems: "center" }}

@@ -8,6 +8,7 @@ import SnPublicHash from "./sn.public-hash.reducer";
 import SnAppDetailReducer from "./sn.app-detail.reducer";
 import SnInfoModalReducer from "./sn.info.modal.reducer";
 import SnUserSessionReducer from "./sn.user-session.reducer";
+import SnIsDataOutOfSyncReducer from "./sn.isDataOutOfSync.reducer";
 import SnTriggerSignInReducer from "./sn.trigger-signin.reducer";
 import SnSkyspaceDetailReducer from "./sn.skyspace-detail.reducer";
 import SnUserSettingReducer from "./sn.user-settings.reducer";
@@ -48,6 +49,7 @@ const allReducers = combineReducers({
   snAppDetail: SnAppDetailReducer,
   snInfoModalState: SnInfoModalReducer,
   userSession: SnUserSessionReducer,
+  snIsDataOutOfSync: SnIsDataOutOfSyncReducer,
   person: SnPerson,
   snSkyspaceList: SnSkyspaceListReducer,
   snPortalsList: SnPortalsListReducer,
