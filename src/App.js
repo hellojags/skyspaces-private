@@ -22,7 +22,7 @@ import { authOrigin, appDetails, userSession } from "./blockstack/constants";
 import { createMuiTheme } from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { ThemeProvider } from "react-bootstrap";
-import { STORAGE_DARK_MODE_KEY } from "./sn.constants";
+import { STORAGE_DARK_MODE_KEY, MUI_THEME_LIGHT, MUI_THEME_DARK } from "./sn.constants";
 import { useSelector } from "react-redux";
 library.add(
   faEnvelope,
@@ -106,38 +106,65 @@ const App = () => {
 
     */
 
-  const lightTheme = createMuiTheme({
-    palette: {
-      primary: {
-        main: "#1ed660",
-        textColor: "#636f70",
-      },
-      headerBgColor: "#ffffff",
-      whiteBgColor: "#ffffff",
-      linksColor: "#656d70",
-      secondary: {
-        main: "#636f70",
-        textColor: "#c5c5c5",
-      },
-      sliderBg: "#ffffff",
-      centerBar: "#ffffff",
-      lightGray: "#f7f7f7",
-      mediumGray: "#c5c5c5",
-      lightGreen: "#daffe7",
-      spacesTabsCount: "#EAEAEA",
+  const pallete = {};
+  pallete[MUI_THEME_LIGHT] = {
+    primary: {
+      main: "#1ed660",
+      textColor: "#636f70",
     },
+    headerBgColor: "#ffffff",
+    whiteBgColor: "#ffffff",
+    linksColor: "#656d70",
+    secondary: {
+      main: "#636f70",
+      textColor: "#c5c5c5",
+    },
+    sliderBg: "#ffffff",
+    centerBar: "#ffffff",
+    lightGray: "#f7f7f7",
+    mediumGray: "#c5c5c5",
+    lightGreen: "#daffe7",
+    spacesTabsCount: "#EAEAEA",
+  };
+  pallete[MUI_THEME_DARK] = {
+    primary: {
+      main: "#1ed660",
+      textColor: "#636f70",
+    },
+    sliderBg: "#141418",
+    centerBar: "#343537",
+    spacesTabsCount: "#000000",
+    headerBgColor: "#1a1b1d",
+    whiteBgColor: "#000000",
+    linksColor: "#ffffff",
+    secondary: {
+      main: "#636f70",
+      textColor: "#c5c5c5",
+    },
+    lightGray: "#1a1b1d",
+    mediumGray: "#c5c5c5",
+    lightGreen: "#daffe7",
+  };
+
+  const lightTheme = createMuiTheme({
+    palette: pallete[MUI_THEME_LIGHT],
   });
 
   const darkTheme = createMuiTheme({
     overrides: {
       MuiDrawer: {
         root: {
-          backgroundColor: "#000000"
+          backgroundColor: pallete[MUI_THEME_DARK].whiteBgColor
         }
       },
       MuiPaper: {
         root: {
-          backgroundColor: "#1a1b1d;"
+          backgroundColor: pallete[MUI_THEME_DARK].headerBgColor
+        }
+      },
+      MuiTypography: {
+        root: {
+          color: "#ffffff78 !important"
         }
       },
       MuiFormLabel: {
@@ -147,48 +174,30 @@ const App = () => {
       },
       MuiInput: {
         underline: {
-          '&:before' : {
-            borderBottom: "2px solid #ffffff"
+          '&:before': {
+            borderBottom: `2px solid ${pallete[MUI_THEME_DARK].linksColor}`
           }
         }
       },
       WAMuiChipInput: {
         underline: {
-          '&:before' : {
-            borderBottom: "2px solid #ffffff"
+          '&:before': {
+            borderBottom: `2px solid ${pallete[MUI_THEME_DARK].linksColor}`
           }
         }
       },
       MuiInputBase: {
         input: {
-          color: "#ffffff"
+          color: pallete[MUI_THEME_DARK].linksColor
         }
       },
       MuiFormHelperText: {
         root: {
-          color: "#ffffff"
+          color: pallete[MUI_THEME_DARK].linksColor
         }
       }
     },
-    palette: {
-      primary: {
-        main: "#1ed660",
-        textColor: "#636f70",
-      },
-      sliderBg: "#141418",
-      centerBar: "#343537",
-      spacesTabsCount: "#000000",
-      headerBgColor: "#1a1b1d",
-      whiteBgColor: "#000000",
-      linksColor: "#ffffff",
-      secondary: {
-        main: "#636f70",
-        textColor: "#c5c5c5",
-      },
-      lightGray: "#1a1b1d",
-      mediumGray: "#c5c5c5",
-      lightGreen: "#daffe7",
-    },
+    palette: pallete[MUI_THEME_DARK],
   });
 
   return (
