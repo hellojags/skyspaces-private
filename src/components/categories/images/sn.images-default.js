@@ -1,5 +1,7 @@
 import React, { useState, useRef } from "react";
 import Grid from "@material-ui/core/Grid";
+import Lightbox from "react-awesome-lightbox";
+import "react-awesome-lightbox/build/style.css";
 import { ITEMS_PER_PAGE } from "../../../sn.constants";
 import { launchSkyLink } from "../../../sn.util";
 import SnAppCardActionBtnGrp from "../../cards/sn.app-card-action-btn-grp";
@@ -106,15 +108,17 @@ export default function SnImagesDefault(props) {
       images.push({
         thumbnail: skylinkToUrl(app.thumbnail),
         original: skylinkToUrl(app.skylink),
+        url: skylinkToUrl(app.skylink),
+        title: app.name
       });
     });
     return images;
   };
 
   const launchCarousal = (app, index) => {
+    setCarousalStartIndex(index + ((props.page - 1) * ITEMS_PER_PAGE));
     setShowCarousal(true);
-    setCarousalStartIndex(index + (props.page - 1) * ITEMS_PER_PAGE);
-    carousalEle.current.fullScreen();
+    const rslt = carousalEle?.current?.fullScreen();
   };
 
   const handleSkyspaceAdd = (app) => {
@@ -202,12 +206,17 @@ export default function SnImagesDefault(props) {
         "d-none": !showCarousal,
       })}
       >
-        <ImageGallery
+        {showCarousal && <Lightbox images={getCarousalImages()}
+          startIndex={carousalStartIndex}
+          onClose={(evt) => setShowCarousal(false)}
+        />}
+
+        {/* <ImageGallery
           ref={carousalEle}
           items={getCarousalImages()}
           startIndex={carousalStartIndex}
           onScreenChange={(evt) => !evt && setShowCarousal(false)}
-        />
+        /> */}
       </div>
       <Grid
         container
