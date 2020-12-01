@@ -44,7 +44,7 @@ import {
   bsAddSkylinkFromSkyspaceList,
   bsRemoveSkylinkFromSkyspaceList,
   bsDeleteSkylink,
-  bsRemoveFromSkySpaceList,
+  bsRemoveSkappFromSpace,
   bsAddToHistory,
   getSkyLinkIndex,
   bsGetSharedSkappListFromSender,
@@ -442,7 +442,7 @@ class SnNew extends React.Component {
             const skyspaceCnt = this.props.skyapp.skyspaceList.length;
             let returnCnt = 0;
             this.props.skyapp.skyspaceList.forEach((skyspace, idx) => {
-              bsRemoveFromSkySpaceList(
+              bsRemoveSkappFromSpace(
                 this.props.userSession,
                 skyspace,
                 this.props.skyapp.skhubId

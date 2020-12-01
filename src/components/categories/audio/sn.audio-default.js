@@ -30,7 +30,7 @@ import { DOWNLOAD, APP_BG_COLOR, MUSIC_SVG_BASE64_DATA, ITEMS_PER_PAGE } from ".
 import {
   bsGetSkyspaceNamesforSkhubId,
   bsAddSkylinkFromSkyspaceList,
-  bsRemoveFromSkySpaceList,
+  bsRemoveSkappFromSpace,
   bsRemoveSkylinkFromSkyspaceList,
   bsAddToHistory
 } from "../../../blockstack/blockstack-api";
@@ -124,7 +124,7 @@ export default function SnAudioDefault(props) {
     const skhubId = app.skhubId;
     dispatch(setLoaderDisplay(true));
     if (typeof props.skyspace != "undefined" && props.skyspace) {
-      bsRemoveFromSkySpaceList(stUserSession, props.skyspace, skhubId).then(
+      bsRemoveSkappFromSpace(stUserSession, props.skyspace, skhubId).then(
         (res) => {
           dispatch(fetchSkyspaceAppCount());
           dispatch(setLoaderDisplay(false));

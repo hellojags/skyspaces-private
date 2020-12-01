@@ -476,7 +476,7 @@ export const bsGetAllSkyspaceObj = async (session) => {
 export const bsRemoveSkylinkFromSkyspaceList = (session, skhubId, skyspaceList) => {
     const promises = [];
     skyspaceList.forEach(skyspaceName => {
-        promises.push(bsRemoveFromSkySpaceList(session, skyspaceName, skhubId)
+        promises.push(bsRemoveSkappFromSpace(session, skyspaceName, skhubId)
             .catch(err => ""));
     });
     return Promise.all(promises)
@@ -583,7 +583,7 @@ export const addToSkySpaceList = (session, skyspaceName, skhubId) => {
         });
 }
 
-export const bsRemoveFromSkySpaceList = (session, skyspaceName, skhubId) => {
+export const bsRemoveSkappFromSpace = (session, skyspaceName, skhubId) => {
     return getSkySpace(session, skyspaceName)
         .then((skyspaceObj) => {
             if (skyspaceObj && skyspaceObj.skhubIdList.indexOf(skhubId) > -1) {

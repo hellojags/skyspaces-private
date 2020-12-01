@@ -57,7 +57,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveFromSkySpaceList } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -667,7 +667,7 @@ class SnCards extends React.Component {
   moveSelectedAppsToSpaces = async (selectedApps, skyspaceList)=> {
     this.props.setLoaderDisplay(true);
     for(const app of selectedApps) {
-      await bsRemoveFromSkySpaceList(
+      await bsRemoveSkappFromSpace(
         this.props.userSession,
         this.state.skyspace,
         app.skhubId

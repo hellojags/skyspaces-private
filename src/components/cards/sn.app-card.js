@@ -33,7 +33,7 @@ import SnAppCardActionBtnGrp from "./sn.app-card-action-btn-grp";
 import {
   bsGetSkyspaceNamesforSkhubId,
   bsAddSkylinkFromSkyspaceList,
-  bsRemoveFromSkySpaceList,
+  bsRemoveSkappFromSpace,
   bsRemoveSkylinkFromSkyspaceList,
   bsAddToHistory,
 } from "../../blockstack/blockstack-api";
@@ -102,7 +102,7 @@ class SnAppCard extends React.Component {
     //below condition means , this page is accessed from specific SkySpace
     if (typeof this.props.skyspace != "undefined" && this.props.skyspace) {
       // delete from specific skyspace JSON
-      await bsRemoveFromSkySpaceList(
+      await bsRemoveSkappFromSpace(
         this.props.userSession,
         this.props.skyspace,
         skhubId
