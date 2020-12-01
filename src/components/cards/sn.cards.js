@@ -57,7 +57,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveFromSkySpaceList } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -98,6 +98,7 @@ class SnCards extends React.Component {
       senderId: null,
       loadingAllSpacesInfo: true,
       showAddToSkyspace: false,
+      showMoveToSkyspace: false,
       skyappId: "",
       apps: [],
       allSpacesObj: null,
@@ -342,6 +343,8 @@ class SnCards extends React.Component {
         hash,
         fetchAllSkylinks: fetchAllSkylinks,
         category,
+        arrSelectedAps: [],
+        isSelect: false,
         page: 1,
         senderId
       });
@@ -661,6 +664,27 @@ class SnCards extends React.Component {
     this.props.setLoaderDisplay(false);
   };
 
+  moveSelectedAppsToSpaces = async (selectedApps, skyspaceList)=> {
+    this.props.setLoaderDisplay(true);
+    for(const app of selectedApps) {
+      await bsRemoveFromSkySpaceList(
+        this.props.userSession,
+        this.state.skyspace,
+        app.skhubId
+      )
+    }
+    this.props.setLoaderDisplay(false);
+    await this.addSelectedAppsToSpaces(selectedApps, skyspaceList);
+    this.props.setLoaderDisplay(true);
+    const { skyspace, category, fetchAllSkylinks, page, hash, senderId } = this.state;
+    await this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
+    this.setState({ 
+      showMoveToSkyspace: false,
+      arrSelectedAps: []
+    });
+    this.props.setLoaderDisplay(false);
+  }
+
   render() {
     const { goToApp, skyappId, fetchAllSkylinks } = this.state;
     const { classes } = this.props;
@@ -848,7 +872,7 @@ class SnCards extends React.Component {
                           variant="contained"
                           color="secondary"
                           className={classes.button}
-                          onClick={() => this.createSkylinkPublicShare()}
+                          onClick={() => this.state.arrSelectedAps.length >0 && this.createSkylinkPublicShare()}
                           startIcon={
                             <ShareOutlinedIcon style={{ color: "#1ed660" }} />
                           }
@@ -865,6 +889,7 @@ class SnCards extends React.Component {
 
                         <Button
                           variant="contained"
+                          onClick={() => this.state.arrSelectedAps.length >0 && this.setState({ showMoveToSkyspace: true })}
                           color="secondary"
                           className={classes.button}
                           startIcon={
@@ -885,7 +910,7 @@ class SnCards extends React.Component {
                           variant="contained"
                           color="secondary"
                           className={classes.button}
-                          onClick={()=>this.setState({showAddToSkyspace: true})}
+                          onClick={()=>this.state.arrSelectedAps.length >0 && this.setState({showAddToSkyspace: true})}
                           startIcon={
                             <PlaylistAddOutlinedIcon
                               style={{ color: "#1ed660" }}
@@ -1122,6 +1147,16 @@ class SnCards extends React.Component {
           onClose={() => this.setState({ showAddToSkyspace: false })}
           onSave={(skyspaceList) =>
             this.addSelectedAppsToSpaces(this.state.arrSelectedAps, skyspaceList)
+          }
+        />
+        <SnAddToSkyspaceModal
+          userSession={this.props.userSession}
+          title={"Select Skyspaces To Move To"}
+          open={this.state.showMoveToSkyspace}
+          availableSkyspaces={this.props.snSkyspaceList.filter(skyspace=>skyspace!==this.state.skyspace)}
+          onClose={() => this.setState({ showMoveToSkyspace: false })}
+          onSave={(skyspaceList) =>
+            this.moveSelectedAppsToSpaces(this.state.arrSelectedAps, skyspaceList)
           }
         />
         <div>
