@@ -57,7 +57,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -66,6 +66,7 @@ import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../..
 import AudioPlayer from "../categories/audio/sn.audio-player";
 import SnFooter from "../footer/sn.footer";
 import SnViewMore from "../tools/sn.view-more";
+import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -646,6 +647,20 @@ class SnCards extends React.Component {
     this.setState({ isSelect: true, arrSelectedAps: [] });
   }
 
+  addSelectedAppsToSpaces = async (selectedApps, skyspaceList)=>{
+    this.props.setLoaderDisplay(true);
+    for(const app of selectedApps) {
+      await bsAddSkylinkFromSkyspaceList(
+        this.props.userSession,
+        app.skhubId,
+        skyspaceList
+      );
+    }
+    this.props.fetchSkyspaceAppCount();
+    this.setState({ showAddToSkyspace: false});
+    this.props.setLoaderDisplay(false);
+  };
+
   render() {
     const { goToApp, skyappId, fetchAllSkylinks } = this.state;
     const { classes } = this.props;
@@ -870,6 +885,7 @@ class SnCards extends React.Component {
                           variant="contained"
                           color="secondary"
                           className={classes.button}
+                          onClick={()=>this.setState({showAddToSkyspace: true})}
                           startIcon={
                             <PlaylistAddOutlinedIcon
                               style={{ color: "#1ed660" }}
@@ -1098,6 +1114,15 @@ class SnCards extends React.Component {
           title="Public Share Link"
           type="public-share"
           content={this.state.infoModalContent}
+        />
+        <SnAddToSkyspaceModal
+          userSession={this.props.userSession}
+          open={this.state.showAddToSkyspace}
+          availableSkyspaces={this.props.snSkyspaceList.filter(skyspace=>skyspace!==this.state.skyspace)}
+          onClose={() => this.setState({ showAddToSkyspace: false })}
+          onSave={(skyspaceList) =>
+            this.addSelectedAppsToSpaces(this.state.arrSelectedAps, skyspaceList)
+          }
         />
         <div>
           <SnFooter />

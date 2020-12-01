@@ -12,6 +12,7 @@ import { setPublicHash } from "../../reducers/actions/sn.public-hash.action";
 import { setDesktopMenuState } from "../../reducers/actions/sn.desktop-menu.action";
 import { setPortalsListAction } from "../../reducers/actions/sn.portals.action";
 import { setPublicInMemory } from "../../reducers/actions/sn.public-in-memory.action";
+import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action";
 
 export function matchDispatcherToProps(dispatcher) {
   return bindActionCreators(
@@ -26,7 +27,8 @@ export function matchDispatcherToProps(dispatcher) {
       setPortalsListAction,
       setPublicHash,
       setPublicInMemory,
-      setApps
+      setApps,
+      fetchSkyspaceAppCount
     },
     dispatcher
   );
@@ -37,6 +39,7 @@ export function mapStateToProps(state) {
     isShowing: state.snLoader,
     snApps: state.snApps,
     userSession: state.userSession,
+    snSkyspaceList: state.snSkyspaceList,
     snSkyspaceDetail: state.snSkyspaceDetail,
     snUserSetting: state.snUserSetting,
     snPublicInMemory: state.snPublicInMemory
