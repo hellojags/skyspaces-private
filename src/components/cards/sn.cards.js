@@ -21,6 +21,7 @@ import AppsIcon from "@material-ui/icons/Apps";
 import ReorderIcon from "@material-ui/icons/Reorder";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputBase from "@material-ui/core/InputBase";
+import SnConfirmationModal from "../modals/sn.confirmation.modal";
 import LowPriorityIcon from "@material-ui/icons/LowPriority";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import PublishIcon from "@material-ui/icons/Publish";
@@ -57,7 +58,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -67,6 +68,7 @@ import AudioPlayer from "../categories/audio/sn.audio-player";
 import SnFooter from "../footer/sn.footer";
 import SnViewMore from "../tools/sn.view-more";
 import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
+import { async } from "rxjs";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -119,6 +121,7 @@ class SnCards extends React.Component {
       arrSelectedAps: [],
       hash: null,
       showInfoModal: false,
+      showConfirmModal: false,
       infoModalContent: null,
       isDir: false,
 
@@ -664,6 +667,24 @@ class SnCards extends React.Component {
     this.props.setLoaderDisplay(false);
   };
 
+  deleteSelectedApps = async(selectedApps) => {
+    this.props.setLoaderDisplay(true);
+    for(const app of selectedApps) {
+      const spaceListForApp = (await bsGetSkyspaceNamesforSkhubId(this.props.userSession, app.skhubId)).skyspaceForSkhubIdList;
+      await bsRemoveSkylinkFromSkyspaceList(this.props.userSession, app.skhubId, spaceListForApp);
+      await bsDeleteSkylink(this.props.userSession, app.skhubId);
+    }
+    this.setState({ 
+      arrSelectedAps: []
+    });
+    const { skyspace, category, fetchAllSkylinks, page, hash, senderId } = this.state;
+    await this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
+    this.props.fetchSkyspaceAppCount();
+    this.setState({showConfirmModal: false})
+    this.props.setLoaderDisplay(false);
+  }
+
+  //TODO: modify code to perform task in single loop of selectedApps
   moveSelectedAppsToSpaces = async (selectedApps, skyspaceList)=> {
     this.props.setLoaderDisplay(true);
     for(const app of selectedApps) {
@@ -853,6 +874,7 @@ class SnCards extends React.Component {
                         <Button
                           variant="contained"
                           color="secondary"
+                          onClick={()=>this.state.arrSelectedAps.length >0 &&  this.setState({showConfirmModal: true})}
                           className={classes.button}
                           startIcon={
                             <DeleteOutlineIcon style={{ color: "#ff3d3d" }} />
@@ -928,7 +950,7 @@ class SnCards extends React.Component {
                       </Button>
                       </div>
 
-                      <div style={{ textAlign: "right" }}>
+                      <div style={{ textAlign: "right" }} className={classes.selected_count}>
                         {this.state.arrSelectedAps.length} Selected
                       <ClearOutlinedIcon
                           onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
@@ -1133,6 +1155,13 @@ class SnCards extends React.Component {
             }
           </Grid>
         </div>
+        <SnConfirmationModal
+          title={"Confirm Delete Skapps"}
+          content={"Are you sure you want to permanently delete the Skapps and remove it from all Skyspace?"}
+          open={this.state.showConfirmModal}
+          onNo={()=>this.setState({showConfirmModal: false})}
+          onYes={()=>this.deleteSelectedApps(this.state.arrSelectedAps)}
+          />
         <SnInfoModal
           open={this.state.showInfoModal}
           onClose={this.state.onInfoModalClose}

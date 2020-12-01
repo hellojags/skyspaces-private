@@ -118,6 +118,9 @@ const useStyles = (theme) => ({
     color: `${theme.palette.primary.textColor}`,
     fontSize: "13px",
   },
+  selected_count: {
+    color: theme.palette.linksColor,
+  },
   innerValue_All: {
     background: theme.palette.spacesTabsCount,
     borderRadius: "100%",
