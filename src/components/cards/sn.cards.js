@@ -257,10 +257,12 @@ class SnCards extends React.Component {
 
   getCategoryWiseCount = () => {
     const categoryCountObj = {};
-    this.props.snApps.forEach((app) => {
-      categoryCountObj[app.type] = categoryCountObj[app.type]
-        ? categoryCountObj[app.type] + 1
-        : 1;
+    this.props.snApps?.length>0 && this.props.snApps.forEach((app) => {
+      if (app) {
+        categoryCountObj[app.type] = categoryCountObj[app.type]
+          ? categoryCountObj[app.type] + 1
+          : 1;
+      }
     });
     return categoryCountObj;
   };
@@ -357,7 +359,7 @@ class SnCards extends React.Component {
   }
 
   tagFilter = (app) => {
-    if (this.state.filterCriteria.tagFilterList.length !== 0) {
+    if (app && this.state.filterCriteria.tagFilterList.length !== 0) {
       const appTagList = getCompatibleTags(app.type);
       return (
         appTagList.filter(
@@ -586,6 +588,7 @@ class SnCards extends React.Component {
 
 
   onPublicUpload = (uploadObj) => {
+  console.log("🚀 ~ file: sn.cards.js ~ line 589 ~ SnCards ~ uploadObj", uploadObj)
     const app = { ...getEmptySkylinkObject(), ...uploadObj };
     setTypeFromFile(app.contentType, app)
     app.skhubId = uuidv4();
@@ -593,6 +596,12 @@ class SnCards extends React.Component {
     const inMemObj = this.props.snPublicInMemory;
     inMemObj.addedSkapps = [...new Set([app, ...inMemObj.addedSkapps])];
     this.props.setApps(getAllPublicApps(this.props.snApps, inMemObj.addedSkapps, inMemObj.deletedSkapps));
+  }
+
+  onUpload = (uploadObj) => {
+    const app = { ...getEmptySkylinkObject(), ...uploadObj };
+    setTypeFromFile(app.contentType, app)
+    app.skhubId = uuidv4();
   }
 
   addPublicSpaceToAccount = async (evt) => {
