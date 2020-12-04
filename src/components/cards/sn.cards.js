@@ -730,6 +730,20 @@ class SnCards extends React.Component {
     this.props.setLoaderDisplay(false);
   }
 
+  isUploadProgress = ()=>{
+    const isProgress = false;
+    for(const uploadItem of this.props.snUploadList){
+      if (uploadItem.status!=='complete') {
+        return true;
+      }
+    }
+    return isProgress;
+  }
+
+  totalProgress = () => {
+
+  }
+
   render() {
     const { goToApp, skyappId, fetchAllSkylinks } = this.state;
     const { classes } = this.props;
@@ -1022,12 +1036,20 @@ class SnCards extends React.Component {
                         onClick={() => this.uploadEleRef.current.gridRef.current.click()}
                         variant="contained"
                         color="primary"
-                        style={{ color: "white", borderRadius: 10 }}
+                        style={{ color: "white", borderRadius: 10, minWidth: 150 }}
                         component="span"
                         type="button"
-                        startIcon={<PublishIcon style={{ color: "white" }} />}
+                        startIcon={this.isUploadProgress() ? (
+                          <svg class="sync-spinner" width="18px" height="18px" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                            <circle class="sync-path" fill="none" stroke-width="3" stroke-linecap="round" cx="9" cy="9" r="7.5"></circle>
+                          </svg>
+                        ) : 
+                        (
+                          <PublishIcon style={{ color: "white" }} />
+                        )
+                      }
                       >
-                        Upload
+                        {this.isUploadProgress() ? "Uploading" : "Upload"}
                   </Button>
                   }
                   {this.state.hash != null && filteredApps.length > 0 &&

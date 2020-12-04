@@ -11,6 +11,7 @@ import { fetchSkyspaceDetail } from "../../reducers/actions/sn.skyspace-detail.a
 import { setPublicHash } from "../../reducers/actions/sn.public-hash.action";
 import { setDesktopMenuState } from "../../reducers/actions/sn.desktop-menu.action";
 import { setPortalsListAction } from "../../reducers/actions/sn.portals.action";
+import { setUploadList } from "../../reducers/actions/sn.upload-list.action";
 import { setPublicInMemory } from "../../reducers/actions/sn.public-in-memory.action";
 import { fetchSkyspaceAppCount } from "../../reducers/actions/sn.skyspace-app-count.action";
 
@@ -28,7 +29,8 @@ export function matchDispatcherToProps(dispatcher) {
       setPublicHash,
       setPublicInMemory,
       setApps,
-      fetchSkyspaceAppCount
+      fetchSkyspaceAppCount,
+      setUploadList
     },
     dispatcher
   );
