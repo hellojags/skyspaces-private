@@ -42,6 +42,7 @@ export function mapStateToProps(state) {
     snSkyspaceList: state.snSkyspaceList,
     snSkyspaceDetail: state.snSkyspaceDetail,
     snUserSetting: state.snUserSetting,
-    snPublicInMemory: state.snPublicInMemory
+    snPublicInMemory: state.snPublicInMemory,
+    snPerson: state.person
   };
 }

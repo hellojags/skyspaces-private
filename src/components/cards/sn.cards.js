@@ -50,7 +50,7 @@ import {
   DEFAULT_PORTAL,
   PUBLIC_SHARE_BASE_URL,
   PUBLIC_SHARE_ROUTE,
-  PUBLIC_SHARE_APP_HASH, PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME
+  PUBLIC_SHARE_APP_HASH, PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME, UPLOAD
 } from "../../sn.constants";
 import {
   CATEGORY_OBJ,
@@ -58,7 +58,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace, bsAddSkylink } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -598,10 +598,25 @@ class SnCards extends React.Component {
     this.props.setApps(getAllPublicApps(this.props.snApps, inMemObj.addedSkapps, inMemObj.deletedSkapps));
   }
 
-  onUpload = (uploadObj) => {
-    const app = { ...getEmptySkylinkObject(), ...uploadObj };
-    setTypeFromFile(app.contentType, app)
-    app.skhubId = uuidv4();
+  onUpload = async (uploadObj) => {
+    if (this.state.hash!=null) {
+      this.onPublicUpload(uploadObj)
+    } else {
+      const app = { ...getEmptySkylinkObject(), ...uploadObj };
+      app.skyspaceList = [this.state.skyspace];
+      setTypeFromFile(app.contentType, app)
+      const skhubId = await bsAddSkylink(this.props.userSession, app, this.props.snPerson);
+      await bsAddSkylinkFromSkyspaceList(this.props.userSession, skhubId, [this.state.skyspace]);
+      this.getAppList(this.state.category, this.state.skyspace, this.state.fetchAllSkylinks, this.state.hash, this.state.senderId);
+      this.props.fetchSkyspaceAppCount();
+      let historyObj = { ...getEmptyHistoryObject(), ...app };
+      historyObj.fileName = app.name;
+      historyObj.action = UPLOAD;
+      historyObj.skyspaces = app.skyspaceList;
+      historyObj.savedToSkySpaces = true;
+      historyObj.skhubId = skhubId;
+      await bsAddToHistory(this.props.userSession, historyObj);
+    }
   }
 
   addPublicSpaceToAccount = async (evt) => {
@@ -993,6 +1008,28 @@ class SnCards extends React.Component {
                     multiple
                     type="file"
                   />
+                  <div className="d-none">
+                          <SnUpload
+                            name="files"
+                            ref={this.uploadEleRef}
+                            directoryMode={this.state.isDir}
+                            onUpload={this.onUpload}
+                            portal={getPortalFromUserSetting(this.props.snUserSetting)}
+                          />
+                        </div>
+                  {this.state.hash == null && filteredApps.length > 0 &&
+                  <Button
+                        onClick={() => this.uploadEleRef.current.gridRef.current.click()}
+                        variant="contained"
+                        color="primary"
+                        style={{ color: "white", borderRadius: 10 }}
+                        component="span"
+                        type="button"
+                        startIcon={<PublishIcon style={{ color: "white" }} />}
+                      >
+                        Upload
+                  </Button>
+                  }
                   {this.state.hash != null && filteredApps.length > 0 &&
                     (
                       <label htmlFor="contained-button-file">
@@ -1018,15 +1055,7 @@ class SnCards extends React.Component {
                         >
                           Add To Skyspaces
                 </Button>
-                        <div className="d-none">
-                          <SnUpload
-                            name="files"
-                            ref={this.uploadEleRef}
-                            directoryMode={this.state.isDir}
-                            onUpload={this.onPublicUpload}
-                            portal={getPortalFromUserSetting(this.props.snUserSetting)}
-                          />
-                        </div>
+                        
                         <Button
                           variant="contained"
                           type="button"
