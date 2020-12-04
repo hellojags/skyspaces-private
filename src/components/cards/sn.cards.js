@@ -1017,7 +1017,7 @@ class SnCards extends React.Component {
                             portal={getPortalFromUserSetting(this.props.snUserSetting)}
                           />
                         </div>
-                  {this.state.hash == null && filteredApps.length > 0 &&
+                  {this.state.hash == null  &&
                   <Button
                         onClick={() => this.uploadEleRef.current.gridRef.current.click()}
                         variant="contained"

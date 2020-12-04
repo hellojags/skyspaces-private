@@ -38,6 +38,7 @@ export function mapStateToProps(state) {
   return {
     isShowing: state.snLoader,
     snApps: state.snApps,
+    snUploadList: state.snUploadList,
     userSession: state.userSession,
     snSkyspaceList: state.snSkyspaceList,
     snSkyspaceDetail: state.snSkyspaceDetail,
