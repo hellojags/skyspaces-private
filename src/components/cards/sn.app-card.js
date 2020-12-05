@@ -232,7 +232,7 @@ class SnAppCard extends React.Component {
 
     return (
       <>
-        <Grid item xs={12} style={{ marginTop: 10 }}>
+        <Grid item xs={12} sm={this.props.GridUi ? 6 : 12} style={{ marginTop: 10 }}>
           <Paper className={classes.paperStyling}>
             <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
               <Grid item xs={12}>

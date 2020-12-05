@@ -44,7 +44,7 @@ export const CATEGORY_OBJ = {
       "image/tiff"],
     getLogo: (className) => <CameraAltOutlinedIcon className={className ? className : ""} />,
     heading: "Images",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
+    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId, GridUi) => (
       <SnImages
         filteredApps={filteredApps}
         page={page}
@@ -64,7 +64,7 @@ export const CATEGORY_OBJ = {
     fileTypeList: ["audio/aac", "audio/mpeg"],
     getLogo: (className) => <FontAwesomeIcon icon="headphones" className={className ? className : ""}></FontAwesomeIcon>,
     heading: "Audio",
-    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId) => (
+    cards: (page, filteredApps, skyspace, itemsPerPage, openSkyApp, onSelection, isSelect, arrSelectedAps, hash, funcOnDelete, senderId, GridUi) => (
       <SnAudio
         filteredApps={filteredApps}
         page={page}
@@ -77,6 +77,7 @@ export const CATEGORY_OBJ = {
         arrSelectedAps={arrSelectedAps}
         hash={hash}
         senderId={senderId}
+        GridUi={GridUi}
       />
     )
   },

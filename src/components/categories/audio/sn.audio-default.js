@@ -188,7 +188,7 @@ export default function SnAudioDefault(props) {
 
               return (
                 <>
-                    <Grid item xs={12} style={{ marginTop: 10 }}>
+                    <Grid item xs={12} sm={props.GridUi ? 6 : 12} style={{ marginTop: 10 }}>
         <Paper className={classes.paperStyling}>
           <Grid container spacing={3} style={{ width: "100%", margin: "auto" }}>
             <Grid item xs={12}>
@@ -242,7 +242,7 @@ export default function SnAudioDefault(props) {
                   <IconButton
                     onClick={() => { onPlayButtonClicked(app.skhubId) }}
                     style={{ color: APP_BG_COLOR }}>
-                    <PlayArrowIcon />
+                    <PlayArrowIcon className={classes.spaceIcons}/>
                   </IconButton>
                 </Tooltip>
               </div>}

@@ -32,7 +32,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { SkynetClient, parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject, getEmptySkylinkObject } from "../new/sn.new.constants";
 import BlockIcon from '@material-ui/icons/Block';
-import { Button, FormControlLabel, Switch, Typography } from "@material-ui/core";
+import { Button, FormControlLabel, Hidden, Switch, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import FormControl from "@material-ui/core/FormControl";
@@ -462,7 +462,8 @@ class SnCards extends React.Component {
             this.state.skyspace,
             this.state.fetchAllSkylinks
           ),
-        this.state.senderId
+        this.state.senderId,
+        this.state.GridUi
       );
     } else {
       return (
@@ -478,6 +479,7 @@ class SnCards extends React.Component {
                 <SnAppCard
                   key={i}
                   app={app}
+                  GridUi={this.state.GridUi}
                   hash={this.state.hash}
                   isSelect={this.state.isSelect}
                   arrSelectedAps={this.state.arrSelectedAps}
@@ -1030,25 +1032,19 @@ class SnCards extends React.Component {
                     />
                   </div>
                   {this.state.hash == null &&
+                  <label htmlFor="contained-button-file">
                     <Button
-                      onClick={() => this.uploadEleRef.current.gridRef.current.click()}
-                      variant="contained"
-                      color="primary"
-                      style={{ color: "white", borderRadius: 10, minWidth: 150 }}
-                      component="span"
-                      type="button"
-                      startIcon={this.isUploadProgress() ? (
-                        <svg class="sync-spinner" width="18px" height="18px" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-                          <circle class="sync-path" fill="none" stroke-width="3" stroke-linecap="round" cx="9" cy="9" r="7.5"></circle>
-                        </svg>
-                      ) :
-                        (
-                          <PublishIcon style={{ color: "white" }} />
-                        )
-                      }
-                    >
-                      {this.isUploadProgress() ? "Uploading" : "Upload"}
-                    </Button>
+                    onClick={() => this.uploadEleRef.current.gridRef.current.click()}
+                    variant="contained"
+                    color="primary"
+                    style={{ color: "white", borderRadius: 10 }}
+                    component="span"
+                    type="button"
+                    startIcon={<PublishIcon style={{ color: "white" }} />}
+                  >
+                    Upload
+              </Button>
+              </label>
                   }
                   {this.state.hash != null && filteredApps.length > 0 &&
                     (
@@ -1132,14 +1128,16 @@ class SnCards extends React.Component {
                       </label>
                     )
                   }
-                  {/* <span style={{ marginLeft: 20 }}></span>
+                  <Hidden xsDown>
+                  <span style={{ marginLeft: 20 }}></span>
                   <IconButton aria-label="delete" onClick={() => this.setGridUi(true)}>
                     <AppsIcon className={classes.appsIcon} />
                   </IconButton>
 
                   <IconButton aria-label="delete" onClick={() => this.setGridUi(false)}>
                     <ReorderIcon className={classes.reOrdered} />
-                  </IconButton> */}
+                  </IconButton>
+                  </Hidden>
                 </Grid>
 
                 <Grid
