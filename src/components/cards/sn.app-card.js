@@ -291,7 +291,8 @@ class SnAppCard extends React.Component {
                           )}
                 </div>
                 <div className={classes.createAtTime, classes.skylink}>
-                  {app.skylink} <Tooltip title="Copy Skylink to clipboard" arrow>
+                <Typography variant="span" className={classes.createAtTime}>{app.skylink}</Typography>
+                   <Tooltip title="Copy Skylink to clipboard" arrow>
                     <FileCopyOutlinedIcon
                       onClick={this.copyToClipboard}
                       className="cursor-pointer"

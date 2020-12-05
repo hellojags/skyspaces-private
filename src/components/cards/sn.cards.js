@@ -131,7 +131,7 @@ class SnCards extends React.Component {
       activeStep: 0,
       filterSelection: "emp",
       isTrue: false,
-      GridUi: true
+      GridUi: false
 
       //new UI END
 
