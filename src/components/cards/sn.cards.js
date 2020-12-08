@@ -1265,7 +1265,7 @@ class SnCards extends React.Component {
         <SnAddToSkyspaceModal
           userSession={this.props.userSession}
           open={this.state.showAddToSkyspace}
-          availableSkyspaces={this.props.snSkyspaceList.filter(skyspace => skyspace !== this.state.skyspace)}
+          availableSkyspaces={this.props.snSkyspaceList?.filter(skyspace => skyspace !== this.state.skyspace)}
           onClose={() => this.setState({ showAddToSkyspace: false })}
           onSave={(skyspaceList) =>
             this.addSelectedAppsToSpaces(this.state.arrSelectedAps, skyspaceList)
@@ -1275,7 +1275,7 @@ class SnCards extends React.Component {
           userSession={this.props.userSession}
           title={"Select Skyspaces To Move To"}
           open={this.state.showMoveToSkyspace}
-          availableSkyspaces={this.props.snSkyspaceList.filter(skyspace => skyspace !== this.state.skyspace)}
+          availableSkyspaces={this.props.snSkyspaceList?.filter(skyspace => skyspace !== this.state.skyspace)}
           onClose={() => this.setState({ showMoveToSkyspace: false })}
           onSave={(skyspaceList) =>
             this.moveSelectedAppsToSpaces(this.state.arrSelectedAps, skyspaceList)
