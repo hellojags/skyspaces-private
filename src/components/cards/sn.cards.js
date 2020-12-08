@@ -313,7 +313,7 @@ class SnCards extends React.Component {
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
-    const portalHost = this.getLocation(this.props.snUserSetting.setting.portal).host;
+    const portalHost = this.props.snUserSetting ? this.getLocation(this.props.snUserSetting.setting.portal).host : "siasky.net";
     this.setState({
       skyspace,
       category,
