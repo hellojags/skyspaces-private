@@ -203,8 +203,8 @@ export const INITIAL_PORTALS_OBJ = {
     {
       //portalId: 3,
       createTS: new Date(),
-      name: "SiaCDN.com",
-      url: "https://www.siacdn.com",
+      name: "skyportal.xyz",
+      url: "https://skyportal.xyz",
       //priority: "3",
       type: "public",
       selected: 0,

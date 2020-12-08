@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox, Tabs, Tab, InputAdornment, Typography } from '@material-ui/core';
+import { Paper, withStyles, Grid, TextField, Button, Link, InputAdornment, Typography } from '@material-ui/core';
 import LockIcon from "@material-ui/icons/Lock";
 import { Face, Fingerprint, PermIdentity } from '@material-ui/icons';
 import styles from "./sn.login.styles";
@@ -11,6 +11,7 @@ import { connect } from "react-redux";
 import { bsGetImportedSpacesObj, bsGetSkyIDProfile, syncData, firstTimeUserSetup } from '../../blockstack/blockstack-api';
 import SkyID from "skyid";
 import { ID_PROVIDER_SKYID } from "../../sn.constants";
+import SnLandingUploadDisclaimer from "../upload/sn.landing-upload-disclaimer";
 
 let devMode = false;
 if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
@@ -128,7 +129,8 @@ class snLogin extends React.Component {
         const { classes } = this.props;
         const { value } = this.state;
         return (
-            <div style={{ paddingTop: 150 }}>
+            <div style={{ paddingTop: 100 }}>
+                <SnLandingUploadDisclaimer />
                 <Grid
                     container
                     spacing={3}
@@ -287,19 +289,25 @@ class snLogin extends React.Component {
                             <Grid item xs={12} className={classes.description_auth}>
                                 <span style={{ fontWeight: "400" }}>
                                     Note: This update of SkySpaces introduces breaking changes,<br />
-                            Old version of app is available at - <a src="https://skyspaces.io" class="cursor-pointer">https://skyspaces.io</a> <br />
+                            Old version of app is available at - <Link rel="noopener noreferrer" target="_blank" href="https://skyspaces.io">https://skyspaces.io</Link>
+                            <br/>
                             We will provide in-app data migration option soon...<br />
                                 </span>
                             </Grid>
                         </Grid>
+
                         <Grid container spacing={3}>
                             <Grid item xs={12} className={classes.description_auth}>
                                 Registring to SkySpaces,you accept our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
-                                    Terms of use
-                                </span>{" "}and <br /> our{" "}
+                                    <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Terms.pdf">Terms of use</Link>
+                                </span>{" "}and our{" "}
                                 <span style={{ color: "#1DD65F", fontWeight: "600" }}>
-                                    Privacy policy
+                                    <Link rel="noopener noreferrer" target="_blank" href="https://skyspace.hns.siasky.net/skapp/SkySpaces-Privacy Notice.pdf">Privacy policy</Link>
+                                </span>
+                                <br/>
+                                <span>
+                                <Link rel="noopener noreferrer" target="_blank" href="mailto:hello@skyspaces.io"><span class="fa fa-envelope"></span> hello@skyspaces.io</Link>
                                 </span>
                             </Grid>
                         </Grid>
