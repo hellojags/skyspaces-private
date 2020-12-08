@@ -684,7 +684,7 @@ class SnNew extends React.Component {
                 <Grid item xs={12} className={classes.main_grid_ef}>
                   <Paper className={`${classes.paper} ${classes.MaintabsPaper_ef}`}>
                     <Paper className={classes.tabsPaper_ef}>
-                      <Typography className={classes.title1_ef}> Skapp Details </Typography>
+                      <Typography className={classes.title1_ef}> Add File/Folder in a Space </Typography>
                       <ValidatorForm
                         ref="form"
                         onSubmit={this.handleSubmit}

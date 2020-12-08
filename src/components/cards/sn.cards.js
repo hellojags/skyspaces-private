@@ -58,7 +58,7 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppList, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace, bsAddSkylink } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppListV2, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace, bsAddSkylink } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
 import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
 import Chip from '@material-ui/core/Chip';
@@ -124,6 +124,7 @@ class SnCards extends React.Component {
       showConfirmModal: false,
       infoModalContent: null,
       isDir: false,
+      portalHost: "siasky.net",
 
 
 
@@ -142,7 +143,6 @@ class SnCards extends React.Component {
     this.getFilteredApps = this.getFilteredApps.bind(this);
     this.uploadEleRef = React.createRef();
   }
-
   //new ui start
   setActiveStep = (activeStep) => this.setState({ activeStep });
   setFilterSelection = (filterSelection) => this.setState({ filterSelection });
@@ -273,7 +273,7 @@ class SnCards extends React.Component {
     if (skyspace != null) {
       if (senderId != null) {
         this.props.setLoaderDisplay(true);
-        const appListFromSharedSpace = await bsGetSharedSpaceAppList(this.props.userSession, decodeURIComponent(senderId), skyspace);
+        const appListFromSharedSpace = await bsGetSharedSpaceAppListV2(this.props.userSession, decodeURIComponent(senderId), skyspace);
         this.props.setLoaderDisplay(false);
         this.props.setApps(appListFromSharedSpace);
       } else {
@@ -309,27 +309,43 @@ class SnCards extends React.Component {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?content=") > -1 ? this.props.location.search.replace("?content=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     hash && this.props.setPublicHash(hash);
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
+    const portalHost = this.getLocation(this.props.snUserSetting.setting.portal).host;
     this.setState({
       skyspace,
       category,
       fetchAllSkylinks: fetchAllSkylinks,
       page: 1,
       hash,
-      senderId
+      senderId,
+      portalHost
     });
     this.props.fetchSkyspaceDetail();
     this.getAppList(category, skyspace, fetchAllSkylinks, hash, senderId);
+  }
+
+  getLocation(href) {
+    var match = href.match(/^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/);
+    return match && {
+        href: href,
+        protocol: match[1],
+        host: match[2],
+        hostname: match[3],
+        port: match[4],
+        pathname: match[5],
+        search: match[6],
+        hash: match[7]
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const skyspace = this.props.match.params.skyspace;
     const category = this.props.match.params.category;
     const senderId = this.getSenderId();
-    const queryHash = this.props.location.search.indexOf("?sialink=") > -1 ? this.props.location.search.replace("?sialink=", "").trim() : "";
+    const queryHash = this.props.location.search.indexOf("?content=") > -1 ? this.props.location.search.replace("?content=", "").trim() : "";
     const hash = queryHash === "" ? null : queryHash;
     const fetchAllSkylinks = this.props.match.path === "/skylinks";
     if (
@@ -572,7 +588,8 @@ class SnCards extends React.Component {
       this.setState({
         showInfoModal: true,
         onInfoModalClose: () => this.setState({ showInfoModal: false }),
-        infoModalContent: `${this.props.snUserSetting.setting.portal}${PUBLIC_SHARE_APP_HASH}/#/${PUBLIC_SHARE_ROUTE}?sialink=${uploadedContent.skylink}`
+        // infoModalContent: `${this.props.snUserSetting.setting.portal}${PUBLIC_SHARE_APP_HASH}/#/${PUBLIC_SHARE_ROUTE}?sialink=${uploadedContent.skylink}`
+        infoModalContent: `https://skyspace.hns.${this.state.portalHost}/skapp/index.html#/${PUBLIC_SHARE_ROUTE}?content=${uploadedContent.skylink}`
       })
       this.props.setLoaderDisplay(false);
     }
@@ -944,7 +961,27 @@ class SnCards extends React.Component {
                             marginLeft: "15px",
                           }}
                         >
-                          Share
+                          Public Share
+                      </Button>
+
+                      <Button
+                          variant="contained"
+                          color="secondary"
+                          className={classes.button}
+                          onClick={() => { alert('Try Private-Share from left navigation,\n This feature will be enabled on this icon soon')}}
+                          startIcon={
+                            // <ShareOutlinedIcon style={{ color: "#1ed660" }} />
+                            <i class="fas fa-people-arrows icon_private_share"></i>
+                          }
+                          size="small"
+                          style={{
+                            background: "transparent",
+                            color: "#636f70",
+                            boxShadow: "none",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          Private Share
                       </Button>
 
                         <Button
