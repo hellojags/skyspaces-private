@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import useStyles from "./sn.cards.styles";
+import "./sn.cards.styles.css";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import ShareOutlinedIcon from "@material-ui/icons/ShareOutlined";
 import GamesOutlinedIcon from "@material-ui/icons/GamesOutlined";
@@ -1085,7 +1086,7 @@ class SnCards extends React.Component {
                   }
                   {this.state.hash != null && filteredApps.length > 0 &&
                     (
-                      <label htmlFor="contained-button-file">
+                      <label htmlFor="contained-button-file" className="public-btn">
                         <Button
                           onClick={() => this.uploadEleRef.current.gridRef.current.click()}
                           variant="contained"
