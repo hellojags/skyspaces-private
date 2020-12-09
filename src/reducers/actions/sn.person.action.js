@@ -41,11 +41,13 @@ export const logoutPerson = (userSession) => {
   else if (userSession.idp == ID_PROVIDER_SKYID)
   {
     userSession.skyid.sessionDestroy("/");
+    window.location.href=window.location.origin;
     return setPerson(null);
   }
   else//--> assume default is SkyID
   {
     userSession.skyid.sessionDestroy("/");
+    window.location.href=window.location.origin;
     return setPerson(null);
   }
   return {
