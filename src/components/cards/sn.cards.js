@@ -1072,7 +1072,7 @@ class SnCards extends React.Component {
                   {this.state.hash == null &&
                   <label htmlFor="contained-button-file">
                     <Button
-                    onClick={() => this.uploadEleRef.current.gridRef.current.click()}
+                    onClick={(evt) => evt.preventDefault() || evt.stopPropagation() || this.uploadEleRef.current.gridRef.current.click()}
                     variant="contained"
                     color="primary"
                     style={{ color: "white", borderRadius: 10 }}
