@@ -39,6 +39,11 @@ export default makeStyles((theme) => ({
 
     borderRadius: "10px",
   },
+  linkName: {
+    //paddingLeft: 30,
+    color: theme.palette.linksColor,
+    //textDecoration: "none",
+  },
   tabsPaper_uc: {
     padding: "0px",
     boxShadow: "none",

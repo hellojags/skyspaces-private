@@ -326,13 +326,13 @@ export default function SnMultiUpload(props) {
                         }}
                       >
                         <div >
-                          <Typography className={classes.img_name_txt}>
+                          <Typography className={classes.linkName}>
                             {fileObj?.file?.path}
                           </Typography>
-                          {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.img_name_txt}>
+                          {fileObj?.status && fileObj?.status === 'complete' && (<Typography className={classes.linkName}>
                             Skylink: {fileObj?.url}
                           </Typography>)}
-                          {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.img_name_txt}>
+                          {fileObj?.status && fileObj?.status !== 'complete' && (<Typography className={classes.linkName}>
                             {fileObj?.status.toUpperCase()} {fileObj?.status === 'uploading' && !isNaN(fileObj.progress) && `${(Math.trunc(fileObj.progress * 100))} %`}
                           </Typography>)}
                         </div>
