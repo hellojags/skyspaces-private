@@ -1151,11 +1151,11 @@ class SnCards extends React.Component {
                         >
                           Cancel Select
                         </Button>)}
-                        {(this.props.snPublicInMemory?.addedSkapps?.length>0 || this.props.snPublicInMemory?.deletedSkapps?.length>0)
-                        && <Button
+                        <Button
                           variant="contained"
                           className="pull-right"
                           type="button"
+                          disabled={(this.props.snPublicInMemory?.addedSkapps?.length===0 && this.props.snPublicInMemory?.deletedSkapps?.length===0)}
                           onClick={this.savePublicSpace}
                           color="primary"
                           style={{ color: "white", borderRadius: 10 }}
@@ -1163,7 +1163,7 @@ class SnCards extends React.Component {
                           startIcon={<PublishIcon style={{ color: "white" }} />}
                         >
                           Save
-                        </Button>}
+                        </Button>
                       </label>
                     )
                   }
@@ -1171,7 +1171,7 @@ class SnCards extends React.Component {
                   <span style={{ marginLeft: 20 }}></span>
                   <IconButton aria-label="delete" 
                     onClick={() => this.setGridUi(true)}
-                    style={{"margin-left":"auto"}}>
+                    style={this.state.hash ? {"margin-left":"auto"}: {}}>
                     <AppsIcon className={classes.appsIcon} />
                   </IconButton>
 
