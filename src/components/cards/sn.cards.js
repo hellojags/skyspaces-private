@@ -820,14 +820,14 @@ class SnCards extends React.Component {
                 md={10}
                 sm={12}
                 xs={12}
-                className={`${classes.gallery_title_btns_grid
+                className={`filter-grid ${classes.gallery_title_btns_grid 
                   } ${"most_main_grid_gallery_style"}`}
               >
                 {/*  All */}
                 <Typography
                   onClick={() => this.updateTagFilterList([])}
                   variant="span"
-                  className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext}`}
+                  className={`gallery_title_head_Alltext ${classes.gallery_title_head_Alltext} ${this.state.filterCriteria?.tagFilterList?.length===0 && "active"}`}
                   style={
                     this.state.filterCriteria != null &&
                       this.state.filterCriteria.tagFilterList.length === 0
@@ -843,12 +843,12 @@ class SnCards extends React.Component {
                 </Typography>
                 {Object.keys(getCategoryObjWithoutAll())
                   .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
-                  .map((key, idx) => idx < 3 && (
+                  .map((key, idx) => idx < 4 && (
                     <Typography
                       onClick={() => this.updateTagFilterList([key])}
                       variant="span"
                       key={idx}
-                      className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text}`}
+                      className={`gallery_title_head_image_text ${classes.gallery_title_head_image_text} ${this.state.filterCriteria?.tagFilterList && this.state.filterCriteria?.tagFilterList[0]===key && "active"}`}
                     >
                       {/* <CameraAltOutlinedIcon style={{ fontSize: "20px" }} /> */}
                       <span style={{ fontSize: "20px" }}>{CATEGORY_OBJ[key].getLogo(classes.categoryFilterLogo)}</span>
@@ -869,7 +869,7 @@ class SnCards extends React.Component {
 
                     {Object.keys(getCategoryObjWithoutAll())
                       .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
-                      .map((key, idx) => idx >= 3 && (
+                      .map((key, idx) => idx >= 4 && (
                         <div
                           style={{
                             paddingTop: 10,
