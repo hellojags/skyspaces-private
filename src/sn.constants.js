@@ -67,7 +67,7 @@ export const PUBLIC_SHARE_ROUTE = "public-sharing/";
 //export const DOWNLOAD_PORTAL = process.env.REACT_APP_SIASKYNET_HOST;
 //export const SKYNETHUB_PORTAL = process.env.REACT_APP_SKYNETHUB_HOST;
 export const SKYSPACE_DEFAULT_PATH = "https://skyspace.hns.siasky.net/#/upload";
-export const SKYSPACE_HOSTNAME = "https://skyspace.hns.siasky.net";
+export const SKYSPACE_HOSTNAME = "https://skyspace.hns.siasky.net/skapp/index.html";
 export const PUBLIC_TO_ACC_QUERY_PARAM = "sharedhash";
 export const MUSIC_SVG_BASE64_DATA = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjUgMjUiID48c3R5bGUgdHlwZT0idGV4dC9jc3MiPi5zdDB7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7fTwvc3R5bGU+PGc+PHBhdGggY2xhc3M9InN0MCIgZD0iTTEyIDNsLjAxIDEwLjU1Yy0uNTktLjM0LTEuMjctLjU1LTItLjU1QzcuNzkgMTMgNiAxNC43OSA2IDE3czEuNzkgNCA0LjAxIDRTMTQgMTkuMjEgMTQgMTdWN2g0VjNoLTZ6bS0xLjk5IDE2Yy0xLjEgMC0yLS45LTItMnMuOS0yIDItMiAyIC45IDIgMi0uOSAyLTIgMnoiLz48L2c+PC9zdmc+';
 

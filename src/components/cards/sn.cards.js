@@ -645,7 +645,7 @@ class SnCards extends React.Component {
     this.props.setLoaderDisplay(false);
     const redirectToRoute = "/login" + "?" + PUBLIC_TO_ACC_QUERY_PARAM + "=" + (publicUpload?.skylink || this.state.hash);
     if (process.env.NODE_ENV === 'production') {
-      document.location.href = SKYSPACE_HOSTNAME + "/#" + redirectToRoute;
+      document.location.href = SKYSPACE_HOSTNAME + "#" + redirectToRoute;
     } else {
       this.props.setPublicHash(null);
       this.props.history.push(redirectToRoute);
