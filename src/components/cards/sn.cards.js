@@ -1165,7 +1165,7 @@ class SnCards extends React.Component {
                       </label>
                     )
                   }
-                  <Hidden xsDown>
+                  {filteredApps.length > 0 && <Hidden xsDown>
                   <span style={{ marginLeft: 20 }}></span>
                   <IconButton aria-label="delete" onClick={() => this.setGridUi(true)}>
                     <AppsIcon className={classes.appsIcon} />
@@ -1174,7 +1174,7 @@ class SnCards extends React.Component {
                   <IconButton aria-label="delete" onClick={() => this.setGridUi(false)}>
                     <ReorderIcon className={classes.reOrdered} />
                   </IconButton>
-                  </Hidden>
+                  </Hidden>}
                 </Grid>
 
                 <Grid
