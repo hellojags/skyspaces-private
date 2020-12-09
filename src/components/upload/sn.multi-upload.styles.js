@@ -72,10 +72,11 @@ export default makeStyles((theme) => ({
   },
   descIcon: {
     color: theme.palette.primary.main,
-    fontSize: "18px",
+    fontSize: "35px",
     position: "relative",
-    bottom: "2px",
+    //bottom: "2px",
     marginRight: "10px",
+    paddingTop: "5px"
   },
   img_name_txt: {
     fontSize: "12px",

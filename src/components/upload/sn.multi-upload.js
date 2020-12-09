@@ -345,9 +345,8 @@ export default function SnMultiUpload(props) {
                       }}
                     /> */}
                           {fileObj?.status === 'complete' && <FileCopyIcon
+                            className={classes.descIcon}
                             style={{
-                              fontSize: "18px",
-                              color: "#1ed660",
                               cursor: "pointer",
                             }}
                             onClick={() => copyToClipboard(fileObj?.url)}
