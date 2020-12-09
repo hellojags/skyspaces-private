@@ -129,7 +129,7 @@ const useStyles = (theme) => ({
     padding: "3px",
     display: "inline-block",
     width: "25px",
-    color: `${theme.palette.primary.main}`,
+    // color: `${theme.palette.primary.main}`,
     textAlign: "center",
     // paddingRight: "3px",
   },
