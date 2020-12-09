@@ -1109,17 +1109,7 @@ class SnCards extends React.Component {
                         >
                           Add To Skyspaces
                 </Button>
-                        <Button
-                          variant="contained"
-                          type="button"
-                          onClick={this.deleteFromPublic}
-                          color="primary"
-                          style={{ color: "white", borderRadius: 10 }}
-                          component="span"
-                          startIcon={<PublishIcon style={{ color: "white" }} />}
-                        >
-                          Delete
-                </Button>
+                        
                         <Button
                           variant="contained"
                           onClick={(evt) => this.selectPublicAll(evt, filteredApps)}
@@ -1151,9 +1141,9 @@ class SnCards extends React.Component {
                         >
                           Cancel Select
                         </Button>)}
+                        
                         <Button
                           variant="contained"
-                          className="pull-right"
                           type="button"
                           disabled={(this.props.snPublicInMemory?.addedSkapps?.length===0 && this.props.snPublicInMemory?.deletedSkapps?.length===0)}
                           onClick={this.savePublicSpace}
@@ -1164,6 +1154,17 @@ class SnCards extends React.Component {
                         >
                           Save
                         </Button>
+                        {this.state.isSelect && (<Button
+                          variant="contained"
+                          type="button"
+                          onClick={this.deleteFromPublic}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Delete
+                        </Button>)}
                       </label>
                     )
                   }
