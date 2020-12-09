@@ -253,7 +253,7 @@ class SnSkySpaceMenu extends React.Component {
           </span>
         </div>
 
-        <div className={this.props.classes.sideProf_div}>
+        <div >
           {this.props.snImportedSpace?.sharedByUserList
             ?.filter(userId => this.props.snImportedSpace?.senderToSpacesMap[userId]?.skyspaceList.length > 0)
             .map((userId) => (
