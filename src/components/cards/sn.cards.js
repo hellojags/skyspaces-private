@@ -1109,18 +1109,6 @@ class SnCards extends React.Component {
                         >
                           Add To Skyspaces
                 </Button>
-
-                        <Button
-                          variant="contained"
-                          type="button"
-                          onClick={this.savePublicSpace}
-                          color="primary"
-                          style={{ color: "white", borderRadius: 10 }}
-                          component="span"
-                          startIcon={<PublishIcon style={{ color: "white" }} />}
-                        >
-                          Save
-                </Button>
                         <Button
                           variant="contained"
                           type="button"
@@ -1161,14 +1149,29 @@ class SnCards extends React.Component {
                           component="span"
                           startIcon={<PublishIcon style={{ color: "white" }} />}
                         >
-                          Cancel
+                          Cancel Select
                         </Button>)}
+                        {(this.props.snPublicInMemory?.addedSkapps?.length>0 || this.props.snPublicInMemory?.deletedSkapps?.length>0)
+                        && <Button
+                          variant="contained"
+                          className="pull-right"
+                          type="button"
+                          onClick={this.savePublicSpace}
+                          color="primary"
+                          style={{ color: "white", borderRadius: 10 }}
+                          component="span"
+                          startIcon={<PublishIcon style={{ color: "white" }} />}
+                        >
+                          Save
+                        </Button>}
                       </label>
                     )
                   }
                   {filteredApps.length > 0 && <Hidden xsDown>
                   <span style={{ marginLeft: 20 }}></span>
-                  <IconButton aria-label="delete" onClick={() => this.setGridUi(true)}>
+                  <IconButton aria-label="delete" 
+                    onClick={() => this.setGridUi(true)}
+                    style={{"margin-left":"auto"}}>
                     <AppsIcon className={classes.appsIcon} />
                   </IconButton>
 
