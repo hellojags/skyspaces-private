@@ -7,51 +7,30 @@ import ShareOutlinedIcon from "@material-ui/icons/ShareOutlined";
 import GamesOutlinedIcon from "@material-ui/icons/GamesOutlined";
 import PlaylistAddOutlinedIcon from "@material-ui/icons/PlaylistAddOutlined";
 import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
-import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
-import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
-import DescriptionOutlinedIcon from "@material-ui/icons/DescriptionOutlined";
-import MoreVertOutlinedIcon from "@material-ui/icons/MoreVertOutlined";
-import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
-import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import DoneAllIcon from "@material-ui/icons/DoneAll";
 import Grid from "@material-ui/core/Grid";
-import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import AppsIcon from "@material-ui/icons/Apps";
 import ReorderIcon from "@material-ui/icons/Reorder";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputBase from "@material-ui/core/InputBase";
 import SnConfirmationModal from "../modals/sn.confirmation.modal";
-import LowPriorityIcon from "@material-ui/icons/LowPriority";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import PublishIcon from "@material-ui/icons/Publish";
-import HeadsetIcon from "@material-ui/icons/Headset";
 import { INITIAL_PORTALS_OBJ } from "../../blockstack/constants";
 import SnUpload from "../new/sn.upload";
 import { v4 as uuidv4 } from 'uuid';
 import { SkynetClient, parseSkylink } from "skynet-js";
 import { getEmptyHistoryObject, getEmptySkylinkObject } from "../new/sn.new.constants";
-import BlockIcon from '@material-ui/icons/Block';
-import { Button, FormControlLabel, Hidden, Switch, Typography } from "@material-ui/core";
+import { Button, Hidden, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Avatar from '@material-ui/core/Avatar';
-import Tooltip from "@material-ui/core/Tooltip";
-import { green } from "@material-ui/core/colors";
-import { subtractSkapps, getPortalFromUserSetting, setTypeFromFile, getAllPublicApps } from "../../sn.util";
+import { getPortalFromUserSetting, setTypeFromFile, getAllPublicApps } from "../../sn.util";
 import SnInfoModal from "../modals/sn.info.modal";
 import SnAppCard from "./sn.app-card";
 import {
   ITEMS_PER_PAGE,
   getCompatibleTags,
-  APP_BG_COLOR,
   DEFAULT_PORTAL,
-  PUBLIC_SHARE_BASE_URL,
   PUBLIC_SHARE_ROUTE,
-  PUBLIC_SHARE_APP_HASH, PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME, UPLOAD
+  PUBLIC_TO_ACC_QUERY_PARAM, SKYSPACE_HOSTNAME, UPLOAD
 } from "../../sn.constants";
 import {
   CATEGORY_OBJ,
@@ -59,39 +38,14 @@ import {
 } from "../../sn.category-constants";
 import { connect } from "react-redux";
 import { mapStateToProps, matchDispatcherToProps } from "./sn.cards.container";
-import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsGetAllSkyspaceObj, bsAddToHistory, bsGetSharedSpaceAppListV2, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace, bsAddSkylink } from "../../blockstack/blockstack-api";
+import { bsGetSkyspaceNamesforSkhubId, bsRemoveSkylinkFromSkyspaceList, bsDeleteSkylink, bsAddToHistory, bsGetSharedSpaceAppListV2, bsAddSkylinkFromSkyspaceList, bsRemoveSkappFromSpace, bsAddSkylink } from "../../blockstack/blockstack-api";
 import SnPagination from "../tools/sn.pagination";
-import { INITIAL_SETTINGS_OBJ } from "../../blockstack/constants";
-import Chip from '@material-ui/core/Chip';
 import UploadProgress from "../upload/UploadProgress/UploadProgress";
 import { getPublicApps, getSkylinkPublicShareFile, savePublicSpace } from "../../skynet/sn.api.skynet";
 import AudioPlayer from "../categories/audio/sn.audio-player";
 import SnFooter from "../footer/sn.footer";
 import SnViewMore from "../tools/sn.view-more";
 import SnAddToSkyspaceModal from "../modals/sn.add-to-skyspace.modal";
-import { async } from "rxjs";
-
-
-const BootstrapInput = withStyles((theme) => ({
-  input: {
-    borderRadius: 4,
-    position: "relative",
-    backgroundColor: "white",
-    color: theme.palette.linksColor,
-    //   border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: "10px 26px 10px 12px",
-    //   transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    "&:focus": {
-      // borderRadius: 4,
-      // borderColor: '#80bdff',
-      backgroundColor: "white",
-      // boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
-    },
-  },
-}))(InputBase);
-
 
 class SnCards extends React.Component {
   constructor(props) {
@@ -145,10 +99,10 @@ class SnCards extends React.Component {
     this.uploadEleRef = React.createRef();
   }
   //new ui start
-  setActiveStep = (activeStep) => this.setState({ activeStep });
-  setFilterSelection = (filterSelection) => this.setState({ filterSelection });
-  setGridUi = (GridUi) => this.setState({ GridUi });
-  handleUploadSection = (value) => {
+  setActiveStep = activeStep=> this.setState({ activeStep });
+  setFilterSelection = filterSelection => this.setState({ filterSelection });
+  setGridUi = GridUi => this.setState({ GridUi });
+  handleUploadSection = value => {
     this.setIsTrue(value);
   };
   handleChange = (event) => {
@@ -519,46 +473,6 @@ class SnCards extends React.Component {
               );
             })
           }
-        </Grid>
-      );
-
-
-      return (
-        <Grid item xs={12}>
-          <Grid container spacing={1}>
-            {filteredApps
-              .slice(
-                (page - 1) * ITEMS_PER_PAGE,
-                (page - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-              )
-              .map((app, i) => {
-                cardCount = cardCount + 1;
-                return (
-                  <SnAppCard
-                    key={i}
-                    app={app}
-                    hash={this.state.hash}
-                    isSelect={this.state.isSelect}
-                    arrSelectedAps={this.state.arrSelectedAps}
-                    skyspace={skyspace}
-                    senderId={this.state.senderId}
-                    allSpacesObj={this.props.snSkyspaceDetail}
-                    cardCount={filteredApps.length}
-                    onSelection={(app, isDeselection) => this.selectApp(app, isDeselection)}
-                    onOpenSkyApp={this.openSkyApp}
-                    onDelete={() => {
-                      this.props.fetchSkyspaceDetail();
-                      this.getAppList(
-                        this.state.category,
-                        this.state.skyspace,
-                        this.state.fetchAllSkylinks
-                      );
-                    }
-                    }
-                  />
-                );
-              })}
-          </Grid>
         </Grid>
       );
     }
@@ -1291,239 +1205,6 @@ class SnCards extends React.Component {
           <SnFooter />
         </div>
       </main>
-    );
-
-    return (
-      <div className="card-parent-conatiner">
-        <div>
-          <div>
-            <Grid container spacing={1} className="align-self-auto">
-              <Grid
-                container
-                spacing={1}
-                direction="row"
-                justify="space-between"
-                alignItems="center"
-                className="skyspaceMainPageHeader"
-              >
-                {this.state.hash == null && (<Grid item xs={12}>
-                  {" "}
-                  Space : {skyspace}
-                </Grid>)}
-                {this.state.hash != null && (<Grid item xs={12}>
-                  Public Space
-                </Grid>)}
-              </Grid>
-              {filteredApps.length > 0 && (<Grid item xs={12} sm={12} className="filter-grid">
-                <>
-                  <div className="category-filter">
-                    <Chip label={
-                      <div className="category-filter-chip">
-                        All
-                            <Avatar>
-                          {this.props.snApps && this.props.snApps.length}
-                        </Avatar>
-                      </div>
-                    }
-                      onClick={() => this.updateTagFilterList([])}
-                      className="cursor-pointer"
-                      style={
-                        this.state.filterCriteria != null &&
-                          this.state.filterCriteria.tagFilterList.length === 0
-                          ? { backgroundColor: APP_BG_COLOR }
-                          : {}
-                      }
-                    />
-
-                  </div>
-                  {Object.keys(getCategoryObjWithoutAll())
-                    .filter(key => categoryWiseCount[key] && categoryWiseCount[key] != "0")
-                    .map((key, idx) => (
-                      <div className="category-filter" key={idx} onClick={() => this.updateTagFilterList([key])}>
-                        <Chip label={
-                          <div className="category-filter-chip">
-                            {getCategoryObjWithoutAll()[key].heading}
-                            <Avatar>
-                              {categoryWiseCount[key]
-                                ? categoryWiseCount[key]
-                                : 0}
-                            </Avatar>
-                          </div>
-                        }
-                          className="cursor-pointer"
-                          style={
-                            this.state.filterCriteria != null &&
-                              this.state.filterCriteria.tagFilterList.indexOf(
-                                key
-                              ) > -1
-                              ? { "background-color": APP_BG_COLOR }
-                              : {}
-                          }
-                          icon={CATEGORY_OBJ[key].getLogo()}
-                        />
-                      </div>
-                    ))}
-                </>
-              </Grid>)}
-            </Grid>
-          </div>
-
-          <div className="card-container row">
-            <Grid container spacing={1}>
-              {this.state.hash != null && filteredApps.length > 0 && (
-                <Grid item xs={12} className="public-cards-action">
-                  <Button
-                    variant="contained"
-                    onClick={this.addPublicSpaceToAccount}
-                    color="primary"
-                    className="btn-bg-color"
-                  >
-                    Add To Skyspaces
-                </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => this.uploadEleRef.current.gridRef.current.click()}
-                    color="primary"
-                    className="btn-bg-color"
-                  >
-                    Upload
-                </Button>
-                  <FormControlLabel
-                    className="no-gutters"
-                    control={
-                      <Switch
-                        checked={this.isDir}
-                        onChange={(evt) => this.setState({ isDir: evt.target.checked })}
-                        name="checkedA"
-                        className="app-bg-switch"
-                      />
-                    }
-                    label="Directory"
-                  />
-                  <div className="d-none">
-                    <SnUpload
-                      name="files"
-                      ref={this.uploadEleRef}
-                      directoryMode={this.state.isDir}
-                      onUpload={this.onPublicUpload}
-                      portal={getPortalFromUserSetting(this.props.snUserSetting)}
-                    />
-                  </div>
-                  <Button
-                    variant="contained"
-                    onClick={this.savePublicSpace}
-                    color="primary"
-                    className="btn-bg-color float-right"
-                  >
-                    Save
-                </Button>
-                  <Button
-                    variant="contained"
-                    onClick={this.deleteFromPublic}
-                    color="primary"
-                    className="btn-bg-color float-right"
-                  >
-                    Delete
-                </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => this.setState({ isSelect: true, arrSelectedAps: filteredApps })}
-                    color="primary"
-                    className="btn-bg-color float-right"
-                  >
-                    Select All
-                </Button>
-                  {!this.state.isSelect && (<Button
-                    variant="contained"
-                    onClick={() => this.setState({ isSelect: true, arrSelectedAps: [] })}
-                    color="primary"
-                    className="btn-bg-color float-right"
-                  >
-                    Select
-                  </Button>)}
-                  {this.state.isSelect && (<Button
-                    onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
-                    variant="contained"
-                    color="primary"
-                    className="btn-bg-color float-right"
-                  >
-                    Cancel
-                  </Button>)}
-                </Grid>
-              )}
-              {this.state.hash == null && filteredApps.length > 0 && this.state.senderId == null && (
-                <Grid item xs={12} className="muti-cards-action">
-                  {!this.state.isSelect && (
-
-                    <Button
-                      variant="contained"
-                      onClick={() => this.setState({ isSelect: true, arrSelectedAps: [] })}
-                      color="primary"
-                      className="btn-bg-color"
-                    >
-                      Select
-                    </Button>
-                  )}
-                  {this.state.isSelect && (
-                    <>
-                      <Button
-                        onClick={() => this.setState({ isSelect: false, arrSelectedAps: [] })}
-                        variant="contained"
-                        color="primary"
-                        className="btn-bg-color"
-                      >
-                        Cancel
-                </Button>
-                      <Button
-                        onClick={() => this.setState({ arrSelectedAps: filteredApps })}
-                        variant="contained"
-                        color="primary"
-                        className="btn-bg-color"
-                      >
-                        Select All
-              </Button>
-                      <Button
-                        onClick={() => this.setState({ arrSelectedAps: [] })}
-                        variant="contained"
-                        color="primary"
-                        className="btn-bg-color"
-                      >
-                        De-Select All
-            </Button>
-                      <Button
-                        onClick={() => this.createSkylinkPublicShare()}
-                        variant="contained"
-                        color="primary"
-                        className="btn-bg-color"
-                      >
-                        Public Share
-            </Button>
-                    </>
-                  )}
-                </Grid>
-              )}
-              {this.renderCards(filteredApps, page, cardCount, skyspace)}
-              <Grid item xs={12}>
-                {filterCriteria === 'audio' ?
-                  <AudioPlayer /> :
-                  <SnPagination
-                    page={page}
-                    totalCount={filteredApps.length}
-                    onChange={this.udpdatePage}
-                  />}
-              </Grid>
-            </Grid>
-          </div>
-        </div>
-        <SnInfoModal
-          open={this.state.showInfoModal}
-          onClose={this.state.onInfoModalClose}
-          title="Public Share Link"
-          type="public-share"
-          content={this.state.infoModalContent}
-        />
-        {this.state.hash && (<UploadProgress />)}
-      </div>
     );
   }
 }

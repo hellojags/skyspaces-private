@@ -1,5 +1,3 @@
-import { makeStyles } from "@material-ui/core/styles";
-
 const leftMenuStyles = (theme) => ({
     dashboardCont: {
       display: "flex",

@@ -7,12 +7,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import Typography from "@material-ui/core/Typography";
-import ImageIcon from "@material-ui/icons/Image";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import Paper from "@material-ui/core/Paper";
-import HeadsetIcon from "@material-ui/icons/Headset";
-import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
@@ -28,7 +23,6 @@ import {
   matchDispatcherToProps,
 } from "./sn.app-card.container";
 import CardContent from "@material-ui/core/CardContent";
-import { green } from "@material-ui/core/colors";
 import SnAppCardActionBtnGrp from "./sn.app-card-action-btn-grp";
 import {
   bsGetSkyspaceNamesforSkhubId,

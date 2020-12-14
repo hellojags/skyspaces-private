@@ -1,10 +1,9 @@
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./sn.landing-upload.css";
 import { DropzoneArea } from "material-ui-dropzone";
-import ImageIcon from "@material-ui/icons/Image";
 import SnLandingUploadDisclaimer from "./sn.landing-upload-disclaimer";
 import { parseSkylink } from "skynet-js";
-import { getPortalFromUserSetting, launchSkyLink } from "../../sn.util";
+import { launchSkyLink } from "../../sn.util";
 import { useSelector } from "react-redux";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";

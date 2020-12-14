@@ -1,6 +1,3 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { BorderBottom } from "@material-ui/icons";
-
 const styles = (theme) => ({
   root: {
     flexGrow: 1,

@@ -7,7 +7,7 @@ export const setUserSession = (userSession) => {
         BROWSER_STORAGE.removeItem(STORAGE_USER_SESSION_KEY);
       } else if (userSession.skydbseed) {
         BROWSER_STORAGE.setItem(STORAGE_USER_SESSION_KEY, JSON.stringify(userSession));
-      }else if (userSession.idp == ID_PROVIDER_SKYID) {
+      }else if (userSession.idp === ID_PROVIDER_SKYID) {
         BROWSER_STORAGE.setItem(STORAGE_USER_SESSION_KEY, JSON.stringify(userSession));
       }
     return {

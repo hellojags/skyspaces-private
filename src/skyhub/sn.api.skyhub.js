@@ -72,7 +72,6 @@ export const getData = async (domain, uid, options) =>
     const encodedCredentials = credentials.toString('base64');
     const authorization = `Basic ${encodedCredentials}`;
 
-    const portal = options.storageendpoint;
     let path="";
     if (options.dnsservice === 'blockchain') {
         path = `/api/v0/dns/domains/${domain}`;
@@ -99,8 +98,6 @@ export const getData = async (domain, uid, options) =>
             console.log(res.json());
         })
         .catch(err => err);
-
-    return;
 };
 
 export const deleteData = async (domain, uid, options) =>

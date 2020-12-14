@@ -1,16 +1,8 @@
-import React, { useState } from "react";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import Icon from "@material-ui/core/Icon";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import MenuItem from "@material-ui/core/MenuItem";
+import React from "react";
 import Popover from "@material-ui/core/Popover";
 import Typography from "@material-ui/core/Typography";
-import ArrowDropDownSharpIcon from "@material-ui/icons/ArrowDropDownSharp";
 // import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { makeStyles } from "@material-ui/core/styles";
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Box from "@material-ui/core/Box";
 import CameraAltIcon from "@material-ui/icons/CameraAlt";
@@ -102,7 +94,7 @@ function UserMenu(props) {
 
   const logout = () => {
     dispatch(logoutPerson(stUserSession));
-  }
+  };
 
   const showPublicKey = () => {
     userMenuClose();
